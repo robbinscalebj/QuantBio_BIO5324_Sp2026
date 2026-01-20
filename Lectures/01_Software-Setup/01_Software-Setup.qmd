@@ -4,9 +4,9 @@ format:
   html:
     toc: true
     css: ../styles.css
+    embed-resources: true
 editor: visual
 ---
-
 
 Goals:
 
@@ -32,19 +32,19 @@ Download the latest versions of R and RStudio.
 
 git is version control software that we'll use to facilitate collaboration and grading in this course, and more importantly, familiarize you with the basics of version control software that are increasingly critical to professional science.
 
-1.  **Install git by following [Ch. 6 of Happy Git and GitHub for the useR](https://happygitwithr.com/install-git)*.
+1.  \*\*Install git by following [Ch. 6 of Happy Git and GitHub for the useR](https://happygitwithr.com/install-git)\*.
 
 2.  **Create a [Github](https://github.com/) account**.
 
 -   Choose a username that identifies you (but if you already have a github account just use that name and tell me/put your name in the Description when you create your course repository in the next step)
 
-3.  **Download [Github Desktop](https://desktop.github.com/download/)*. This is a graphical user interface (GUI)-based way to use git - in other words, it's point-and-click rather than command line-based. If you happen to be using a Linux distribution there is at least one other git(hub) client - GitKraken.
+3.  \*\*Download [Github Desktop](https://desktop.github.com/download/)\*. This is a graphical user interface (GUI)-based way to use git - in other words, it's point-and-click rather than command line-based. If you happen to be using a Linux distribution there is at least one other git(hub) client - GitKraken.
 
 4.  **Create a repository for this course**. Use the naming convention *lastname-firstname-BIO5324-Sp2026*. Set the repository to private, select a .gitignore format that is just "R", then Create repository.
 
 ![](Figures\Github_Repo_Setup.png)
 
-5.  **Add me as a collaborator to your repository**. This gives me access to see and grade your pushed homework assignments. Go to *Settings*, select *Collaborators* at the top of the left pane, and click* Add people* to find me by searching my username: robbinscalebj.
+5.  **Add me as a collaborator to your repository**. This gives me access to see and grade your pushed homework assignments. Go to *Settings*, select *Collaborators* at the top of the left pane, and click\* Add people\* to find me by searching my username: robbinscalebj.
 
     ![](Figures/Github_Collab_Invite.png)
 
@@ -54,7 +54,7 @@ git is version control software that we'll use to facilitate collaboration and g
 
         ![](Figures/Repo_URL.png)
 
-    -   Dropdown from "Current repository" > Add > Clone repository. The name of the folder this will create is automatically set to the repo name. I put mine in the folder with all my other GitHub repositories.
+    -   Dropdown from "Current repository" \> Add \> Clone repository. The name of the folder this will create is automatically set to the repo name. I put mine in the folder with all my other GitHub repositories.
 
         ::: {style="border: 3px solid black; display: inline-block;"}
         <img src="Figures\GithubDesktop_clone.png" width="600"/>
