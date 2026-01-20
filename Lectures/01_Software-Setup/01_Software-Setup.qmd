@@ -7,6 +7,7 @@ format:
 editor: visual
 ---
 
+
 Goals:
 
 -   Download R and R Studio
@@ -31,29 +32,29 @@ Download the latest versions of R and RStudio.
 
 git is version control software that we'll use to facilitate collaboration and grading in this course, and more importantly, familiarize you with the basics of version control software that are increasingly critical to professional science.
 
-1.  \*\*Install git by following [Ch. 6 of Happy Git and GitHub for the useR](https://happygitwithr.com/install-git)\*.
+1.  **Install git by following [Ch. 6 of Happy Git and GitHub for the useR](https://happygitwithr.com/install-git)*.
 
-2.  \*\*Create a [Github](https://github.com/) account\*\*.
+2.  **Create a [Github](https://github.com/) account**.
 
-    -   Choose a username that identifies you (but if you already have a github account just use that name and tell me/put your name in the Description when you create your course repository in the next step)
+-   Choose a username that identifies you (but if you already have a github account just use that name and tell me/put your name in the Description when you create your course repository in the next step)
 
-3.  \*\*Download [Github Desktop](https://desktop.github.com/download/)\*. This is a graphical user interface (GUI)-based way to use git - in other words, it's point-and-click rather than command line-based. If you happen to be using a Linux distribution there is at least one other git(hub) client - GitKraken.
+3.  **Download [Github Desktop](https://desktop.github.com/download/)*. This is a graphical user interface (GUI)-based way to use git - in other words, it's point-and-click rather than command line-based. If you happen to be using a Linux distribution there is at least one other git(hub) client - GitKraken.
 
-4.  \*\*Create a repository for this course\*\*. Use the naming convention \*lastname-firstname-BIO5324-Sp2026\*. Set the repository to private, select a .gitignore format that is just "R", then Create repository.
+4.  **Create a repository for this course**. Use the naming convention *lastname-firstname-BIO5324-Sp2026*. Set the repository to private, select a .gitignore format that is just "R", then Create repository.
 
 ![](Figures\Github_Repo_Setup.png)
 
-5.  \*\*Add me as a collaborator to your repository\*\*. This gives me access to see and grade your pushed homework assignments. Go to \*Settings\*, select \*Collaborators\* at the top of the left pane, and click \*Add people\* to find me by searching my username: robbinscalebj.
+5.  **Add me as a collaborator to your repository**. This gives me access to see and grade your pushed homework assignments. Go to *Settings*, select *Collaborators* at the top of the left pane, and click* Add people* to find me by searching my username: robbinscalebj.
 
     ![](Figures/Github_Collab_Invite.png)
 
-6.  \*\*\*Clone\* your remote repository to your local computer\*\*: This makes a snapshot copy of your remote repository on your local machine. The remote repository is "on the cloud"/on a server somewhere.
+6.  ***Clone*** **your remote repository to your local computer**: This makes a snapshot copy of your remote repository on your local machine. The remote repository is "on the cloud"on a server somewhere.
 
     -   Copy the repository URL, e.g.,
 
         ![](Figures/Repo_URL.png)
 
-    -   Dropdown from "Current repository" \> Add \> Clone repository. The name of the folder this will create is automatically set to the repo name. I put mine in the folder with all my other GitHub repositories.
+    -   Dropdown from "Current repository" > Add > Clone repository. The name of the folder this will create is automatically set to the repo name. I put mine in the folder with all my other GitHub repositories.
 
         ::: {style="border: 3px solid black; display: inline-block;"}
         <img src="Figures\GithubDesktop_clone.png" width="600"/>
@@ -63,12 +64,12 @@ git is version control software that we'll use to facilitate collaboration and g
 
 When you go to this location on your computer, you should see a folder called '.git' which let's you know that git is now tracking the contents of that folder for changes.
 
-\## R Projects
+## R Projects
 
 R projects are a convenient way to organize RStudio settings and working directories. You can just open your Rproject file and, assuming that the .Rproj file extension is associated with RStudio, RStudio will open and R will be working in the root directory of your project folder (in this case it'll be the folder where you've put your github repo)
 
-1.  \*\*Open R Studio\*\*
-2.  \*\*Create a new RProject\*\* by clicking the top left R cube, dropping down a menu where you can select "New Project."
+1.  **Open R Studio**
+2.  **Create a new RProject** by clicking the top left R cube, dropping down a menu where you can select "New Project."
 
 ![](Figures\Create_RProject.png)
 
@@ -80,23 +81,23 @@ The upper right corner of RStudio should now show the project name, which it tak
 
 ![](Figures\RProject_Confirmation.png)
 
-\## Commit and push your folder to the remote location (Github)
+## Commit and push your folder to the remote location (Github)
 
-1.  \*\*Go back to GitHub Desktop\*\*. You should now see your RProject has shown up as a changed file (git will track new files and changes in existing files).
-2.  \*\*\*Commit\* your changes\*\*. Add a commit message that describes what the file changes are (again, in this case, it's a new file). Then click "Commit 1 file to main." This commits the changes in your local repository, but only sets up a change to your remote repository.
+1.  **Go back to GitHub Desktop**. You should now see your RProject has shown up as a changed file (git will track new files and changes in existing files).
+2.  ***Commit*** **your changes**. Add a commit message that describes what the file changes are (again, in this case, it's a new file). Then click "Commit 1 file to main." This commits the changes in your local repository, but only sets up a change to your remote repository.
 
 ![](Figures\RProject_Commit.png)
 
-3.  \*\*\*Push\* your commit.\*\* To actually change the files on your remote location, you need to \*push\* them. When you have committed changes in your local repo, GitHub Desktop shows that those commits are ready to be pushed to the remote.
+3.  ***Push*** **your commit.** To actually change the files on your remote location, you need to *push* them. When you have committed changes in your local repo, GitHub Desktop shows that those commits are ready to be pushed to the remote.
 
 ![](Figures\RProject_Push.png)
 
-Now there should not be any option to either \*commit\* OR \*push\* changes from your local repository.
+Now there should not be any option to either *commit* OR *push* changes from your local repository.
 
 ![](Figures\RProject_PostPush.png)
 
-4.  \*\*Confirm the \*push\* worked\*\*.
+4.  **Confirm the *push* worked**.
 
-You can double check that your \*push\* worked by looking directly at your remote Github repo. Go back to the URL and you should now see your RProject, with the commit message and the timing. Git and github keep track of these changes and their timing, creating a record where you can revert to different versions of your files/software. There's a lot more power to git, but most of what we will be doing in this course is this commit/push cycle.
+You can double check that your *push* worked by looking directly at your remote Github repo. Go back to the URL and you should now see your RProject, with the commit message and the timing. Git and github keep track of these changes and their timing, creating a record where you can revert to different versions of your files/software. There's a lot more power to git, but most of what we will be doing in this course is this commit/push cycle.
 
 ![](Figures\RProject_PostPush2.png)

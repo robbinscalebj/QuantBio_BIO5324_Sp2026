@@ -49,7 +49,11 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#download-r-and-r-studio" id="toc-download-r-and-r-studio" class="nav-link active" data-scroll-target="#download-r-and-r-studio">Download R and R Studio</a></li>
-  <li><a href="#git-github-and-version-control" id="toc-git-github-and-version-control" class="nav-link" data-scroll-target="#git-github-and-version-control">git, github, and version control</a></li>
+  <li><a href="#git-github-and-version-control" id="toc-git-github-and-version-control" class="nav-link" data-scroll-target="#git-github-and-version-control">git, github, and version control</a>
+  <ul class="collapse">
+  <li><a href="#r-projects" id="toc-r-projects" class="nav-link" data-scroll-target="#r-projects">R Projects</a></li>
+  <li><a href="#commit-and-push-your-folder-to-the-remote-location-github" id="toc-commit-and-push-your-folder-to-the-remote-location-github" class="nav-link" data-scroll-target="#commit-and-push-your-folder-to-the-remote-location-github">Commit and push your folder to the remote location (Github)</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -95,18 +99,20 @@ ul.task-list li input[type="checkbox"] {
 <p>git is version control software that we’ll use to facilitate collaboration and grading in this course, and more importantly, familiarize you with the basics of version control software that are increasingly critical to professional science.</p>
 <ol type="1">
 <li><p>**Install git by following <a href="https://happygitwithr.com/install-git">Ch. 6 of Happy Git and GitHub for the useR</a>*.</p></li>
-<li><p>**Create a <a href="https://github.com/">Github</a> account**.</p>
+<li><p><strong>Create a <a href="https://github.com/">Github</a> account</strong>.</p></li>
+</ol>
 <ul>
 <li>Choose a username that identifies you (but if you already have a github account just use that name and tell me/put your name in the Description when you create your course repository in the next step)</li>
-</ul></li>
+</ul>
+<ol start="3" type="1">
 <li><p>**Download <a href="https://desktop.github.com/download/">Github Desktop</a>*. This is a graphical user interface (GUI)-based way to use git - in other words, it’s point-and-click rather than command line-based. If you happen to be using a Linux distribution there is at least one other git(hub) client - GitKraken.</p></li>
-<li><p>**Create a repository for this course**. Use the naming convention *lastname-firstname-BIO5324-Sp2026*. Set the repository to private, select a .gitignore format that is just “R”, then Create repository.</p></li>
+<li><p><strong>Create a repository for this course</strong>. Use the naming convention <em>lastname-firstname-BIO5324-Sp2026</em>. Set the repository to private, select a .gitignore format that is just “R”, then Create repository.</p></li>
 </ol>
 <p><img src="Figures\Github_Repo_Setup.png" class="img-fluid"></p>
 <ol start="5" type="1">
-<li><p>**Add me as a collaborator to your repository**. This gives me access to see and grade your pushed homework assignments. Go to *Settings*, select *Collaborators* at the top of the left pane, and click *Add people* to find me by searching my username: robbinscalebj.</p>
+<li><p><strong>Add me as a collaborator to your repository</strong>. This gives me access to see and grade your pushed homework assignments. Go to <em>Settings</em>, select <em>Collaborators</em> at the top of the left pane, and click* Add people* to find me by searching my username: robbinscalebj.</p>
 <p><img src="Figures/Github_Collab_Invite.png" class="img-fluid"></p></li>
-<li><p>***Clone* your remote repository to your local computer**: This makes a snapshot copy of your remote repository on your local machine. The remote repository is “on the cloud”/on a server somewhere.</p>
+<li><p><strong><em>Clone</em></strong> <strong>your remote repository to your local computer</strong>: This makes a snapshot copy of your remote repository on your local machine. The remote repository is “on the cloud”on a server somewhere.</p>
 <ul>
 <li><p>Copy the repository URL, e.g.,</p>
 <p><img src="Figures/Repo_URL.png" class="img-fluid"></p></li>
@@ -118,34 +124,38 @@ ul.task-list li input[type="checkbox"] {
 </ol>
 <p><img src="Figures/GithubDesktop_clone2.png" class="img-fluid"></p>
 <p>When you go to this location on your computer, you should see a folder called ‘.git’ which let’s you know that git is now tracking the contents of that folder for changes.</p>
-<p>## R Projects</p>
+<section id="r-projects" class="level2">
+<h2 class="anchored" data-anchor-id="r-projects">R Projects</h2>
 <p>R projects are a convenient way to organize RStudio settings and working directories. You can just open your Rproject file and, assuming that the .Rproj file extension is associated with RStudio, RStudio will open and R will be working in the root directory of your project folder (in this case it’ll be the folder where you’ve put your github repo)</p>
 <ol type="1">
-<li>**Open R Studio**</li>
-<li>**Create a new RProject** by clicking the top left R cube, dropping down a menu where you can select “New Project.”</li>
+<li><strong>Open R Studio</strong></li>
+<li><strong>Create a new RProject</strong> by clicking the top left R cube, dropping down a menu where you can select “New Project.”</li>
 </ol>
 <p><img src="Figures\Create_RProject.png" class="img-fluid"></p>
 <p>Then browse for the GitHub repo location you created when you cloned the remote repository.</p>
 <p><img src="Figures\RProject_Directory.png" class="img-fluid"></p>
 <p>The upper right corner of RStudio should now show the project name, which it takes from the folder name, and also a new ‘git’ tab (that we won’t primarily use, but you can if you want):</p>
 <p><img src="Figures\RProject_Confirmation.png" class="img-fluid"></p>
-<p>## Commit and push your folder to the remote location (Github)</p>
+</section>
+<section id="commit-and-push-your-folder-to-the-remote-location-github" class="level2">
+<h2 class="anchored" data-anchor-id="commit-and-push-your-folder-to-the-remote-location-github">Commit and push your folder to the remote location (Github)</h2>
 <ol type="1">
-<li>**Go back to GitHub Desktop**. You should now see your RProject has shown up as a changed file (git will track new files and changes in existing files).</li>
-<li>***Commit* your changes**. Add a commit message that describes what the file changes are (again, in this case, it’s a new file). Then click “Commit 1 file to main.” This commits the changes in your local repository, but only sets up a change to your remote repository.</li>
+<li><strong>Go back to GitHub Desktop</strong>. You should now see your RProject has shown up as a changed file (git will track new files and changes in existing files).</li>
+<li><strong><em>Commit</em></strong> <strong>your changes</strong>. Add a commit message that describes what the file changes are (again, in this case, it’s a new file). Then click “Commit 1 file to main.” This commits the changes in your local repository, but only sets up a change to your remote repository.</li>
 </ol>
 <p><img src="Figures\RProject_Commit.png" class="img-fluid"></p>
 <ol start="3" type="1">
-<li>***Push* your commit.** To actually change the files on your remote location, you need to *push* them. When you have committed changes in your local repo, GitHub Desktop shows that those commits are ready to be pushed to the remote.</li>
+<li><strong><em>Push</em></strong> <strong>your commit.</strong> To actually change the files on your remote location, you need to <em>push</em> them. When you have committed changes in your local repo, GitHub Desktop shows that those commits are ready to be pushed to the remote.</li>
 </ol>
 <p><img src="Figures\RProject_Push.png" class="img-fluid"></p>
-<p>Now there should not be any option to either *commit* OR *push* changes from your local repository.</p>
+<p>Now there should not be any option to either <em>commit</em> OR <em>push</em> changes from your local repository.</p>
 <p><img src="Figures\RProject_PostPush.png" class="img-fluid"></p>
 <ol start="4" type="1">
-<li>**Confirm the *push* worked**.</li>
+<li><strong>Confirm the <em>push</em> worked</strong>.</li>
 </ol>
-<p>You can double check that your *push* worked by looking directly at your remote Github repo. Go back to the URL and you should now see your RProject, with the commit message and the timing. Git and github keep track of these changes and their timing, creating a record where you can revert to different versions of your files/software. There’s a lot more power to git, but most of what we will be doing in this course is this commit/push cycle.</p>
+<p>You can double check that your <em>push</em> worked by looking directly at your remote Github repo. Go back to the URL and you should now see your RProject, with the commit message and the timing. Git and github keep track of these changes and their timing, creating a record where you can revert to different versions of your files/software. There’s a lot more power to git, but most of what we will be doing in this course is this commit/push cycle.</p>
 <p><img src="Figures\RProject_PostPush2.png" class="img-fluid"></p>
+</section>
 </section>
 
 </main>
