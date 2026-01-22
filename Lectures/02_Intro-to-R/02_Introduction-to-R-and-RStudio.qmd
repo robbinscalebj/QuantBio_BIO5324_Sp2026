@@ -1,0 +1,446 @@
+---
+title: "01.2 Introduction to R and RStudio"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+bibliography: references.bib
+---
+
+# Introductory discussion:
+
+-   Why R? Why coding more generally? Why a focus on workflows?
+
+Goals for today: Quick rundown of github, Quarto/Rmarkdown, and then some live coding you should follow along in your own quarto file (.qmd).
+
+## git, github, and version control
+
+### A few definitions
+
+version control system
+
+:   tracks changes in your files
+
+git
+
+:   a version control system
+
+repo(sitory)
+
+:   a set of files either remote (on the cloud) or local (on your machine) that git tracks. Think of the remote repo as being the central hub, and your local repo as a workstation that should report back to the central hub as you make changes to your assignments/code
+
+github
+
+:   cloud-based platform built around git, hosts remote repositories. See @fig-Figure1.
+
+issues
+
+:   a feature on Github that allows specific tracking of bugs, desired changes, etc. in software on Github. Here we use it for some course communication.
+
+![Basic structure of interacting with github](Figures\github%20structure.png){#fig-Figure1}
+
+### Why?
+
+-   Preparation: Code sharing and collaboration is increasingly based on git/github (e.g., facilitates code/data sharing for manuscript submissions). A little familiarity now will help you in the future.
+-   Version control: Changes are visible and reversible. At the very least, nice to have a cloud-based backup!
+-   Collaboration with yourself: Cloud-based remote repo is the center, so the files (and any work) can be done on multiple machines (be careful!)
+
+More resources:
+
+-   [Happy git with git and Github for the useR](https://happygitwithr.com/) (you used this in 01_Software_Setup)
+-   [NCEAS Github tutorial](https://learning.nceas.ucsb.edu/2024-10-coreR/session_07.html)
+
+## Quarto
+
+**The file that creates this document is called a [Quarto](https://quarto.org) document (.qmd file extension)**. Quarto uses the markup language [markdown](#0) to blend text and code that are rendered into formats like html or pdf. This Quarto document is rendered into html so it's easily viewable across many devices and requires less software to render than pdf. The .qmd file contains the 'raw' code, while the .html file of the same name is rendered or knitted into the proper format. Quarto actively renders much of the code while you work on it in RStudio.
+
+Rmarkdown works in a very similar way.
+
+Quarto is built around integrating progamming languages such as R and Python into text formats and is a useful way to show course content and examples, and have you work on and submit assignments.
+
+Quarto is useful for:
+
+-   Communicating and writing reports
+-   Collaborating with others and show how you got your results
+-   Providing an environment to do coding in
+
+*Rendering while you work*: Even though you can see much of the output as you work, you can render (knit) a whole file into html using CTRL + SHIFT + K, which will also give you a preview in your Viewer Pane. You won't be graded on how nice your homework assignments look knitted into html or pdf.
+
+## RStudio
+
+As mentioned, this is the IDE you're working in currently.
+
+## R
+
+*R* is a language with a statistical computing background, freely available, and popular in many scientific disciplines.
+
+## Data in R
+
+### Objects
+
+Objects are like values. They can consist of anything that R will represent (one number, a bunch of numbers, a dataframe, something more complex, etc.). We assign objects names - so names are references to values. When we type in a name, R looks for that object (value) to work with.
+
+![An object named x is a value consisting of the numbers 1,2 and 3 (from [@wickham2019])](Figures\objects.png){#fig-Figure2}
+
+Important naming convention: Syntactic names consist of letters, digits, `.`, and `_`, but can't start with an underscore or a digit. Attempts to assign names that are non-syntactic will throw errors.
+
+### Vectors
+
+Vectors are a basic type of data in R. NULL is an empty vector. That sounds weird but it can be useful.
+
+Vectors come in two flavors: Atomic and list. They also have attributes that tell you their dimension (size, shape/stucture or length) and their class (what kind of data they hold).
+
+Atomic vectors: all of the *elements* have the same type (class)
+
+Lists: Elements can be any type (including vectors) - so this could nest a number of vectors, which is basically how R sees data frames.
+
+![Vectors types in R (from [@wickham2019])](Figures\vectors.png){#fig-Figure3}
+
+It's important to know what class of vector you're dealing with, because R will handle operations on them differently (as we'll see in our live coding).
+
+![Atomic Vectors in R (from [@wickham2019])](Figures\atvectors.png){#fig-Figure4}
+
+## Functions and Packages 
+Functions *do* things. They have inputs and outputs, think y = f(x). You'll get used to these in the live coding.
+
+Packages are also important pieces of using R. Packages essentially comprise functions made of existing functions either from *base R* or other packages. They exist to make some tasks easier. After this week we'll begin to rely heavily on the tidyverse group of packages. 
+
+The R community develops packages openly, and they are often available on the repository CRAN, and some people make packages available on github. They are meant to compile easily onto your machine with only a line of code. Where does R store your packages? 
+
+# Code along in R Studio
+
+## R Studio basic features
+
+RStudio is an *IDE (Integrated Development Environment)*, which make programming tasks more convenient, particularly in our coding environment of choice, R. There are many IDEs that are compatible with R, but RStudio has some great features. We'll get into R momentarily.
+
+### RStudio Panes
+
+The 'windows' you see in RStudio. You can adjust pane layout in Tools \> Global Options \> Pane Layout, and in Global Options \> Appearance you can adjust the theme used for code layout. Some people prefer lighter or darker themes, for example (I use the built-in modern theme because I don't like the default, and if you search on the web you can find a lot of community-generated RStudio themes to install and try out).
+
+#### Console pane
+
+The console is by default on the lower left of RStudio. This is where you can manually execute R code (if R is responding, you'll have a "\>" to type next to). Try typing a mathematical operation like 2+2, 2\*2, 2/2, or log(2) and seeing how R generates the results.
+
+#### Environment pane
+
+Top right pane by default containing mainly the Environment tab and the git tab if connected properly.
+
+#### Output pane
+
+By default, lower right of RStudio under the Viewer tab containing the Files, Plots, Packages, Help, Viewer, and Presentation tabs. Files and Help will be particularly useful. Help displays help files that exist to describe functions in packages.
+
+#### Source pane
+
+Top left by default in RStudio. This is your text editor where you can edit R scripts and other text files, as well as edit and work interactively with an RMarkdown file.
+
+## R
+
+In this course, you'll spend most of your time executing code in the Source pane in RMarkdown files, particularly in R code chunks.
+
+### Code blocks
+
+"\`\`\`{r}" tells Quarto to integrate R code into the document by creating a **code block**, almost as if you were running the code in the console, except now any printed output is in the text editor rather than the console. Try running the following by either using the Play button in the upper right of the chunk or by having your cursor anywhere in the block and hitting CTRL+Shift+Enter on Windows or Command+Option+C on Mac (probably?).
+
+```{r}
+2+2
+# This is a comment so R will ignore it
+```
+
+Also note that R will ignore lines that start with #, giving you a way to comment your code within scripts or chunks.
+
+## Global environment, objects, and vector types
+
+Your **environment** is where R "looks" for **objects**, which are stored variables, functions, dataframes - really anything that is manipulated in R.
+
+Objects can be created with the **assignment operator ("\<-")** ("=" often works but I don't prefer it). The assignment operator *assigns* (or *binds*) data to a symbolic name. When you use that name in your code, R *evaluates* it to find that object and work with it.
+
+```{r}
+x <- c(1,2,3,4)
+y <- c(2,6,7,9)
+z <- 1
+x
+y
+z
+```
+
+Here, x ,y and z are the names of objects each comprising a *list* of numbers called a *vector*. z has 1 element, while x and y have 4 elements, constructed by concatenating a set of numbers with *c()*. Notice these objects now show up in the Environment pane in your global environment. Also notice the code chunk printed the vectors x, y, and z by just typing the name of the object after it was assigned. You can also print the result of the assignment by wrapping in parentheses:
+
+```{r}
+(y <- c(2,6,7,9))
+```
+
+The output also has a \[1\] in front of it. That means that output is the first (and if no other numbers, the only) element in a n object. The printed vectors x, y, and z all start with 1 because each vector is the first (and only) element of x or y or z.
+
+z2 is not a value in your global environment, so R gives...
+
+```{r}
+#| error: true
+z2
+```
+
+"Object not found" errors mean R is not finding the object in your global environment. Usually, this is due to misspelling your object, but pay attention - it could mean something went awry. #\| is not a conventional comment here, by the way: R ignores it like a comment, but it tells quarto to render the whole document even if the code throws an error.
+
+You should generally strive to give your objects somewhat informative names, without getting into long names that are burdensome to type. They also can't really start with numbers
+
+Note that we can DO things with these objects, including algebraic operations. R will work through these in order ("element-wise").
+
+```{r}
+num_vector <- c(1, 5, 100, 28)
+numvector_div6 <- num_vector/6
+numvector_div6
+
+```
+
+We can perform arithmetic with multiple vectors as the inputs
+
+```{r}
+num_vectorb <- c(1, 1, 2, 2)
+ab_numvector <- num_vector/num_vectorb
+ab_numvector
+```
+
+Not all vectors are numeric though. Text-based character vectors are comprised of strings.
+
+```{r}
+char_vector <- c("Hello", "world!")
+class(char_vector)
+```
+
+*class()* tells us the class of the object: Logical vectors comprise TRUE or FALSE in each element. R does not treat TRUE or FALSE as characters.
+
+```{r}
+logical_vector <- c(TRUE, FALSE, FALSE, TRUE)
+class(logical_vector)
+```
+
+Logicals are a consequence of evaluating conditional statements, which can extend to evaluating elements in a vector
+
+```{r}
+blah <- c("GRAD", "GRAND", "BRAND")
+blah == "GRAD"
+```
+
+When we use the '==' operator, we're saying "Does this input evaluate to EXACTLY this output?"
+
+Factors are special kinds of character vectors - they have levels. You can specify the vector in as.factor() and R will figure it out.
+
+```{r}
+
+factor_vector <- factor(c("blah", "blah", "bloop", "bloop", "blah", "bloop"))
+levels(factor_vector) # 2 levels, but 6 elements
+
+```
+
+R might throw an error when we try to work with two different classes of vectors.
+
+```{r}
+#| error: true
+char_vector/num_vector
+```
+
+but note the weird behavior when we combine the numeric vector with the logical vector.
+
+```{r}
+num_vector/logical_vector
+```
+
+What about creating a vector of different types?
+
+```{r}
+mix_vec <- c(TRUE, "Blah", 1)
+mix_vec_list <- list(TRUE, "Blah", 1)
+
+class(mix_vec_list[[1]])
+```
+
+Lists are a type of vector that allow elements to be of different types.
+
+All this to say: You need to pay attention to the variables you might be working with because you can unintentionally get sensible looking results even though there was no error! This can also happen when you have algebraic operations on vectors of different **lengths** (the number of elements in a vector): R will just start repeating the shorter vector. Which is technically how the calculation for numvector_div6 worked - when we divided by 6, we were dividing num_vector by a vector of length 1 so it just kept repeating the shorter vector.
+
+## Files and working directory
+
+The global environment is what R 'sees' in terms of objects/variables, but where does R think it is on the machine or in relation to files you might need to access? Is this different from where R is installed?
+
+In an RProject, which you should be routinely using to open RStudio, the root directory of the folder is the folder that the RProject file is in. And so this is the 'working directory' for R on your machine. getwd() shows this:
+
+```{r}
+getwd()
+```
+
+This means that R will use **relative paths** to our files (e.g., Lectures and Problem Sets/00_Software-Setup/00_Software-Setup.Rmd) rather than absolute paths on our machine (where the path starts from the machine's drive, e.g., D:/Github_Repos/Lectures and Problem Sets/00_Software-Setup/00_Software-Setup.Rmd). In the past, people would use setwd() when they got R files onto their machine. But with an R project, the working directory is set implicitly and running code on a different machine is not dependent on setting a full absolute file path.
+
+We can see what files are in this directory...
+
+```{r}
+list.files()
+```
+
+And you can also look at and easily navigate through these files and folders in the Files tab of the Files/Plots/etc. pane.
+
+# Coding
+
+## Functions
+
+R is built around functions. Functions have inputs, supplied as Arguments; and outputs. You've already been using them, but it's worth thinking a bit more about them. Let's check out *mean()*. It generates the arithmetic mean as an output, taking as the input at least a vector of numbers. So let's try with our object x.
+
+```{r}
+mean(x)
+mean(c(1,2,3,4))
+x_bar <- mean(x)
+x_bar
+```
+
+We can also do this more manually:
+
+```{r}
+sum(x)/length(x) # or
+c(1+2+3+4)/length(c(1,2,3,4))
+
+```
+
+What if there is a missing (NA) value in our vector?
+
+```{r}
+a <- c(1,2,3,4, NA)
+mean(a)
+```
+
+R returns NA. *is.na()* will also help identify elements in a vector that are NA (and so *is.na()* created a logical vector - it's evaluating conditional statements like other is.\* functions).
+
+```{r}
+is.na(a)
+class(is.na(a))
+```
+
+We can look at the help file to get descriptions of a function and its arguments (inputs) and value (output). Do this with either "?FunctionName" or help(FunctionName)
+
+```{r}
+#| eval: false
+?mean
+```
+
+This tells us there is an argument na.rm (i.e., remove NA values from the input vector before computation of the mean) that has a default value of FALSE. When we change it to TRUE...
+
+```{r}
+mean(a, na.rm = TRUE)
+```
+
+NAs are a common problem to have to deal with in datasets or analyses. Removing an NA is *not necessarily good behavior* depending on your problem, probably why *mean()* defaults to na.rm = FALSE.
+
+You can also wrap functions in other functions.
+
+```{r}
+as.character(as.numeric(c(1,2,3,4)))
+```
+
+This also shows we can force (or *coerce*) vectors to be different types. Sometimes we need that behavior and sometimes it works but not as we might expect.
+
+You can also define your own functions. You won't need it much in this course, but it's useful, especially when you want to reduce redundant code. Let's create a function that gets the current datetime. paste() is a super useful function for manipulating strings and 'pastes' an number of strings together, including evaluating objects for their values.
+
+```{r}
+make_time_string <- function(x){
+  paste("The time is", x)
+}
+make_time_string(Sys.time())
+
+
+```
+
+Datetimes are also specific types of vectors. They can be a bit complicated to deal with but we'll work more with them soon because our data should often be timestamped.
+
+## Subsetting
+
+Another way to work with vectors is by subsetting them - selecting particular elements based on their position in the vector or whether they meet a particular condition, for example.
+
+Positive integers keep those values.
+
+```{r}
+new_vector <- c(1,4,9,10,3,17)
+new_vector[1]
+new_vector[c(1,5)] # you can select multiple positions
+```
+
+What about negative integers?
+
+Logicals can help us select values from a vector that meet a particular condition.
+
+```{r}
+new_vector>4
+new_vector[new_vector>4] #subset new_vector where the value is >4
+```
+
+If the logical statement new_vector\>4 is TRUE for an element, that element is retained.
+
+You can subset lists similarly. But the `$` operator is also usable as shorthand to allow us to subset elements by name.
+
+```{r}
+mix_vec_list$Blah
+```
+
+This evaluates to NULL because this element "Blah" has nothing in it. It's empty. This is how dataframes operate, except the variables (such as "Blah") are not empty, but have values in them)
+
+## Dataframes
+
+Dataframes are like lists.
+
+```{r}
+df1 <- data.frame(a = c(1,NA,3), b = c("a", "b", "c"))
+df1
+list1 <- list(a = c(1,NA,3), b = c("a", "b", "c"))
+list1
+```
+
+A data frame can have multiple named elements (which we usually call variables) that themselves are comprised of vectors (which we usually just call the values of that variable), and the vectors can be of different types.
+
+## Packages
+
+R is built around packages, which are groups of functions wrapping other, often simpler, functions. When R starts, functions like `mean()` and `log()` and `getwd()` are basically loaded and ready to go. But we will also rely (heavily) on functions that are built around those base R functions but make it easier to do things like clean, visualize, and analyze data.
+
+Packages can be downloaded from places like github, but we'll only use packages that are on the official R package repository [CRAN](https://cran.r-project.org/web/packages/available_packages_by_name.html), so we won't even need to worry about where the package source files are stored. R's *install.packages()* function will by default look to CRAN for the most recent version of a package.
+
+Let's download a simple package. The package name in install.packages() function MUST be in quotes.
+
+```{r}
+#| eval: false
+install.packages("tictoc")
+```
+
+Note that this is doing all the lifting for you in terms of installing the source files and then telling you the **library** location: where R is installing the package files, which will end up being the default location for your R installation.
+
+tictoc package has two main functions: *tic()* and *toc()* that track the length of time between running *tic()* and running *toc()* - it helps developers benchmark speed to run software in R. You won't need it in this course but it provides a simple example. Let's see how long it takes R to print a short numeric vector. Should be milliseconds.
+
+```{r}
+#| error: true
+tic()
+print(c(1,2,3))
+toc()
+```
+
+This throws an error. Why? Because even though the package has been installed on your machine, the functions in the package have not been loaded into your environment. Look in your Environment pane and click on the Drop down from Global Environment: this shows the packages that are in R's environment. We need to use library() to actually attach our packages to our current environments. Alternatively, you CAN specify PackageName::FunctionName(), e.g., tictoc::tic(), which can be good software development practice in some instances, but we'll rely on library(). so let's do that and try again.
+
+```{r}
+library(tictoc)
+tic()
+print(c(1,2,3))
+toc()
+```
+
+Bingo.
+
+Every one of your Quarto documents should start by loading the libraries you needed to execute the code in the document.
+
+## Messages/warnings
+
+Notice that loading tictoc spits out a 'Warning'. This is different than an Error. Warnings should trigger you to check what's going on, but means the code usually executed. Other messages can also have some useful information. Errors, on the other hand, mean your code failed.
+
+```{r}
+#| error: true
+library(bleepblorp)
+```
+
+If a package isn't installed, you'll get an error. (As far as I'm aware, this package bleepblorp does not exist).
+
+# References
+
+::: {#refs}
+:::

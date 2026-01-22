@@ -1,0 +1,60 @@
+---
+title: "01_Homework_Intro-to-R-and-RStudio"
+author: "CJR"
+date: "2025-10-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#Don't worry about this code chunk this time, just leave as is.
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Question 1
+Show me, with a code chunk, a) what R version you are using and b) where your working directory is on your local computer. Then explain why coding this kind of information, rather than manually including the R version as a typed note, might be beneficial in terms of reproducibility.
+
+# QUestion 2
+ Define a vector of the "months" at which observations in an experiment were taken, containing the months 1, 2, 4, 6, 9, 12, 16, 20, and 24. Compute a vector 'years' from it by dividing months by 12, and print the result.
+
+
+# Question 3
+Describe your personal experience working with directories (files and folders) on your machine. Do you feel like you have a good idea of what they are, how they organize the files/programs on your machine? Have you mostly just interacted with apps on your computer without worrying where certain files are located? If so, where have you perceived the programs/apps to be on your machine?
+
+
+# Question 4
+Demonstrate, with code and output, what the default logarithm base is in R (i.e., the function log()). Also, copy here the text from the R help file for the log() function that tells you the base.
+
+
+# Question 5
+What kind of vector is tf_vec in the following code chunk? Why is it not a logical vector?
+```{r}
+tf_vec <- c("TRUE", "TRUE", "FALSE")
+```
+
+# Question 6
+Define a vector that is a factor with 2 levels and has 8 elements. Use code to then show me it has 8 elements. 
+
+# Question 7
+A) Create a numeric vector with at least 7 elements. Now coerce it to a factor, as a new object. Now coerce it back to a numeric. Describe why this behavior might be surprising and what R did to the final numeric vector. 
+B) Create a logical vector with some TRUEs and FALSEs and sum() its elements. What is R doing here?
+
+
+# Question 8
+Use "?reserved" to see words that you would not be able to use as a name to bind to an object. Find three of these that are actually numeric, and put them in a vector with other numeric types
+
+
+# Question 9
+In thie data frame, what kind of variable (vector) is Salary? B) Change the variable Salary to have a dollar sign in front of the number. What kind of variable is it now? C) Create a new variable called "Statement" that says "John makes \$48785 annually". Hint: use `paste0()` and the `$` operator. 
+
+```{r}
+df2 <- data.frame(Name = c("John", "Abigail", "Graeme"), Salary = c(48785, 99450,57500))
+```
+
+# Question 10
+
+
+# Question 10
+a) Use Google to find a package that is designed to enable R coding/functionality specific to your field of work and also available on CRAN. b) Show me how I would install it and load it. c) Then use the package documentation to tell me what functions you think might be useful to you. d) Show me how to pull up the help file for that function (assuming the package is loaded).
+
+When finished, make sure to *commit* the changes and *push* this to your github repo!
