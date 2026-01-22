@@ -1,9 +1,0 @@
-# Run these scripts by pasting them into RStudio's terminal using Copy + right click > Paste to download folders from the Main Course repository (make sure your course Rproject is open)
-
-
-# Lecture 1
-curl -JL -o https://raw.githubusercontent.com/robbinscalebj/QuantBio_BIO5324_Sp2026/main/...
-# Problem Set 1
-
-
-#Lecture 2
