@@ -33,10 +33,10 @@ into R and the Tidyverse. 2nd Ed. CRC Press.
 | Feb 10 |  | Literature Presentations 1 |  |  |
 | Feb 12 |  | Exam 1: Unit 1 (75 pts) |  | PS 4 Due |
 | Feb 17 | 2: Estimating quantitative relationships | What generates your data? Causes and models | CRH Ch. 2 |  |
-| Feb 19 | 2: Estimating quantitative relationships | Quantifying relationships: Correlation and Linear models | CRH Ch. 7 | PS 5 Due |
-| Feb 24 | 2: Estimating quantitative relationships | Quantifying (complicated) relationships: Multiple predictors | CRH Ch. 8 |  |
-| Feb 26 | 2: Estimating quantitative relationships | Quantifying relationships: Binary outcomes | CRH Ch. 9 | PS 6 Due |
-| Mar 03 | 2: Estimating quantitative relationships | Literature Presentations 2 |  | Recorded presentations |
+| Feb 19 | 2: Estimating quantitative relationships | Quantifying relationships: Correlation and Linear models | CRH Ch. 7 |  |
+| Feb 24 | 2: Estimating quantitative relationships | Quantifying (complicated) relationships: Multiple predictors | CRH Ch. 8 | PS 5 Due |
+| Feb 26 | 2: Estimating quantitative relationships | Quantifying relationships: Binary outcomes | CRH Ch. 9 |  |
+| Mar 03 |  | Literature Presentations 2 |  | Recorded presentations; PS 6 Due |
 | Mar 06 | 2: Estimating quantitative relationships | Quantifying (very complicated) relationships: A brief primer on GLMs, GAMs, and machine learning |  | Asynchronous lecture |
 | Mar 17 |  | Exam 2: Unit 2 (50 pts) |  |  |
 | Mar 19 | 3: Making decisions with samples | Foundations of inference: Empirical approach | CRH Ch. 11 & 12 | Analysis Presentation Dataset Approval |
