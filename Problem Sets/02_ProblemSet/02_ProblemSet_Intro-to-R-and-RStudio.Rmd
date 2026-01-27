@@ -5,6 +5,10 @@ date: "2025-10-26"
 output: html_document
 ---
 
+Notes for next time: 
+- remove empty question 10s
+- Clarify Question 4: Use direct quotation from the help file with a note on where in the help file it's coming from.
+
 ```{r setup, include=FALSE}
 #Don't worry about this code chunk this time, just leave as is.
 knitr::opts_chunk$set(echo = TRUE)
