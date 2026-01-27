@@ -1,0 +1,542 @@
+---
+title: "Lecture 3 - Data Wrangling"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+bibliography: references.bib
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Class Housekeeping
+
+- Show repo main page
+- Watch the repo's issues
+- Check on Files Downloads - Don't forget to download everything in the day's Lecture folder. Similarly...
+
+- Folder structures: Mimic the main repo's folder structure. Have a Lectures folder and a Problem Sets folder. Make sure these each have folders within them for the lecture number or problem set, and then have the relevant files within that folder. 
+  - We're going to be adding a lot, and it needs to stay organized
+  - This lecture and problem set will **require** their own data folder and if it's not in there correctly your code won't run.
+  - So get that folder structure set up ASAP - just move your files in your local folder and git will track it
+
+- Reminder on how to open up your work in class (always start by opening up your Rproject and you should see the name of the R project in upper right corner)
+
+
+# Lecture
+
+## Intro discussion
+
+What has been most frustrating in terms of coding or RStudio thus far? How should you learn how to code? How do you learn how to speak another language?
+
+## Data Wrangling
+
+Wrangling is the process of *transforming* or *manipulating* data into useful formats for downstream tasks. Frequently our data:
+
+- Are not in the right format for visualization, modeling, or other analysis
+  * Non-rectangular data (e.g., YAML, .json, netcdf) or even lab data sheets - they might have weird formatting, not always tabular ![](Figures/crasr_ecoc.png)
+  * Rectangular data but some new variables are needed, columns need to be aggregated, etc. for correct input for modeling or visualization functions
+- Are incoherent and messy, obfuscating interpretation (avoid this from the start!)
+- Need to be summarized or aggregated in some way (What's an example of this?)
+- Exist across multiple files or dataframes and need **joining**
+
+Why do this in R? Why not do this in Excel?
+
+**Principles for main wrangling tasks:**
+
+-   [Data import]{.underline}
+    -   Store data in a sensibly named, accessible folder relative to your code. Where are our data for this lecture? Look at Files tab...
+    -   Understand file formats (.csv, .txt, .xlsx) - this matters! Different functions used for different formats.
+    -   Understand provenance: To the best of your ability, keep a copy of raw data untouched
+
+::: callout-caution
+Be aware of the file type of the data you want to load in. We're working with flat tables in this class, which often are supplied as comma separated values (.csv), plain text (.txt., with some character such as space or tab separating the entries), or Excel (.xls, .xlsx). We will prefer .csv because it's clear what is separating the values, and because it's not a proprietary file format, but these are all fine.
+
+`read_csv()` takes the location of a .csv file as its main argument. Same with `read_delim()`, but it needs an additional argument to tell it what character is separating the elements of the table (so you could read a .csv file with this). `read_excel()` has very similar functionality, but can open Excel files, as its name suggests.
+:::
+
+-   [Data manipulation]{.underline}
+    -   Clean data for future use by you and others
+    -   Stylized: Create sensible names for variables (and factor levels) easier to remember for analysis (linked to metadata)
+        -   Make sure variables common to other data frames that you may want to join are named the same (relational database)
+        -   See [R for Data Science Ch.4](https://r4ds.hadley.nz/workflow-style.html) for some styling tips
+    -   Represent datetimes interpretably
+        -   Printing/saving sometimes poorly visualized in R
+        -   Understand time zones and link this to metadata
+    -   Summarize data as needed for any analysis/visualization
+    -   Keep a record of this data manipulation as an R script (.R)/.Rmd/.Qmd
+    -   Format data to **tidy** conventions
+
+> "Tidy datasets are easy to manipulate, model and visualize..." @wickham2014
+
+> A dataset is a collection of values, usually either numbers (if quantitative) or strings AKA text data (if qualitative/categorical). Values are organised in two ways. Every value belongs to a variable and an observation. A variable contains all values that measure the same underlying attribute (like height, temperature, duration) across units. An observation contains all values measured on the same unit (like a person, or a day, or a city) across attributes.
+>
+> 1.  Each variable forms a column
+> 2.  Each observation forms a row
+> 3.  Each type of observational unit forms a table
+>
+> ![@wickham2023](Figures/Wickham_r4ds_tidydata.png)
+
+What this means is tidy data are often 'long' format rather than 'wide' format. ![@wickham2023](Figures/Wickham_r4ds_pivotlonger.png)
+
+-   [Data export]{.underline}
+    -   Store data in a sensibly named, accessible folder relative to your code
+    -   Choose a sensible file name
+    -   Store data in a non-proprietary flat file format if you can (e.g., .csv)
+    -   Understand provenance: Keep a record of key transformed data used in analyses
+        -   Code also creates a record of this, but in many cases important to save a file you regularly work from
+
+
+**The upshot: Tidied data stemming from a documented import-manipulation-export wrangling workflow leads to accessibility and usability by future you and others.**
+
+## Key tools for data wrangling
+- The tidyverse packages, including dplyr
+- split-apply-combine approaches (grouped manipulation)
+- pivoting
+- piping
+
+### Enter the tidyverse
+
+The [tidyverse](https://tidyverse.org/packages/) is a collection of packages that neatly enable a lot of important data science tasks: data import, wrangling, tidying, visualization, and programming [@wickham2019]. The tidyverse will be the primary "grammar" of R coding you will learn in this course. It differs from base R.
+
+### dplyr verbs
+
+The workhorse package of the tidyverse is [dplyr](https://dplyr.tidyverse.org/), a "grammar of data manipulation" that provides a number of very useful "verbs" (functions) for data manipulation. There will be other functions you need to know but these are central to tidyverse.
+
+::: {.callout-note title="dplyr verbs"}
+-   `mutate()` - transforms each value in a column using a function, often algebra, coercion, or text manipulation
+-   `select()` - conditionally selects columns, usually by matching a name
+-   `filter()` - primarily operates on rows by conditionally selecting them
+-   `summarize()` - collapses information about a column using a function, such as `mean()` - usually returns a smaller dataframe
+-   `arrange()` - orders (sorts) the dataframe by the values in one or more columns
+:::
+
+Lots more useful functions exist that we'll explore, but these are the big ones. [dplyr cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf)
+
+> Each verb does one thing well. The common structure is:
+>
+> 1.  The first argument is always a data frame.
+>
+> 2.  The subsequent arguments typically describe which columns to operate on using the variable names (without quotes).
+>
+> 3.  The output is always a new data frame.
+>
+> @wickham2023
+
+### Split-apply-combine approach
+
+**Split** data into groups - **apply** a function - **combine** them back together.
+
+The split-apply-combine approach to data manipulation is the basis for breaking up data or summaries of data into pieces and then putting them back together [@wickham2011]. Really, we often want to manipulate or summarize data based on group identification. dplyr's `group_by()` does exactly this - it's less of a verb and more of a helper function.
+
+What's an example of a grouped manipulation you might want to code up?
+
+### pivoting
+
+Pivoting is useful when you have observations in your columns. For example, look at this contrived example. Let's say you set up an experiment where you have two bacterial colonies in petri dishes. You then dose one dish with PFAS and leave the other alone, recording cell counts in each at 10 time points.
+
+```{r, echo = FALSE}
+
+(counts_df<-tibble::tibble(
+  Timepoint = seq(1,10),
+  Control = rnorm(n = 10, mean = 50000,  sd = 5000),
+ PFAS = rnorm(n = 10, mean = 45000,  sd = 5000)
+)|>
+  dplyr::mutate(Control = signif(Control, digits = 4),
+         PFAS = signif(PFAS, digits = 4)))
+```
+
+Why is this not tidy data? Is each row an observation? There is one timepoint per row, was there one observation per time point? What might actually be useful about this format?
+
+There are two observations per time point, but only one observation per row. Also, as often happens in this case, there are data in our column names (information about treatment). But not names that tell us what the values in those columns actually *are*.
+
+Pivoting allows us to "lengthen" these data, specifically with `pivot_longer()`. Sometimes we need to widen data with `pivot_wider()`, but lengthening is more common. Lengthening here makes our data tidy by making the variable names `Control` and `PFAS` values in a column, with a new name (call it Treatment), describing an attribute of that observation. Then we can have all the cell counts in one column. Notice what happens here:
+
+```{r}
+counts_df|>
+  tidyr::pivot_longer(cols = c(Control, PFAS), names_to = "Treatment", values_to = "Cell_Counts")
+
+```
+
+### The pipe operator
+
+A quick aside that will facilitate data wrangling workflows: The **pipe operator**, `|>` (native to base R; preferred) or `%>%` (specific to the tidyverse), basically says "take the output of this function and make it the input of the next function." It's a way to (usually) make code more readable as a seamless flow of steps.
+
+::: callout-tip
+The trick to working with pipes, as with any workflow, is to remember to work step by step through your piped code. Let yourself see the intermediaries before you put it all together.
+:::
+
+# Code along
+
+A quick setup chunk:
+
+```{r}
+options(max.print = 20) # just so we're not printing a ton of lines when printing vectors
+library(here)
+here()
+```
+
+Let's load the tidyverse - uncomment *install.packages()* assuming you need to install the collection. Then *library()* will load the collection: Note all the packages that get attached.
+
+```{r}
+#install.packages("tidyverse") 
+library(tidyverse)
+```
+
+## Data import
+
+Let's first import the data file into our global environment using `read_delim()` and telling the function to parse the file assuming the delimiter is a comma (i.e., a comma-separated values file or .csv - `read_csv()` also exists as a wrapper around this function). `read_csv()` takes the files location as its main argument.
+
+Note that read_csv spits out some messages! That doesn't mean it didn't work - they're somewhat informative.
+
+Notice the file structure: where is this? Open it up and see what separates the values.
+
+```{r}
+flights <- read_delim(here("Lectures/03_Data-Wrangling/Data/Raw Data/nycflights23_flights.csv"), delim = ",")
+
+```
+
+::: {.callout-tip title="Extra Thinking"}
+What happens if you use a different delimiter (`delim` argument) here? Why?
+:::
+
+These kinds of messages popping up when using data import functions from the tidyverse - What are they telling us? What are the properties of this data? It has `r nrow(flights)` rows with `r ncol(flights)` columns. What kind of variable is it?
+
+```{r}
+class(flights)
+```
+
+A few answers come up, but primarily it is "tbl" and "data.frame". So this object is recognized by R as a data frame and a specific kind of dataframe known as a tibble. Basically, this is tabular data.
+
+We can get some more info quickly with *glimpse()*, which shows the name of each column
+
+```{r}
+glimpse(flights)
+```
+
+So we have `r ncol(flights)` variables here, each with a name after *\$* And then the type of the variable is given in the *\<\>*. "dbl" is a type of numeric vector, "chr" is a character vector, and "dttm" is specifically formatted as a datetime. Then the first few entries of each variable are given. You can also get this info without *glimpse()* by looking in the Data pane and clicking the 'play' button next to the dataframe object.
+
+Note that we can access individual columns as vectors using the *\$* operator.
+
+```{r}
+
+flights$origin
+```
+
+We can use this to check out the unique values for variables, including calculating how many destinations are included in the dataset using *unique()* and *length()*.
+
+```{r}
+unique(flights$origin)
+length(unique(flights$dest))
+```
+
+### `|>`
+
+A quick example on our pipe operator
+
+```{r}
+ncol(flights) 
+class(flights|>ncol())
+```
+
+Output here is the same. In the piped line, *ncol()* is empty - the pipe implies that 'flights' is the argument in the function. This is very useful when you want to start manipulating a dataframe with many more lines of code, but without creating a new object (or overwriting the object) every time you manipulate an object with a function, or wrapping the code in a bunch of parentheses.
+
+The output here is actually an integer but *Your piped code chains while data wrangling will almost always start with a dataframe, do some stuff to it, and output a dataframe.* A frequent exception to the output is when exporting (writing to file).
+
+::: {.callout-tip title="Extra Thinking"}
+Use `distinct()` and the `|>` operator to do the tidyverse version of `unique(flights$origin)`.
+:::
+
+## Data manipulation
+### dplyr verbs
+
+Remember our dplyr verbs. we'll work through these one by on and then show how they can be used in 'grouped' workflows.
+
+-   *mutate()*
+-   *select()*
+-   *filter()*
+-   *summarize()*
+-   *arrange()*
+
+#### `mutate()`
+
+`mutate()` works on columns, "adding new variables or changing current variables that are functions of existing variables". So you can set a new variable (or overwrite a current variable). Let's calculate average air speed in flights (calling it a new variable "speed_km.h"), calculated with a normal algebraic formula, and store the result in a newly named data frame.
+
+```{r}
+
+flights1 <- flights|>
+  mutate(speed_km.h = distance / air_time * 60,
+         .before = 1)
+flights1
+```
+
+Note that mutate is working row-by-row to do the calculation with values in the named columns.
+
+What if we wanted to create a new variable that showed the origin and destination of each flight? We can work with characters, just not numerically. *str_c()* works to concatenate a string. It will take quoted strings as literal, but unquoted words it will look for a variable and use that value:
+
+```{r}
+flights2 <- flights1|>
+  mutate(route = str_c(origin, "-to-", dest),
+         .before = 1)
+flights2
+```
+
+The .before = 1 argument just places the resulting column that we define before the first column. This makes it easier for visualization because there are `r ncol(flights2)` variables here now. But maybe we don't want all those variables!...
+
+Although there is a datetime variable already in flights (notice its class is POSIXct), let's use mutate to create a date vector from the Year, month and day variables. `as_date()` can convert characters to dates **if** it can parse the format. YMD (year-month-day) is the ordering that is safe and you should present/save dates as.
+
+```{r}
+(flights_with_date <- flights2|>
+  mutate(date = as_date(str_c(year, "-",month,"-",day)),
+  relocate(date)))
+```
+
+::: {.callout-tip title="Extra Thinking"}
+What's the timezone for the time_hour variable of the `flights` data?
+:::
+
+#### `select()`
+
+*select()* selects columns by name, and the ordering of the names can be used to reorder the columns.
+
+```{r}
+flights2|>
+  select(year, route, speed_km.h)
+
+```
+
+This can be done by negation.
+
+```{r}
+flights2|>
+  select(-route, -speed_km.h, -year)
+```
+
+..and even by position. The *select()* help file shows other ways of selecting variables using [tidyselect](https://tidyselect.r-lib.org/index.html) syntax.
+
+```{r}
+
+flights2|>
+  select(1,2)
+```
+
+#### `filter()`
+
+`filter()` works by **conditionally** selecting rows in the dataframe where some condition is met. Let's filter flights only that came out of JFK and select a few columns.
+
+```{r}
+flights_jfk <- flights2|>
+  filter(origin == "JFK")|>
+  select(speed_km.h, year,month, day, origin, route)
+flights_jfk
+```
+
+We can see this now has a significantly reduced number of rows (`r nrow(flights_jfk)`) because we've excluded the rows where the origin is NOT JFK. Note that *==* is the equality operator - filtering uses logic, evaluating each possibility as TRUE/FALSE conditional statements. `filter(origin == "JFK")` implies we are looking for cases where origin is EXACTLY matching the string "JFK". We could also do `filter(origin != "JFK")` or select multiple conditions using operators like *\<* (less than) or *\<=* (less than or equal to) or *&* (AND operator) or *\|* (OR operator).
+
+Let's use filter to find NA cases of `speed_km.h`.
+
+```{r}
+flights2|>
+  filter(is.na(speed_km.h))
+```
+
+::: {.callout-tip title="Extra Thinking"}
+Why would speed be NA?
+:::
+
+#### `arrange()`
+
+`arrange()` orders/sorts rows according to the values of selected columns. Let's arrange the data frame to view the worst delays first. `arrange()` will by default arrange in numeric order, but we actually want the largest values first so we use `desc()` to get the descending order of the variable to arrange on. Let's also turn this variable into hours rather than minutes.
+
+```{r}
+flights2 |>
+  mutate(dep_delay_h = dep_delay/60)|>
+  arrange(desc(dep_delay_h))|>
+  relocate(dep_delay_h) #relocate can move columns without selecting, by default it does to the front of the line
+```
+
+Some of these delays are over a day! Why not just cancel at that point?
+
+#### `summarize()`
+
+`summarize()` works on the whole dataframe, reducing it into a summarization. It works a lot like mutate. What's the average airspeed and variation as maximum and minimum speed of flights, and the median departure delay, from JFK to Dallas (DFW)? We can define new variables (mean_speed, min_speed, max_speed, median_delay) as *functions of existing variables*, here `mean()`, `max()`, `min()`, and `median()` will be used to summarize the variable - there are a couple of NAs in speed_km.h, but we'll just ignore them with na.rm = TRUE.
+
+```{r}
+flights2|>
+  filter(dest == "DFW", origin == "JFK")|>
+  summarize(mean_speed = mean(speed_km.h, na.rm = TRUE),
+            max_speed = max(speed_km.h, na.rm = TRUE),
+            min_speed = min(speed_km.h, na.rm = TRUE),
+            median_delay = median(dep_delay, na.rm = TRUE))
+```
+
+So now we have reduced our dataframe to just one row.
+
+Summarize is much more useful when done on groups of data, which we'll work on next...
+
+### Grouped manipulation
+
+The split-apply-combine approach to data manipulation is the basis for breaking up these summaries into pieces and then putting them back together [@wickham2011]. Really, we often want to manipulate or summarize data based on group identification. dplyr's `group_by()` does exactly this - we can plug this verb into our pipe. R will treat each unique value in the variable we plug into `group_by()` separately (**split**), **apply** a function to that group, and then keep everything together as a dataframe (**combine**). So let's say we want to summarize the mean speeds for flights departing from JFK, as well as the number of flights, depending on where they go. Simply add in `group_by(dest)` before the summarize function.
+
+```{r}
+flights_by_dest <- flights2|>
+  filter(origin == "JFK")|>
+  group_by(dest)|>
+  summarize(mean_speed = mean(speed_km.h, na.rm = TRUE),
+            n_flights = n())|>
+  ungroup()
+flights_by_dest
+```
+
+::: {.callout-tip title="Extra Thinking"}
+With only information about `flights2` and your grouping variable `dest`, what should the `nrow(flights_by_dest)` be?
+:::
+
+
+It is good practice to ungroup() your data frame, because R may continue to treat it as a grouped data frame, potentially affecting subsequent operations.
+
+We can also do grouped mutates. Maybe we want to calculate deviation from a mean.
+
+```{r}
+flights2|>
+  filter(origin == "JFK")|>
+  group_by(dest)|>
+  mutate(mean_speed = mean(speed_km.h, na.rm = TRUE),
+         .after = speed_km.h)|>
+  arrange(dest)
+
+```
+
+Now mean_speed is replicated however many times dest appears in the data frame because we told *mean()* to operate on each entire group with `group_by(dest)`. This is useful if you want to an operation that requires both a summarized value (such as a mean or a count for a group) and the individual values. For example, calculating percentages or deviations. Here's the latter (this is now what's known as a mean-centered value):
+
+```{r}
+flights2|>
+  filter(origin == "JFK")|>
+  group_by(dest)|>
+  mutate(mean_speed = mean(speed_km.h, na.rm = TRUE),
+         speed_deviation = speed_km.h - mean_speed,
+         .after = speed_km.h)|>
+  arrange(dest)
+
+```
+
+```{r}
+flights2|>
+  filter(origin == "JFK")|>
+  group_by(dest)|>
+  mutate(mean_speed = mean(speed_km.h, na.rm = TRUE),
+         speed_deviation = speed_km.h - mean_speed,
+         .after = speed_km.h)|>
+  arrange(dest)
+```
+
+You can group by as many variables as you'd like, just add them like `group_by(dest, month)`. Typically, you'll want to group by variables that are NOT numeric.
+
+`slice_*()` family of functions are also helpful in a grouped context for extracting whole rows, like the first or last row, or two with the smallest or largest value in some column. Let's say you want the first flight of the year to each destination. `slice_head()` slices the rows at the head of the dataframe, supplying it with the argument n = Whatever number of rows you want to extract.
+
+```{r}
+flights2|>
+  relocate(time_hour, dest)|>
+  group_by(dest)|>
+  arrange(time_hour)|> #why arrange?
+  slice_head(n=1)
+
+```
+
+Or let's say want to find the worst delays (Top 3) past scheduled arrival for each destination. Let's also sort these so the worst one is at the top of our new dataframe (remember `desc()`).
+
+```{r}
+flights|>
+  group_by(dest)|>
+  slice_max(arr_delay, n = 3)|>
+  relocate(arr_delay, dest)|>
+  arrange(desc(arr_delay))
+```
+
+### Tidy data
+
+Let's show the main concepts of data tidying using a more biologically-oriented dataset from [@fu2015], with some extra explanation from a short workshop [Introduction to R for Biologists](https://github.com/melbournebioinformatics/r-intro-biologists/blob/master/intro_r_biologists.pdf).
+
+```{r}
+rnaseq_df <- read_csv(here("Lectures/03_Data-Wrangling/Data/Raw Data/GSE60450_GeneLevel_Normalized(CPM.and.TMM)_data.csv"))|>
+  select(-1)|>
+  slice_sample(n=10) #I'm randomly selecting some gene names here just to shorten the dataframe
+```
+
+::: {.callout-tip title="Extra Thinking"}
+Does `slice_sample()` extract the same rows each time?
+:::
+
+The numeric values in this dataset are normalized counts of RNA reads from each `gene_symbol`, but the variable names outside of that aren't very informative. We can find what those names mean in the metadata file, which we can read into R and check out.
+
+```{r}
+rnaseq_metadata_df <- read_csv(here("Lectures/03_Data-Wrangling/Data/Raw Data/GSE60450_filtered_metadata.csv"))
+rnaseq_metadata_df
+```
+
+So, what do the variable names in `rnaseq_df` generally encode?
+
+These metadata help us recognize that these data are not tidy. Observations are at the cell (or groups of cells) level, from two cell types and several developmental stages in two mice at each stage/type. In other words, we have multiple observations in a single row.
+
+Let's tidy it up with `pivot_longer()`. Pivot longer takes columns we tell it and "stacks" them into a new variable, with the values from those columns going to an additional new column. So here the values will go to "normalized_reads" and the names to "cell_origin". We also tell the function that gene_symbol should be ignored for this (it denotes a key characteristic of the observations), so we deselect it.
+
+```{r}
+rnaseq_longer <- rnaseq_df|>
+  pivot_longer(-gene_symbol, 
+               names_to = "cell_origin",
+               values_to = "normalized_reads")
+rnaseq_longer
+```
+
+Now each gene symbol is repeated the number of times of the variables (except gene_symbol) that we had, because each gene symbol was observed once in each of those cell types.
+
+Our RNAseq data is longer, but these cell characteristics are still not very informative! Each level of cell_origin is mapped to immunophenotype and developmental stage in the metadata, so we could port those into our reads data frame by matching the cell_origin. *However*, cell_origin isn't named in the metadata so there isn't a variable to match on - let's fix that with `rename()`
+
+Rename uses the syntax `new name = "old name"`. usually the old name will be an existing variable name that we place in quotes, but in this case there actually was no name for the first column, so we are using the name that `read_csv()` defaulted it to (`...1`). Simultaneously, let's rename developmental stage because spaces in variable names aren't good naming convention. And finally we'll get rid of the characteristics variable because that information (other than these are mammary gland cells) are encoded in the other variables, and so redundant in a not very useful way.
+
+```{r}
+rnaseq_metadata_tidy <- rnaseq_metadata_df|>
+  rename(cell_origin = "...1",
+         developmental_stage = "developmental stage")|>
+  select(-characteristics)
+rnaseq_metadata_tidy
+```
+
+Great, now our metadata are clearned up, now we can use `left_join()` to tack the cleaned metadata on to the rnaseq data, joining by `cell_origin`.
+
+```{r}
+rnaseq_tidied_df <- rnaseq_longer|>
+  left_join(rnaseq_metadata_tidy)
+  
+rnaseq_tidied_df
+```
+
+Notice what's happened here. There were only 12 rows in the metadata, now those rows are repeated a bunch.
+
+We've joined two data frames based on a common variable (`cell_origin`) - the `*_join()` family of functions matches observations in a dataframe to matches in another. `left_join()` tells R to keep all the rows of the dataframe on the left, and expand matches from the dataframe on the right, so those metadata entries get repeated anytime there is a match in the rnaseq data
+
+This matching process across dataframes is a fundamental idea behind relational databases that we won't worry about, but the skills you work on here translate to using things like SQL.
+
+The end product is now we have some interesting information about cell types that could be useful for future analysis. For example, if we plot a gene's reads by a particular immunophenotype/stage combination, it's a lot more interpretable if the plot labels read "basal cell population/2 day lactation" vs "GSM1480291."
+
+## Data Export
+
+Eventually, you will want to save your tidied data. My recommendation is to keep the raw data you download in a Data/Raw/ folder and the transformed (wrangled/tidied) data in a Data/Transformed/ folder.
+
+Writing to file is simple, especially if you've tidied up your data. You used `read_*()` to import data. Now you can use `write_*()` functions to export data - 'write' it to file.
+
+```{r}
+rnaseq_tidied_df|>
+  write_csv(here("Lectures/03_Data-Wrangling/Data/Transformed Data/rnaseq_tidied_df.csv"))
+
+```
+
+::: {.callout-tip title="Extra Thinking"}
+What happens if you name the file a format (like here, something other than .csv) that doesn't match the file convention? Can you do this without piping?
+:::
+
+# References
+
+::: {#refs}
+:::

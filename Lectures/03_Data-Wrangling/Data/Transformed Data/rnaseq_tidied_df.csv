@@ -1,0 +1,121 @@
+gene_symbol,cell_origin,normalized_reads,immunophenotype,developmental_stage
+Gm5926,GSM1480291,0,luminal cell population,virgin
+Gm5926,GSM1480292,0,luminal cell population,virgin
+Gm5926,GSM1480293,0,luminal cell population,18.5 day pregnancy
+Gm5926,GSM1480294,0,luminal cell population,18.5 day pregnancy
+Gm5926,GSM1480295,0,luminal cell population,2 day lactation
+Gm5926,GSM1480296,0,luminal cell population,2 day lactation
+Gm5926,GSM1480297,0,basal cell population,virgin
+Gm5926,GSM1480298,0,basal cell population,virgin
+Gm5926,GSM1480299,0,basal cell population,18.5 day pregnancy
+Gm5926,GSM1480300,0,basal cell population,18.5 day pregnancy
+Gm5926,GSM1480301,0,basal cell population,2 day lactation
+Gm5926,GSM1480302,0,basal cell population,2 day lactation
+Spata18,GSM1480291,0,luminal cell population,virgin
+Spata18,GSM1480292,0,luminal cell population,virgin
+Spata18,GSM1480293,0,luminal cell population,18.5 day pregnancy
+Spata18,GSM1480294,0,luminal cell population,18.5 day pregnancy
+Spata18,GSM1480295,0,luminal cell population,2 day lactation
+Spata18,GSM1480296,0,luminal cell population,2 day lactation
+Spata18,GSM1480297,0,basal cell population,virgin
+Spata18,GSM1480298,0,basal cell population,virgin
+Spata18,GSM1480299,0,basal cell population,18.5 day pregnancy
+Spata18,GSM1480300,0,basal cell population,18.5 day pregnancy
+Spata18,GSM1480301,0,basal cell population,2 day lactation
+Spata18,GSM1480302,0,basal cell population,2 day lactation
+Krba1,GSM1480291,16.28468,luminal cell population,virgin
+Krba1,GSM1480292,8.90861,luminal cell population,virgin
+Krba1,GSM1480293,7.76176,luminal cell population,18.5 day pregnancy
+Krba1,GSM1480294,6.76721,luminal cell population,18.5 day pregnancy
+Krba1,GSM1480295,2.09724,luminal cell population,2 day lactation
+Krba1,GSM1480296,1.43783,luminal cell population,2 day lactation
+Krba1,GSM1480297,6.79362,basal cell population,virgin
+Krba1,GSM1480298,8.93002,basal cell population,virgin
+Krba1,GSM1480299,9.31024,basal cell population,18.5 day pregnancy
+Krba1,GSM1480300,9.82289,basal cell population,18.5 day pregnancy
+Krba1,GSM1480301,14.2642,basal cell population,2 day lactation
+Krba1,GSM1480302,8.27266,basal cell population,2 day lactation
+Tpm2,GSM1480291,4.38434,luminal cell population,virgin
+Tpm2,GSM1480292,6.63944,luminal cell population,virgin
+Tpm2,GSM1480293,6.4264,luminal cell population,18.5 day pregnancy
+Tpm2,GSM1480294,8.33212,luminal cell population,18.5 day pregnancy
+Tpm2,GSM1480295,4.34982,luminal cell population,2 day lactation
+Tpm2,GSM1480296,4.0026,luminal cell population,2 day lactation
+Tpm2,GSM1480297,1488.60232,basal cell population,virgin
+Tpm2,GSM1480298,1242.80357,basal cell population,virgin
+Tpm2,GSM1480299,3301.27351,basal cell population,18.5 day pregnancy
+Tpm2,GSM1480300,4089.25411,basal cell population,18.5 day pregnancy
+Tpm2,GSM1480301,5118.51482,basal cell population,2 day lactation
+Tpm2,GSM1480302,4652.11725,basal cell population,2 day lactation
+Trib1,GSM1480291,639.12895,luminal cell population,virgin
+Trib1,GSM1480292,800.26235,luminal cell population,virgin
+Trib1,GSM1480293,512.15089,luminal cell population,18.5 day pregnancy
+Trib1,GSM1480294,592.13064,luminal cell population,18.5 day pregnancy
+Trib1,GSM1480295,154.8848,luminal cell population,2 day lactation
+Trib1,GSM1480296,113.93797000000001,luminal cell population,2 day lactation
+Trib1,GSM1480297,614.46307,basal cell population,virgin
+Trib1,GSM1480298,736.98175,basal cell population,virgin
+Trib1,GSM1480299,712.56205,basal cell population,18.5 day pregnancy
+Trib1,GSM1480300,832.75851,basal cell population,18.5 day pregnancy
+Trib1,GSM1480301,907.97803,basal cell population,2 day lactation
+Trib1,GSM1480302,817.14949,basal cell population,2 day lactation
+Mybl2,GSM1480291,11.54244,luminal cell population,virgin
+Mybl2,GSM1480292,11.30385,luminal cell population,virgin
+Mybl2,GSM1480293,12.39378,luminal cell population,18.5 day pregnancy
+Mybl2,GSM1480294,8.58589,luminal cell population,18.5 day pregnancy
+Mybl2,GSM1480295,14.13693,luminal cell population,2 day lactation
+Mybl2,GSM1480296,8.86011,luminal cell population,2 day lactation
+Mybl2,GSM1480297,15.2257,basal cell population,virgin
+Mybl2,GSM1480298,13.48008,basal cell population,virgin
+Mybl2,GSM1480299,13.40521,basal cell population,18.5 day pregnancy
+Mybl2,GSM1480300,10.85471,basal cell population,18.5 day pregnancy
+Mybl2,GSM1480301,14.57238,basal cell population,2 day lactation
+Mybl2,GSM1480302,12.52717,basal cell population,2 day lactation
+Neurod6,GSM1480291,0,luminal cell population,virgin
+Neurod6,GSM1480292,0,luminal cell population,virgin
+Neurod6,GSM1480293,0.08346,luminal cell population,18.5 day pregnancy
+Neurod6,GSM1480294,0,luminal cell population,18.5 day pregnancy
+Neurod6,GSM1480295,0.03884,luminal cell population,2 day lactation
+Neurod6,GSM1480296,0.11658,luminal cell population,2 day lactation
+Neurod6,GSM1480297,0.03996,basal cell population,virgin
+Neurod6,GSM1480298,0.04252,basal cell population,virgin
+Neurod6,GSM1480299,0,basal cell population,18.5 day pregnancy
+Neurod6,GSM1480300,0,basal cell population,18.5 day pregnancy
+Neurod6,GSM1480301,0,basal cell population,2 day lactation
+Neurod6,GSM1480302,0,basal cell population,2 day lactation
+Plac1,GSM1480291,0.49212,luminal cell population,virgin
+Plac1,GSM1480292,0.25213,luminal cell population,virgin
+Plac1,GSM1480293,0.45903,luminal cell population,18.5 day pregnancy
+Plac1,GSM1480294,0.42295,luminal cell population,18.5 day pregnancy
+Plac1,GSM1480295,0,luminal cell population,2 day lactation
+Plac1,GSM1480296,0,luminal cell population,2 day lactation
+Plac1,GSM1480297,0,basal cell population,virgin
+Plac1,GSM1480298,0,basal cell population,virgin
+Plac1,GSM1480299,0,basal cell population,18.5 day pregnancy
+Plac1,GSM1480300,0.04127,basal cell population,18.5 day pregnancy
+Plac1,GSM1480301,0,basal cell population,2 day lactation
+Plac1,GSM1480302,0,basal cell population,2 day lactation
+Ado,GSM1480291,18.96897,luminal cell population,virgin
+Ado,GSM1480292,19.58214,luminal cell population,virgin
+Ado,GSM1480293,19.57132,luminal cell population,18.5 day pregnancy
+Ado,GSM1480294,14.63409,luminal cell population,18.5 day pregnancy
+Ado,GSM1480295,8.46662,luminal cell population,2 day lactation
+Ado,GSM1480296,8.54923,luminal cell population,2 day lactation
+Ado,GSM1480297,20.18105,basal cell population,virgin
+Ado,GSM1480298,20.58157,basal cell population,virgin
+Ado,GSM1480299,27.50578,basal cell population,18.5 day pregnancy
+Ado,GSM1480300,26.45578,basal cell population,18.5 day pregnancy
+Ado,GSM1480301,18.05038,basal cell population,2 day lactation
+Ado,GSM1480302,17.67985,basal cell population,2 day lactation
+Nek8,GSM1480291,10.51346,luminal cell population,virgin
+Nek8,GSM1480292,11.72407,luminal cell population,virgin
+Nek8,GSM1480293,3.67223,luminal cell population,18.5 day pregnancy
+Nek8,GSM1480294,4.2295,luminal cell population,18.5 day pregnancy
+Nek8,GSM1480295,2.6798,luminal cell population,2 day lactation
+Nek8,GSM1480296,3.41969,luminal cell population,2 day lactation
+Nek8,GSM1480297,16.38462,basal cell population,virgin
+Nek8,GSM1480298,14.96841,basal cell population,virgin
+Nek8,GSM1480299,13.79152,basal cell population,18.5 day pregnancy
+Nek8,GSM1480300,12.91834,basal cell population,18.5 day pregnancy
+Nek8,GSM1480301,14.39628,basal cell population,2 day lactation
+Nek8,GSM1480302,18.90893,basal cell population,2 day lactation
