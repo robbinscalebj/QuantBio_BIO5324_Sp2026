@@ -1,0 +1,341 @@
+---
+title: "Lecture 4 - A grammar of graphics"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+bibliography: references.bib
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+
+# Lecture
+
+This lecture is all about setting up the basics of data visualization with the package ggplot2. We'll briefly cover the basic elements of a ggplot, and then the code along will show how to build and interpret five main kinds of graphs.
+
+## A grammar of graphics
+
+The fundamental idea behind `ggplot2` is a "layered grammar of graphics" [see @wickham2011;@wickham2010; deriving from [@wilkinson1999]. We won't get into the details of this as we're focused on application, but the idea is that any plot can be defined by simply specifying the characteristics of a few distinct components. 
+
+ggplot2 is part of the tidyverse. We'll also load the widely known palmerpenguins data library.
+
+```{r}
+#install.packages("palmerpenguins")
+library(tidyverse) 
+library(palmerpenguins)
+```
+
+```{r}
+penguins <- palmerpenguins::penguins 
+#technically you can just call penguins from the package every time but I like to have it as an object name in my global environment rather than just the package namespace
+glimpse(penguins)
+```
+
+### Building a ggplot
+
+`ggplot()`: Every ggplot starts with a call to `ggplot()`, which tells R to build the plot
+
+**Data**: ggplot() needs to know where your data are coming from.
+
+```{r}
+ggplot(penguins)
+class(ggplot(penguins))
+```
+
+R has built a plot object, of class ggplot. So there's something there, no errors, there's just no instructions for what to do with the data. We have to build that up.
+
+Let's tell ggplot to plot `flipper_length_mm` and `bill_length_mm` on the x and y axes, respectively. We do that with mappings.
+
+**Mappings**: How we connect variables to different aesthetics. Meaning, as variables change, so do the aesthetics. Mappings describe how variables in the data are mapped to visual properties (aethetics) of geoms (things like points, lines, boxes, etc.) - Common aesthetics: x variable, y variable, size, shape, color, alpha (opacity)... - Aesthetics are supplied inside the `aes()` function that is itself a value to the `ggplot()` argument, `mapping`.
+
+```{r}
+ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = bill_length_mm))
+```
+
+Functionally the same as before. Now ggplot has variables from the data to map to the x and y aesthetics... but the x and y aesthetics of what? **Geoms**, or geometric objects, have aesthetics that can take these values that control where and how they are plotted on this canvas.
+
+We add geometric objects as new *layers* to a ggplot using `+` - so we're **not** piping (`|>`) the layers together.
+
+```{r, warning = FALSE}
+ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = bill_length_mm))+
+  geom_point()
+```
+
+Now that we've added this geom *layer*, ggplot has the ingredients necessary to do something with the plot. We'll get more into the features and extensions of this basic theme as we build more plots, but remember - every plot absolutely requires data, mapping, and geoms. Data are mapped onto the aesthetics of geoms.
+
+ggplots also have a few other elements that are important: **Facets** are replicated representations of a ggplot, split by some categorical variable. This allows us to create two plots side-by-side with the same instructions for mappings and geoms, but with levels of a (factor) variable defining the subset of data that get mapped into each plot.
+
+**Coordinate functions** define the scales or coordinate system of our plot. We'll generally stay in Cartesian land (x,y), but it's possible to work with, say, polar coordinates. This is also tremendously useful to modify the bounds and labels of an x or y axis beyond the defaults that ggplot will calculate, and useful for transformations.
+
+**Themes** specify things like background color, gridding, axis titles, and tick labels, font size, legend position, etc.
+
+We'll work more with coordinate functions and themes next time.
+
+Again, there's a whole scholarly literature behind this in the computer science field. But it's better to learn by doing for this class.
+
+## Code along
+
+We'll start by building some five main kinds of plots. In the next lecture, we'll work on details of how to take more control over these plots to better explore your data and tell the science stories you want to tell.
+
+### "The five named graphs" (according to ModernDive)
+
+1.  Histograms
+2.  Scatterplots
+3.  Linegraphs
+4.  Bar plots
+5.  Box plots
+
+These different graphs derive from different mappings and geoms, centered around certain representations of your data.
+
+#### Histograms
+
+Histograms are the only univariate focused plot here. These are for displaying the frequency of data in your dataset - i.e., the *distribution* of a numerical variable.
+
+ModernDive puts forward these questions that histograms answer: 1. What are the smallest and largest values? 2. What is the “center” or “most typical” value? 3. How do the values spread out? 4. What are frequent and infrequent values?
+
+Histograms are created by *binning* similar values together and counting the number of observations in those bins. Changing the size of these bins is a fundamental way you can alter the look of a histogram, but ggplot tries to pick an optimal 'binwidth'.
+
+Fundamentally these are created by mapping only the x aesthetic to a `geom_histogram()`. I've included the binwidth argument (you could alternatively specify the total number of bins, with "bins = ..." instead) that we can play around with. The geom also has other aesthetics that are not necessarily mapped to the histogram that we can set, like the *linewidth* of the bins, *color* of the bin lines, and *fill* color of the bins. Yes, you, too can make horridly bad color choices.
+
+```{r, warning = FALSE, message = FALSE}
+ggplot(data = penguins, 
+       mapping = aes(x = flipper_length_mm))+
+  geom_histogram(linewidth = 2, binwidth =3, color = "blue", fill = "green")
+```
+
+Notice the y-axis is 'count' - this is because, again, histograms just 'count' the number of observations that fall within a specified range (i.e., bins) of flipper_length_mm.
+
+::: {.callout-tip title="Extra Thinking"}
+How could you create these counts yourself?
+:::
+
+::: {.callout-tip title="Extra Thinking"}
+How would you describe the shape of this histogram?
+:::
+
+Density plots use a more complicated technique ("kernel density smoothing") to represent the data frequency smoothly: `geom_density()` is an alternative to `geom_histogram()` that can look nice sometimes. You can agin mess with the linewidth, color, and fill.
+
+```{r, warning = FALSE, message = FALSE}
+ggplot(data = penguins, 
+       mapping = aes(x = flipper_length_mm))+
+  geom_density(linewidth = 2, color= "blue")
+
+```
+
+Now the y-axis is not count, it's density. So more density (height) means more of the observations, relatively speaking, are under that part of the curve.
+
+##### A brief intro to statistical distributions
+
+So far, These are empirical distributions (distributions of data). Histograms are also useful for visualizing theoretical/statistical distributions. The normal distribution (AKA Guassian distribution) is super useful. The assumption that variables are *normally distributed* asymptotically (i.e., if we had a very large sample size) underlies a lot of statistical techniques. For now, we can use a histogram to explore a normal distribution.
+
+Normal distributions have two parameters that control its shape: The mean (its central tendency or *location*) and standard deviation (its *spread*). Let's set those variables and then take random samples (draws) from the normal distribution using R's `rnorm()` ("r"andom "norm"al) function. We also need to transform the output of `rnorm()` (a numeric vector) to a dataframe, because that's what `ggplot()` works with - we can do this with `as_tibble()` which will coerce the vector to a tibble, giving it's column a name "value". Play around with the number of draws, the mean and the sd. Do random samples look normally distributed at low samples sizes?
+
+```{r}
+n_draws <- 10000
+norm_mean <- 0; norm_sd <- 1
+norm_vec <- rnorm(n_draws, norm_mean, norm_sd)|>
+  as_tibble()
+
+ggplot(data = norm_vec, aes(x = value))+
+  geom_histogram()
+
+```
+
+What about if we're not thinking about a continuous numeric variable and instead thinking of **discrete** thing like outcomes of a coin flip, or some other variable with binary outcomes (TRUE/FALSE, Yes/No, Present/Absent)? That's the realm of the **binomial distribution**, which has size (number of independent trials), and prob (the probability of success on each trial). The binomial distribution is related to Hardy-Weinberg equilibrium, by the way. `rbinom()` lets us sample from a binomial distribution with these characteristics.
+
+For a fair coin flip, prob is a 50/50 shot, so 0.5 since probabilities go from 0 to 1. For a multiple choice quiz with four possible responses, prob is 0.25 (1 success/4 possible).
+
+```{r}
+n_binom <- 10 #number of "experiments"
+size_binom <- 10 # number of flips (trials in an experiment)
+p_binom <- 0.5 
+
+binom_vec <- rbinom(n = n_binom, size = size_binom, prob = p_binom) #values are number of successes in each experiment
+#print(binom_vec)
+ggplot(data = binom_vec|>as_tibble(), aes(x = value))+
+  geom_histogram()
+```
+
+Note that you can do data transformations/piping within the data argument. Not always recommended, but sometimes useful.
+
+::: {.callout-tip title="Extra Thinking"}
+After how many coin flips with the same outcome repeated would you believe the coin is no longer fair?
+:::
+
+This is a generally easy way to simulate draws from a distribution and visualize what they look like, but underlies a powerful tool: If you can specify some properties about the way a variable-of-interest is distributed (and you usually can, if only by looking into the primary literature) - **you can simulate experiments and studies.** We'll make this an important part of our course in Unit 2.
+
+#### Scatterplots
+
+Scatterplots are points that have x and y values corresponding to two of an observation's measured variables (i.e., in tidy data, one row). This is the key way to explore so-called *bivariate* relationships with two numeric variables.
+
+We already made one of these, so let's start there. But let's mess with the points. This guide is super handy to have around to know what codes correspond to what `geom_point()` shapes. Let's also throw in a mapping from a variable to another geom aesthetic, this time to color - this allows to visualize a third dimension. Color is best when you have a categorical variable with a few unique values.
+
+```{r, warning = FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species))+
+  geom_point(shape = 21, size = 4, stroke = 2)
+```
+
+Cool, now ggplot has mapped the three penguin species values to colors of `geom_point()`. The *legend* gives us the keys to the mapping between species and color. If there's a relationship between bill length and flipper length, it's easier to visualize that correlation stratified by species. Notice we also made the points open (shape = 21), much larger (size = 3), and with a thick border (stroke = 2).
+
+Here's a good [resource](https://www.sthda.com/english/wiki/ggplot2-point-shapes) for the point shapes available in `ggplot2`.
+
+We can add yet another dimension, mapping Island to shape, but now we need to remove that property from `geom_point()` into its aesthetic mapping (`aes()`) to assign it to a variable in the data.
+
+```{r, warning = FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species, shape = island))+
+  geom_point(size = 2, stroke = 1)
+```
+
+::: {.callout-tip title="Extra Thinking"}
+What's the default `geom_point()` shape?
+:::
+
+#### Linegraphs
+
+Linegraphs are lines. Specifically, we're talking about lines that connect points in Cartesian space according to their order in the data. Let's say we wanted to plot the average body mass of male Adelie penguins on Torgersen through time. You'll notice this requires a little data wrangling to filter to our desired characteristics and calculate a summary. For ease, I'm going to just pipe the wrangled dataframe into `ggplot()`, which works fine.
+
+```{r}
+penguins|>
+  filter(species == "Adelie", sex == "male", island == "Torgersen")|>
+  group_by(year)|>
+  summarize(mean_mass = mean(body_mass_g, na.rm = TRUE),
+            sd_mass = sd(body_mass_g,na.rm = TRUE))|>
+  ggplot(aes(x = year, y = mean_mass))+
+  geom_line()
+
+```
+
+Frankly, yuck. Part of this is that there are only three points, so only two lines. Like the other geoms, geom_line has different aesthetics, like linetype and color (and linewidth). Let's summarize and plot female body mass of Adelie penguins on all islands - we can map island to both linetype and color. We can also add a second geom.
+
+```{r}
+penguins|>
+  filter(sex == "female", species == "Adelie")|>
+  group_by(year, island)|>
+  summarize(mean_mass = mean(body_mass_g, na.rm = TRUE),
+            sd_mass = sd(body_mass_g,na.rm = TRUE))|>
+  ggplot(aes(x = year, y = mean_mass, linetype = island, color = island))+
+  geom_line(linewidth= 2)+
+  geom_point(size = 5)
+
+```
+
+There are other lines that are not mapped to data. We can also add ablines (`geom_abline()`), vertical lines (`geom_vline()`), and horizontal lines (`geom_hline()`).
+
+Let's compare the mean of all penguin masses in the dataset to these 'trends' by plotting the overall mean as a horizontal line - `geom_hline()` has a main argument called `yintercept`. We could do the wrangling pipe *in* the ggplot code, but let's calculate it outside and set it as an object and call the name to the `yintercept` argument in `geom_hline()`.
+
+Recall the output of summarize is a dataframe, but we actually want a vector (specifically of length 1) for `yintercept`. We can accomplish with `pull()`, which is equivalent to using the `$` operator to extract a column from a dataframe. Notice this now
+
+```{r}
+mean_mass_f <- penguins|>filter(sex == "female")|>summarize(mean_mass = mean(body_mass_g, na.rm = TRUE))|>
+  pull()
+
+```
+
+Notice mean_mass now shows up as a value in the Environment pane, not a dataframe.
+
+```{r}
+
+penguins|>
+  filter(sex == "female", species == "Adelie")|>
+  group_by(year, island)|>
+  summarize(mean_mass = mean(body_mass_g, na.rm = TRUE),
+            sd_mass = sd(body_mass_g,na.rm = TRUE))|>
+  ggplot(aes(x = year, y = mean_mass, linetype = island, color = island))+
+  geom_line(linewidth= 2)+
+  geom_hline(yintercept = mean_mass_f, linewidth = 2)
+
+```
+
+Really shows us that these female Adelie penguins are a bit smaller than the overall average.
+
+`geom_abline()` allows us to define a line by a slope and intercept. So a 1:1 line is one example of this.
+
+`geom_smooth()` plots a predicted line through the points - *not* `geom_line()`. `geom_smooth()` fits a model to the x, y data behind the scenes and plots the predicted relationship. Here specifying `method = "lm"` tells `geom_smooth()` to use `lm()` to fit a linear regression to the data. We'll talk much, much more about this in a few weeks, but it's a quick and dirty way to visualize a statistical relationship.
+
+Let's return to our penguins scatterplot, but now with `geom_smooth()`
+
+```{r, warning = FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm, color = species, shape = island))+
+  geom_smooth(method = "lm")
+```
+
+So notice two things: First: No data points are plotted, but the regression relationships are. `geom_smooth()` is mapped to the data, not to the plotted point geoms. It's generally better practice to plot the raw data under modeled relationships. Second: There are three regression lines for Adelie penguins - why?
+
+::: {.callout-tip title="Extra Thinking"}
+What options are there for the `method` and `se` arguments to `geom_smooth()`? How do they change the plotting?
+:::
+
+#### Bar plots
+
+Bar plots are for representing values or counts of a categorical variable. With the latter, this is similar to a histogram. `geom_bar()` only requires data to be mapped to the x axis position, and under-the-hood counts the observations in that categories in the x variable. It will also take other aesthetic mappings, though, too, `fill` being the most common.
+
+```{r}
+ggplot(data = penguins, aes(x = species, fill = sex))+
+  geom_bar()
+
+```
+
+This is specifically a stacked bar chart, so it emphasizes the proportion a observations belonging to one category vs another *within* the categorical variable mapped to the x axis. Note you can also do this similarly by counting the data using `count()` (which is basically a specific kind of `summarize()` that just counts observations), which produces a variable `n` that you can pass as a y argument for `aes()` and use `geom_col()` which expects both an x and a y mapping.
+
+```{r}
+penguins|>group_by(species, sex)|>count()|>
+  ggplot(aes(x = species, y = n, fill = sex))+
+  geom_col()
+```
+
+A lot of metagenome papers will show taxa counts with stacked bar charts, with a sample type on the x axis, and the stacked bars being counts of microbial taxa within that sample.
+
+We can also make dodged bar charts with `position = "dodge"` - these are side-by-side. "Dodging" is moving geoms off their center. This will become very important for boxplots.
+
+```{r}
+ggplot(data = penguins, aes(x = species, fill = sex))+
+  geom_bar(position = "dodge", width = 0.25)
+```
+
+#### Box plots
+
+Box plots are helpful for summarizing values (a numeric variable) in categories, especially if there are a lot of values. Here's a really basic one.
+
+```{r}
+ggplot(data = penguins, aes(x = species, y = body_mass_g))+
+  geom_boxplot()
+```
+
+Just like `geom_bar()`, ggplot is doing some calculations for us. In `geom_bar()`, it was counting (technically using a function called `stat_count()`). Here, if you like in the help file for `geom_box()`, it's summarizing the data into a "box and whiskers plot" that "visualizes five summary statistics" of body mass for each penguin species. - Median: The 50th percentile - the middle datum - is the thick black horizontal line - Hinges: 25th and 75th percentile of the data are the bottom and top of the box - Whiskers: These vertical lines extend 1.5\*IQR (where IQR = the interquartile range, the distance between the hinges) - Outliers: These are lone points plotted outside the whiskers. Don't treat outliers as something you need to get rid of.
+
+Not all boxplots are summarizing the same statistics. In your works it is crucial to explain what the aspects of the boxes mean in the figure caption.
+
+Here ggplot will automatically dodge when we map sex to color.
+
+```{r}
+ggplot(data = penguins|>filter(!is.na(sex)), aes(x = species, y = body_mass_g, color = sex))+
+  geom_boxplot()
+```
+
+::: {.callout-tip title="Extra Thinking"}
+Try creating notched boxplots with `geom_boxplot(notch = TRUE)`. Do you like this look better? What's the interpretation of the notch sizes?
+:::
+
+Instead of plotting these side by side, we can always facet any plot by a categorical variable using `facet-wrap()`. Let's check out sexual dimorphism of body mass in the three species. Notice the argument for `facet_wrap()` is like a formula (`rows~columns`) that could take two variables. In this case, we just have species, so we can facet along the x axis with `facet_grid(.~species)`, i.e., create species as columns, and don't facet anything down the rows.
+
+```{r}
+ggplot(data = penguins|>filter(!is.na(sex)), aes(x = sex, y = body_mass_g))+
+  geom_boxplot()+
+  facet_grid(.~species)
+```
+
+```{r}
+
+ggplot(data = penguins|>filter(!is.na(sex))|>filter(species == "Adelie"), aes(x = sex, y = body_mass_g))+
+  geom_boxplot()+
+  facet_grid(year~island)
+```
+
+Key takeaways: 
+- ggplot2 is a principled engine for creating layers of graphics
+- Geometric objects (geoms) have aesthetics like size, shape, color, fill 
+  * Some aesthetics only apply to certain geoms, like linewidth 
+  * Variables in your data can be *mapped* to aesthetics of geoms, so the value of the variable controls, e.g., the geom size 
+- The Five Named Plots are a useful way to breakup some key ways to think about displaying data, but in reality geoms can and in a lot of cases should be mixed together in a single plot to more efficiently tell stories
