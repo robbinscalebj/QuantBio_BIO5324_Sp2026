@@ -1,0 +1,116 @@
+---
+title: "Problem Set 3 Data Wrangling and Visualization"
+author: "CJR"
+date: "2025-10-26"
+output: html_document
+---
+This Problem Set covers Lectures 3 and 4. 
+
+Make sure to put the libraries you need to load here. 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Question 1
+Use two methods to find the worst departure delay (`dep_delay`) for each of the three NYC airports (`origin`). That is, you should create one dataframe with the answer using one `slice_()*` function and another dataframe with another `slice_*()` function. 
+```{r}
+flights <- read_csv(here("Problem Sets/03_ProblemSet/Data/Raw Data/nycflights23_flights.csv"))
+
+```
+# Question 2
+Similar to Question 1, show two methods to place a new variable `speed_mph` (i.e., calculate speed in miles per hour) after the column `distance`.
+```{r}
+
+
+```
+
+
+
+# Question 3
+Clean up the Detrital Nutrients dataset in /03_ProblemSet/Data/Raw Data/ by renaming the variables so that they have a consistent naming convention (e.g., snake_case, period separated, camelCase).Use the `|>` as much as possible.
+- Export to /03_ProblemSet/Data/Transformed Data/ using a relative file path. But, create the file path by assigning a filename to a name in the environment, assigning the folder path to another name, and calling only the object names in the `write_csv()` call
+
+# Question 4
+A) Use mutate() to create a data dictionary file (a type of metadata) for this tidied dataframe in Question 3. You can find definitions [here](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.1205.2) by clicking "View Full Metadata" and expanding "Data Entities". 
+Hint: `names(tidied_DetNutSynth_df)|>as_tibble()|>rename(Variable_Name = "value")`, will pull the variable names from the tidied dataset (with placeholder name "tidied_DetNutSynth_df").
+B) Store the data dictionary as a .csv file in the 03_ProblemSet/Transformed Data/ folder. Give it a good name. 
+
+
+# Question 5
+It's often convention to avoid spaces in variable or factor level names, and underscores do nicely. The variables immunophenotype and developmental_stage have factor levels with a lot of spaces in them. 
+A) Use `str_replace_all()` within `mutate()` to replace spaces with underscores in `rnaseq_tidied_df`. I've included the code to grab the data, assuming they are in the correct file paths. Hint: `str_replace_all()` needs three arguments - the first the name of the vector to operate on, the second the pattern (string) to replace, and third the pattern (string) to go in its place. 
+B) Take the new tidied rnaseq_tidied_df from QX and write it to a new .csv in the directory 03_ProblemSet/Data/Transformed Data/
+
+```{r}
+rnaseq_df <- read_csv(here("Problem Sets/03_ProblemSet/Data/Raw Data/GSE60450_GeneLevel_Normalized(CPM.and.TMM)_data.csv"))|>
+  select(-1)|>
+  slice_sample(n=10) #randomly selecting some gene names here just to shorten the dataframe
+
+rnaseq_metadata_df <- read_csv(here("Problem Sets/03_ProblemSet/Data/Raw Data/GSE60450_filtered_metadata.csv"))
+
+
+rnaseq_longer <- rnaseq_df|>
+  pivot_longer(-gene_symbol, 
+               names_to = "cell_origin",
+               values_to = "normalized_reads")
+
+rnaseq_metadata_tidy <- rnaseq_metadata_df|>
+  rename(cell_origin = "...1",
+         developmental_stage = "developmental stage")|>
+  select(-characteristics)
+
+
+rnaseq_tidied_df <- rnaseq_longer|>
+  left_join(rnaseq_metadata_tidy)|>
+  mutate(immunophenotype = str_replace_all(immunophenotype, " ", "_"))
+  
+```
+
+
+# Question 6
+Clean, tidy, and join these two dataframes downloaded from the [Our World in Data Malaria dataset](https://ourworldindata.org/malaria). 
+Make sure you:
+- Clean up `malaria_age` by removing the variables `code` and `...1`. 
+- Change the factor levels of age_group so that they start with the string "Deaths - "
+- Then pivot_wider and argue why the wider version here is or isn't tidy. It's not just about long vs wide data.
+- Clean up `malaria` by removing the variable `code` and renaming the absurdly long variable name to something sensible, following good variable naming convention.
+- Join the data. Explain whether and why any rows are dropped from either data from due to missing keys (the join_by variable).
+
+```{r}
+malaria <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/refs/heads/main/data/2018/2018-11-13/malaria_deaths.csv")
+malaria_age <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/refs/heads/main/data/2018/2018-11-13/malaria_deaths_age.csv")
+malaria_age|>
+  select(-...1)|>pivot_wider(names_from = age_group, values_from = deaths)
+
+
+malaria2 <- malaria|>
+  left_join(malaria_age|>pivot_longer())
+```
+
+
+# Question 7
+Filter the tidied malaria data frame to any three countries with data. Create a linegraph to visualize yearly trends in any death category by color.
+
+
+# Question 8
+Calculate the "five summary statistics" (i.e., the ones used in `geom_boxplot()`) and plot them as horizontal lines over a single boxplot created from male Gentoo flipper lengths. 
+
+# Question 9
+A) Add `geom_point(color = "black")` to the following bill length vs. flipper length plot. 
+B) Create another plot with the same geom aesthetics to describe how the *ordering* of `geom_point()` and `geom_smooth()` change the plot.
+C) Describe what the alpha argument controls. What are it's bounds (min and max)?
+
+```{r, warning = FALSE}
+ggplot(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm))+
+  geom_smooth(method = "lm", linewidth = 2, alpha = 1)
+
+```
+
+
+# Question 10
+Simulate sampling 10 independent replicates from two different populations. One population is "Healthy" and the other is "Vomiting". Assume the Healthy population has a parasite load that is normally distributed with a mean of 565 and a standard deviation of 1000, and that the Vomiting population has a parasite load that is normally distributed with a mean of 12000 and a standard deviation of 2000. 
+A) Create two vectors of simulated measurements from this population, and make sure they get into the same tibble (dataframe). 
+B) Plot those vectors on a single plot using histograms. 
+C) In words, describe how the mean and standard deviation assumptions change the shape of these histograms. Does the normal distribution result in negative values for parasite load? Could it? And is that sensible?
