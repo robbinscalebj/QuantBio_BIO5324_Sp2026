@@ -28,8 +28,8 @@ into R and the Tidyverse. 2nd Ed. CRC Press.
 | Jan 22 | 1: Learning the Lingo | The tools: Introduction to R and Github | IKV Ch. 1 | PS 1 Due |
 | Jan 27 | 1: Learning the Lingo | Wrangling your data (Yeehaw) | IKV Ch. 3 & 4 | PS 2 Due |
 | Jan 29 | 1: Learning the Lingo | A grammar of graphics | IKV Ch. 2, CRH Ch. 4 & 5 |  |
-| Feb 03 | 1: Learning the Lingo | Dr. Chan-Park on Data Practices |  | PS 3 Due |
-| Feb 05 | 1: Learning the Lingo | Data visualization for telling stories | CRH CH. 6 |  |
+| Feb 03 | 1: Learning the Lingo | Dr. Chan-Park on Data Practices |  |  |
+| Feb 05 | 1: Learning the Lingo | Data visualization for telling stories | CRH CH. 6 | PS 3 Due |
 | Feb 10 |  | Literature Presentations 1 |  |  |
 | Feb 12 |  | Exam 1: Unit 1 (75 pts) |  | PS 4 Due |
 | Feb 17 | 2: Estimating quantitative relationships | What generates your data? Causes and models | CRH Ch. 2 |  |
