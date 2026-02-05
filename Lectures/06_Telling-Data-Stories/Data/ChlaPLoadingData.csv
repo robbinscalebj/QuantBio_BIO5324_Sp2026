@@ -1,0 +1,752 @@
+Lake ,Pload,TP,Chla
+Acton,4.7,0.09,
+Bryrup Langsø,3.9,0.1,
+Bryrup Langsø,3.1,0.1,
+Burr Oak,0.97,0.01,
+ELA 226 1973,0.61,0.016,
+ELA 226 1974,0.61,0.018,
+ELA 226 1975,0.61,0.025,
+ELA 227 Moderate N,2.4,0.036,
+ELA 227 Low N,2.3,0.036,
+ELA 227 Zero N,2.5,0.05,
+ELA 239,0.03,0.007,
+ELA 261,0.28,0.017,
+Elmdale,3.2,0.077777778,
+Erie,0.6,0.062,
+Fayetteville,7.1,0.102222222,
+Halle sø,2.6,,
+Halle sø,2.2,,
+Kinneret,0.6,0.022,
+Kinneret,1.7,0.022,
+Kul sø,13,,
+Kul sø,9.1,,
+Kvind sø,17,,
+Kvind sø,11,,
+Lough Neagh,1.1,0.12,
+Malawi,0.45,0.004,
+MB/LC,2.4,0.068,
+Mendota,1.6,0.031,
+Mirror,0.15,,
+Norrviken,4,,
+Okeechobee,0.3,0.072,
+Pleasant Hill,4.3,0.05,
+Rietvlei,27,0.95,
+Rietvlei,23,0.75,
+Salten Langsø,3.9,,
+Salten Langsø,3.2,,
+Sammamish,0.66,0.025,
+Stigsholm,7,,
+Stigsholm,4.5,,
+Superior,0.04,0.002,
+Taihu,0.8,0.08,
+Valencia,3.1,,
+Waco,6,0.257,
+Washington,0.43,0.015,
+Wedington,0.93,0.055,
+Wingra,0.93,,
+Ladoga,,0.018,
+huron,0.07,,
+superior,0.03,0.04,
+michigan,0.1,,
+Clear,0.04,0.025,
+Tahoe,0.042,,
+Aegeri,0.16,0.03,
+Chemung,0.22,,
+Turler,0.3,,
+Chautauqua,0.34,,
+Washington,0.46,,
+Lake 227 (Schindler 2008),0.48,,
+Cayuga,0.55,,
+Hallwiler,0.55,,
+Esrom,0.6,,
+Shawaga,0.65,,
+Wedington (Grantz 2014),0.65,,
+Ontario,0.68,,
+Harriet,0.71,,
+Burr Oak (Vanni et al. 2011),0.79,,
+Zurich,1.32,,
+Saratoga,1.6,,
+Baldegger,1.75,,
+Elmdale (Grantz et al. 2014),3.2,,
+Maggiore,3.39,,
+Pleasant Hills (Vanni et al. 2011),4.25,,
+Acton (Vanni et al. 2011),4.74,,
+Fayetville (Grantz et al. 2014),7.1,,
+Bergundasjoen,8.8,,
+FIL,4.49,0.075,
+HIN,2.27,0.068,
+VIL,4.493,0.051,
+Blue Chalk,0.0441,0.00631,
+Chub,0.0997,0.01065,
+Crosson,0.0987,0.01103,
+Dickie,0.1684,0.01124,
+Harp,0.2,0.00751,
+Jerry,0.1753,0.00913,
+Plastic,0.0327,0.00589,
+Red Chalk,0.0917,0.0058,
+Mendota,1.58,0.14,
+Onodaga,8.37,,
+Shagawa,0.697,0.0501,
+"Twin, east",0.67,0.0887,
+Twin west,0.42,0.1156,
+"Erie, central",0.73,0.0194,
+Huron,0.082,0.0055,
+Superior,0.05,0.0046,
+Brunner,0.06,0.0065,
+Long,0.12,0.03,
+Canandaigua,0.12,0.055,
+Cajuga,0.55,,
+Keuka,0.1,,
+Boneka,0.23,,
+Higgins,0.03,0.028,
+Aegerisee,0.16,0.03,
+Turlersee,0.3,,
+Bodensee,1.11,0.2,
+Zuerichsee,1.32,0.04,
+Sempacheresee,0.77,,
+Ontario,0.68,0.05,
+Michigan,0.1,0.085,
+Huron,0.07,,
+Okanagan,0.039,,
+Skaha,2.2,0.095,
+Washington,0.46,,
+Four Mile,0.1,0.045,
+Bob,0.158,0.024,
+12 mile Boshkung,0.332,0.008,
+Halls,0.205,0.008,
+Beech,1.52,0.008,
+Maple,0.832,0.009,
+Long,0.14,0.016,
+Bay of Naples,0.51,0.009,
+Sebago,0.08,0.014,
+Charlevoix,0.12,0.024,
+Eagle N.,0.23,0.009,
+Oblong,0.12,0.02,
+Kalamalka,0.32,0.61,
+bankhead,17.49,0.029,4
+guntersville res.,6.72,0.044,8.6
+holt lock and dam,16.94,0.018,2.2
+martin,1.35,0.017,6.4
+weiss res.,9.45,0.092,11.3
+purdy,3.37,0.049,12.7
+havasu,3.64,0.015,3.9
+luna,1.9,0.182,3.4
+lyman,1.72,0.099,2.6
+mohave,2.39,0.017,4.4
+rainbow,2.17,0.046,16.4
+theodore roosevelt lake,2.08,0.02,4.1
+san carlos res.,9.35,0.056,14.8
+beaver res.,0.72,0.022,3.9
+blackfish,69.22,0.424,19.8
+bull shoals,0.56,0.015,3.9
+catherine,10.04,0.029,14
+chicot lake,6.64,0.162,13.7
+degray res.,0.22,0.019,12.3
+erling,0.86,0.054,13.4
+hamilton,2.95,0.024,10.9
+ouachita,0.17,0.015,4.3
+table rock res.,1.49,0.022,9.1
+greers ferry res.,0.24,0.012,3.8
+amador,2.45,0.04,22.4
+boca res.,0.85,0.012,1.7
+don pedro res.,1.05,0.013,3.6
+fallen leaf,0.11,0.007,0.8
+iron gate res.,109.97,0.184,6.2
+lopez res.,1.12,0.371,8.7
+mendocino,3.96,0.02,3.1
+santa margarita,0.48,0.037,9.1
+shasta,3.05,0.021,4.1
+tullock res.,7.34,0.025,13.9
+upper twin,0.084,0.015,3.3
+lower twin ,0.55,0.014,2.9
+barker res.,0.59,0.023,5.3
+blue mesa res.,2.66,0.019,6.8
+cherry creek ,1.53,0.054,23.3
+dillon res.,0.61,0.009,3.2
+grand,5.08,0.013,4.9
+green mountain res.,0.77,0.01,5.8
+navajo res.,2.5,0.036,2.2
+aspinook,100.26,0.092,35.8
+eagleville,54.11,0.094,7.1
+hanover,218.37,0.298,18.9
+zoar,39.23,0.043,18.3
+lillinonah,34.98,0.054,11.1
+houstanoic,89.09,0.039,10.2
+moores,73.15,0.245,81.3
+moxontown,3.84,0.16,37.6
+silver,32.47,0.227,26.7
+williams,6.53,0.042,30.1
+trussum,1.73,0.038,5.1
+allatoona,2.07,0.02,7.5
+blackshear,9.78,0.035,1.9
+chatuge,0.39,0.014,6.3
+clark hill res,1.59,0.024,6.7
+jackson,33.38,0.094,14.6
+sidney lanier,0.98,0.016,5.4
+nottely res.,0.75,0.015,6.7
+sinclair,4.12,0.028,8
+blue ridge,0.91,0.01,3.1
+harding,58.74,0.114,7.4
+burton,0.4,0.007,2.7
+high falls,8.07,0.047,15.1
+american falls res.,2.2,0.105,15.4
+cascade res.,0.38,0.032,8.1
+coeur d'alene,1.39,0.017,10.4
+dworshak res.,1.5,0.01,2.4
+lowell,0.81,0.07,25.4
+magic res.,2.58,0.062,7.3
+payette,0.19,0.013,4.6
+lower twin lakes,0.12,0.016,2.3
+upper twin lakes,0.12,0.017,5
+bloomington,2.17,0.05,26.2
+carlyle res.,3.01,0.084,17.4
+crab orchard,2.82,0.082,59.9
+decatur,9.15,0.129,43
+long,23.66,0.704,49.3
+lou yaeger,3.15,0.186,10.7
+rend,0.97,0.071,23.5
+shelbyville res.,4.12,0.062,17.2
+highland silver,3.04,0.226,5.8
+springfield,1.7,0.108,13
+vermilion,10.2,0.109,31.1
+wonder,12.39,0.426,98.5
+storey,2.18,0.072,17.2
+holiday,4.03,0.167,51.2
+fox,24.41,0.219,63.8
+slocum,11.18,0.865,221.1
+wee-ma-tuk,0.61,0.069,8
+racoon,1.17,0.106,19.2
+baldwin,0.58,0.044,11.3
+vandalia,0.96,0.116,11.3
+horseshoe,0.51,0.127,182.2
+cataract,5.65,0.058,10.7
+geist res.,2.88,0.074,46
+mississinewa res.,12.74,0.107,15.8
+monroe res.,0.28,0.025,6.9
+morse res.,6.52,0.084,56.1
+wawasee ,0.11,0.012,5
+webster lake,1.04,0.025,11.5
+whitewater,3.28,0.084,33.1
+winona,0.8,0.035,11.2
+westler,4.39,0.035,10.7
+witmer,2.73,0.035,11.9
+maxinkuckee,0.15,0.02,5.5
+tippecanoe,1.1,0.019,6
+dallas,1.53,0.029,10.1
+olin,0.81,0.012,4.9
+oliver,0.16,0.009,3.8
+bass,0.09,0.04,29.4
+crooked,0.24,0.019,5.6
+james,0.34,0.016,4.9
+long,29.54,0.204,16.1
+pigeon,8.32,0.058,11.9
+marsh,6.09,0.093,34.5
+hamilton,0.32,0.033,17.4
+lake ahquabi,1.02,0.062,8.6
+big creek res.,2.27,0.046,16.9
+black hawk,0.55,0.185,49.7
+lake macbride,0.67,0.061,17.1
+prairie rose,0.72,0.056,17.4
+rathburn res.,2.45,0.071,12
+red rock res.,68.96,0.18,14.7
+rock creek,3.13,0.065,18.4
+silver lake,0.24,0.193,95.3
+viking lake,0.49,0.075,26
+cedar bluff res.,0.17,0.017,4.2
+council grove res.,2.07,0.069,9.8
+elk city res.,2.23,0.03,3.2
+john redmond res.,9.2,0.118,9.5
+kanopolis res.,6.65,0.056,16
+marion res.,0.41,0.052,12.4
+melvern res.,0.79,0.034,30.4
+milford res.,6.54,0.079,18.9
+norton res.,1.26,0.122,21.4
+perry res.,2.07,0.055,5.6
+pomona res.,0.98,0.04,8.3
+tuttle creek res.,22.28,0.162,11.3
+wilson res.,0.47,0.023,8.9
+cumberland,1.96,0.016,3.8
+herrington,9.24,0.079,14.9
+bistineau,1.67,0.061,12.9
+black bayour res.,1.07,0.046,17.8
+bundick,7.5,0.157,20.5
+cross,0.34,0.057,38.4
+bayou d'arbonne,1.33,0.038,6.8
+turkey creek,3.77,0.176,22
+vernon,0.24,0.018,4.9
+cocodrie,0.6,0.106,33.4
+estes,9.65,0.094,28.3
+long,0.14,0.008,3.2
+mattawamkeag,0.6,0.011,2
+moosehead,0.08,0.005,1.5
+rangeley,0.09,0.007,2.4
+sebago,0.08,0.004,1.5
+sebasticook,0.68,0.05,49.5
+long,0.12,0.01,6.9
+bay of naples,0.51,0.005,1.8
+deep creek,0.18,0.011,6.1
+liberty res.,0.37,0.018,6.3
+loch raven res.,1.45,0.023,7.1
+johnson pond,20.81,0.098,26.2
+hager pond,129.48,1.525,198.5
+harris pond,10.84,0.052,12.9
+woods pond,266.98,0.363,11.4
+matfield impoundment,817.84,0.535,2.3
+hudson impoundment,248.52,0.476,2.2
+allegan,31.4,0.135,20.3
+barton,2.14,0.061,27.8
+belleville,15.75,0.122,28.3
+charlevoix,0.12,0.006,3
+chemung,0.22,0.032,13.5
+ford,16.17,0.111,14.7
+fremont,2.97,0.378,28.5
+kent,1.59,0.043,33.9
+macatawa,6.35,0.159,25.6
+muskegon,6.86,0.065,9.5
+ross reservoir,17.02,0.035,10.4
+thornapple lake,9.24,0.045,14.7
+union lake,9.27,0.047,15.7
+white lake,1.98,0.026,9.2
+mona,5.53,0.369,27.8
+long,4.62,0.133,10.1
+crystal,0.07,0.009,2.9
+higgins,0.03,0.006,1
+houghton,0.06,0.016,9.2
+strawberry,9.19,0.068,11.1
+winona,1.65,0.107,58.6
+wolf,6.43,0.05,17.2
+zumbro,130,0.401,12.5
+spring,107.17,0.24,21.8
+st. croix,8.89,0.055,10.2
+wagonga,4,1,94.5
+green,0.09,0.015,4.9
+nest,0.79,0.04,21.4
+darling,0.19,0.017,11.8
+andrusia,4.02,0.025,13
+bemidji,0.44,0.036,9.5
+mud,4.96,0.408,87.4
+albert lea,6.31,0.958,381.2
+bartlett,0.37,0.136,49.5
+big stone,0.31,0.159,16.5
+blackduck,0.14,0.038,14.5
+blackhoof,1.22,0.043,12.8
+buffalo,1.4,0.209,38
+cass,0.35,0.02,8.7
+clearwater,0.67,0.028,14.1
+cokato,2.6,0.231,10.7
+elbow,7.87,1.38,9.6
+gull lake,0.1,0.022,12.5
+heron,1.04,0.302,111.1
+leech,0.04,0.015,6.2
+madison,0.36,0.05,30.8
+mashkenode,5.38,0.075,25.3
+mcquade,1.2,0.04,10.7
+minnewaska,0.15,0.035,7.6
+pelican,0.06,0.032,11.4
+st. louis bay,32.54,0.216,4.7
+silver,0.53,0.6,126.1
+six mile,5.08,0.235,21
+swan,0.47,0.013,3.8
+trout,0.33,0.05,7
+enid,3.98,0.062,6.6
+ross barnett res.,3.56,0.045,10
+sardis,1.12,0.041,6.4
+grenada,1.57,0.051,6
+pomme de terre res.,0.66,0.043,9.4
+stockton res.,0.49,0.022,9
+thomas hill res.,0.48,0.082,5.8
+canyon ferry res.,2.31,0.047,5.8
+clark canyon res.,1,0.049,2.4
+flathead,0.36,0.008,1.3
+hebgen,0.47,0.022,4.1
+mary ronan,0.18,0.02,4.7
+mcdonald,0.29,0.006,0.5
+nelson res.,0.41,0.029,7.2
+seeley lake,0.97,0.015,2.2
+swan lake,1.56,0.01,3.3
+tally lake,0.51,0.011,2.1
+tiber res.,0.64,0.018,2.8
+tongue river res.,9.44,0.051,16.9
+whitefish,0.43,0.008,1.4
+branched oak res.,0.72,0.044,17
+harland country res.,2.22,0.112,27.8
+harry d. strunk res.,6.13,0.064,14.4
+hugh butler res.,1.61,0.061,16.6
+johnson res.,6.72,0.075,26.1
+c.w.mcconaughy res.,1.36,0.027,8.6
+pawnee res.,0.73,0.06,15.4
+swanson res.,0.87,0.067,14.4
+lake mead,6.23,0.016,3.1
+lahontan res.,9.53,0.198,4.6
+rye patch res.,1.18,0.095,4.9
+topaz,1.36,0.058,7.5
+powder mill pond,3.24,0.033,6.2
+winnipesaukee,0.12,0.006,2.1
+kellys falls pond,28.92,0.024,7
+glen,13.13,0.028,3.8
+budd,0.29,0.082,48.5
+greenwood,0.31,0.021,11.9
+oradell res.,5.08,0.055,22.3
+pinecliff,3.47,0.07,39
+pompton lakes,47.89,0.071,23
+duhernal,60.19,0.082,6.8
+hopatcong,0.12,0.022,13.6
+pailinskill ,18.17,0.133,7
+spruce run res.,0.28,0.02,15.3
+wanaque res.,0.4,0.014,7.1
+alamogordo res.,1.52,0.025,5.9
+bluewater,0.08,0.036,3.9
+conchas res.,0.29,0.02,3.3
+elephant butte res.,17.35,0.083,6.8
+el vado res.,2.67,0.034,2.2
+mcmillan,1.05,0.097,14.1
+ute res.,0.67,0.021,3.2
+canadiagua,0.14,0.009,4.3
+cannonsville res.,4.26,0.046,29.9
+carry falls res.,0.71,0.01,3.1
+cayuga,0.49,0.014,3.2
+cross,33.53,0.076,19.5
+keuka,0.1,0.008,5.7
+sacandaga res.,0.18,0.009,4.8
+saratoga,1.6,0.025,11.8
+seneca,0.38,0.01,6.1
+swinging bridge,7.07,0.057,28.7
+conesus,0.38,0.02,9.9
+lower st. regis,0.41,0.017,7.9
+allegheny,3.31,0.016,3.7
+badin,16.66,0.042,7.2
+blewett falls,91.07,0.09,4.2
+fontana,2.88,0.011,3.4
+hickory,6.08,0.047,7.3
+high rock,14.78,0.09,14.3
+hiwasee,1.79,0.015,5.7
+mountain island,4.31,0.018,5.6
+norman,0.73,0.019,5.8
+rhodhiss lake,14.24,0.061,3.6
+santeelah lake,0.68,0.011,5.4
+lake tillery,14.92,0.04,6.8
+waterville lake,93.3,0.103,3.8
+waccamaw lake ,0.06,0.018,3.6
+ashtabula,1.46,0.26,40.9
+darling,0.48,0.274,60.1
+lamoure,1.35,0.438,19.7
+matejcek,1.51,0.228,2.7
+sakakawea,4.49,0.016,6.9
+sweet briar,1.71,0.092,39
+beach city res.,27.15,0.122,10.9
+buckeye lake,0.51,0.179,186.6
+charles mill res.,5.56,0.127,67.1
+deer creek res.,5.54,0.098,9.9
+delaware res.,12.49,0.086,10.9
+dillon res.,32.91,0.163,27.4
+lake grant,8.51,0.113,40.5
+hoover res.,1.74,0.04,13
+mosquito creek res.,0.32,0.058,36.3
+pleasant hill res.,3.51,0.036,22.8
+grand lake of st. marys,0.49,0.148,79.2
+atwood res.,1.67,0.031,16.4
+berlin res.,5.87,0.042,15.5
+holiday,8.41,0.125,55.4
+o'shaughnessy res.,70.73,0.208,5.5
+rocky fork res.,2.05,0.067,38
+altus res.,0.42,0.041,14.8
+arbuckle,0.4,0.02,7
+elsworth,0.24,0.037,8.4
+eufaula,4.16,0.081,4.4
+fort cobb res.,0.57,0.038,15
+fort supply res.,0.44,0.07,9.7
+frances,36.7,0.142,8
+grnd lake o'the cherokees,6.9,0.087,6.8
+hefner,0.45,0.057,5.7
+keystone res.,16.48,0.136,21.4
+oologah res.,3.45,0.059,5.1
+tenkiller ferry res.,2.13,0.039,6.6
+thunderbird,0.32,0.027,8.4
+brownlee res.,33.47,0.079,16.2
+hills creek res.,3.66,0.038,2.3
+oxbow res.,183.51,0.071,10.3
+suttle lake,1.7,0.031,9.2
+blanchard res.,9.66,0.064,15.2
+conneaut,0.51,0.023,7.6
+greenlane res.,12.83,0.066,24
+pymatuning res.,0.23,0.07,56.3
+shenango river res.,3.92,0.058,26.8
+beaver run res.,1.7,0.009,5.2
+beltzville,0.55,0.01,4.9
+canadohta,0.78,0.02,19.2
+harveys,0.27,0.015,6
+indian,0.11,0.008,5.2
+naomi,0.28,0.014,5.5
+ontelaunee,4.78,0.04,11.8
+conewago,0.39,0.027,14
+pcono,0.93,0.024,5
+wallenpaupack,0.36,0.015,9.6
+slatersville,5.61,0.032,8.1
+turner reservoir,77.4,0.135,22.9
+fishing creek res.,53.03,0.143,2.8
+greenwood,8.69,0.061,8.2
+hartwell,0.83,0.013,6.2
+marion,3.54,0.055,8.7
+murray,1.45,0.024,6.4
+robinson,0.38,0.014,8.6
+wylie,8.38,0.045,5.4
+lake keowee,0.31,0.008,2.8
+saluda lake,15.23,0.046,1.5
+alvin,1.42,0.067,4.7
+angostura res.,0.53,0.019,3.7
+deerfield,0.19,0.033,3.6
+pactola,1.17,0.011,1.5
+richmond,0.11,0.187,18.5
+sand,7.07,0.0489,65.8
+sheridan,0.19,0.053,15.4
+east vermillion,0.3,0.211,100.8
+boone res.,10.73,0.052,11.4
+cherokee lake,3.83,0.051,12.2
+chickamauga res.,9.12,0.031,3.1
+douglas lake,5.55,0.026,4.6
+ft. loudoun res.,16.95,0.054,4.8
+great falls lake,11.36,0.02,4
+nickajack res.,41.36,0.051,2.7
+watts bar res.,8.3,0.032,5.6
+J. precy priest res.,4.75,0.056,10
+tims ford res.,1.27,0.021,6.7
+south holston res.,1.76,0.014,7.7
+woods res.,1.02,0.017,7.4
+amistad res.,0.98,0.013,2
+bastrop,0.27,0.022,12.4
+belton res.,3.95,0.016,8
+brownwood,0.29,0.027,4.9
+buchanan,0.98,0.036,8.6
+calaveras,0.76,0.038,22.5
+canyon,0.15,0.01,2.5
+lake colorado city,0.21,0.042,12.7
+lake corpus christi,2.4,0.113,19.8
+lake diversion,0.33,0.025,15.9
+eagle mountian,1.51,0.024,5.7
+fort phantom hill,0.37,0.06,6.3
+lewisville,1.25,0.045,14.2
+kemp,0.2,0.023,10.2
+houston,5.99,0.097,16.6
+lake o'the pines,0.95,0.031,12.9
+lavon,1.03,0.063,5.4
+livingston res.,6.43,0.196,16.1
+lyndon b. johnson,1.39,0.042,8.1
+medina,0.13,0.01,12.9
+meredith,6.41,0.021,3
+palestine res.,0.67,0.031,10.6
+possum kingdom res.,2.7,0.023,9.5
+o.c.fisher,0.06,0.098,24.7
+sam rayburn res.,0.3,0.029,6.3
+e.v.spence res.,0.55,0.036,11.8
+summerville,0.54,0.053,24.5
+stamford,1.44,0.073,18.5
+stillhouse hollow res.,0.37,0.018,3.9
+tawakoni,0.91,0.046,18.2
+texoma,4.1,0.042,12.5
+lake travis,0.64,0.018,5.6
+twin buttes res.,0.04,0.029,8.7
+white river res.,0.06,0.02,4.3
+whitney,1.24,0.028,6.9
+bear lake,0.09,0.011,0.9
+deer creek res.,2.47,0.038,9.1
+echo res.,2.5,0.047,7
+fish,0.05,0.023,12.5
+joes valley res.,0.7,0.012,2.5
+minersville res. ,1.45,0.192,33.6
+moon lake,0.52,0.008,2.7
+otter creek res.,0.63,0.067,11.8
+panguitch,0.36,0.071,46
+pelican,0.13,0.044,6.3
+piute res.,2.03,0.047,25.2
+sevier bridge res.,0.75,0.026,18.2
+starvation res.,2.7,0.016,5.7
+tropic res.,0.4,0.021,7.2
+utah lake,0.51,0.132,72
+willard res.,0.21,0.044,7.6
+champlain,0.93,0.018,11.1
+clyde,8.32,0.021,7.5
+harriman,0.88,0.009,1.8
+lamoille,25.21,0.018,3.5
+memphremagog,0.5,0.021,14
+arrowhead moutain,11.26,0.015,8.5
+waterbury,1.34,0.007,5.2
+claytor,10.06,0.031,5.6
+john w flannagan res.,2.47,0.011,6
+john h kerr res.,4.15,0.044,8.8
+occoquan res.,13.62,0.098,12.4
+smith mountain res.,2.23,0.016,11.6
+chesdin,3.89,0.044,12.6
+chickahominy,3.21,0.066,13.6
+rivanna res.,11.83,0.079,6.7
+keechelus,0.44,0.007,1.4
+moses,1.13,0.115,29.1
+sammamish,0.31,0.015,7.3
+whatcom,0.13,0.009,3.4
+bluestone res.,32.05,0.074,14.9
+lynn,8.65,0.006,4.7
+summersville res.,2.82,0.011,6.2
+tygart res.,6.79,0.006,1.2
+butternut,0.64,0.073,6.8
+delavan,1.12,0.141,43.9
+green,0.25,0.028,4.8
+kegonsa,1.85,0.115,30.9
+koshkonong,9.87,0.361,36.1
+nagawicka,1.33,0.124,12
+poygan,5.55,0.074,19.4
+shawano,0.07,0.02,11.9
+sinissippi,6.35,0.404,169.3
+tainter,20.3,0.111,13.7
+townline,1.4,0.078,5.1
+wapogasset,0.71,0.043,16.6
+wisconsin,15.21,0.058,51.4
+wissota,8.87,0.043,5
+tichigan,20.51,0.0269,44.7
+rock,0.05,0.013,8.1
+big eau pleine res.,1.52,0.071,35.5
+grand,8.57,0.19,65.3
+willow res.,0.47,0.029,9.2
+big sandy res.,1.2,0.087,4.4
+boulder,0.68,0.008,2.5
+boysen res.,3.56,0.037,6.3
+flaming gorge res.,1.35,0.014,5.6
+fremont lake,0.12,0.006,3.8
+glendo res.,3.24,0.045,8.5
+keyhole res.,0.46,0.028,7.8
+ocean lake,0.26,0.043,7.5
+seminoe res.,2.91,0.03,2.5
+woodruff narrows res.,6.02,0.069,13
+yellowtail res.,20.42,0.026,5.4
+Canyon Lake,,0.02,1.82
+medina lake,,0.02,1.9
+Lake Alan Henry,,0.08,1.94
+International Amistad Reservoir,,0.02,1.98
+Medina diversion Lake,,0.02,2.12
+TP Lake,,0.06,2.36
+Lake Daingerfield,,0.06,2.88
+Tyler State Park,,0.02,2.9
+Lake Striker,,0.04,3.06
+Lake Jacksonville,,0.02,3.08
+Lake Travis,,0.02,3.34
+Stillhouse Hollow Lake,,0.04,3.5
+Lake Cisco,,0.04,3.96
+Lake Texana,,0.18,4
+Lake Hawkins,,0.02,5.32
+Pickens Lake,,0.04,5.42
+Belton Lake,,0.02,5.54
+Brandy Branch Reservoir,,0.02,5.7
+Sam Rayburn Reservoir,,0.04,5.88
+Lake Nacogdoches,,0.04,5.94
+Lake Georgetown,,0.04,6.02
+Ray Roberts Lake ,,0.02,6.18
+Toledo Bend Reservoir,,0.04,6.4
+Moss Lake,,0.02,6.46
+Hubbard Creek Reservoir,,0.02,6.54
+Oak Creek Reservoir,,0.02,6.58
+Mackenzie Reservoir,,0.02,6.76
+Bridgeport Reservoir,,0.04,6.78
+Lake Kickapoo,,0.08,6.9
+Lake Austin,,0.02,7.06
+Lake Texoma,,0.04,8.26
+Lake Athens,,0.02,8.46
+O.H. Ivie Reservoir,,0.02,8.52
+Lake Coleman,,0.04,8.56
+Lake Brownwood,,0.04,9.12
+Lake Bob Sandlin,,0.02,9.76
+Lake Graham,,0.04,10.2
+Greenbelt Lake,,0.04,10.28
+Twin Buttes Reservoir,,0.04,10.3
+B A. Steinhagen Lake,,0.06,10.42
+Lake Kemp,,0.04,10.6
+Lake Amon G. Carter,,0.04,10.78
+Lake Buchanan,,0.02,10.82
+Possum Kingdom Lake,,0.04,11.04
+Lake Crook,,0.16,11.18
+Richland-Chambers Reservoir,,0.04,11.7
+Lake Tyler,,0.02,11.72
+Lake Conroe,,0.06,11.92
+Lake Tyler East,,0.02,12.1
+Lake Naconiche,,0.02,12.32
+North Fork Buffalo Creek Reservoir,,0.12,12.5
+Lady bird Lake,,0.06,12.64
+Lake Arrowhead,,0.16,12.72
+Lake Fork Reservoir,,0.04,12.98
+Big Creek Lake,,0.08,13.24
+Lake Holbrook,,0.02,13.36
+Lake Ratcliff,,0.04,13.78
+Lake Lyndon B. Johnson,,0.02,13.88
+Cox Lake,,0.26,14.14
+Granger Lake,,0.04,14.5
+Houston County Lake,,0.04,14.58
+Waco Lake,,0.04,14.8
+Whitney Lake,,0.02,14.9
+Lake Nasworthy,,0.04,15.06
+Aquilla Reservoir,,0.04,15.5
+Jim L. Chapman Lake,,0.08,15.54
+Grapevine Lake,,0.04,15.98
+Fort Phantom Hill Reservoir,,0.08,16
+Inks Lake,,0.02,16
+Marble Falls Lake,,0.06,16.1
+Lake Gladewater,,0.04,16.32
+Choke Canyon Reservoir,,0.06,16.42
+Navarro Mills Lake,,0.06,16.48
+Lake Waxahachie,,0.04,16.68
+Pat Mayse Lake,,0.04,16.82
+Benbrook Lake,,0.04,16.82
+Caddo Lake,,0.1,17.12
+Lake Gilmer,,0.04,17.16
+Diversion Lake,,0.04,17.42
+Eagle Mountain Reservoir,,0.06,17.52
+Leon Reservoir,,0.04,18.14
+Cedar Creek Reservoir,,0.06,18.24
+Lake Corpus Christi,,0.22,18.5
+Lake meredith,,0.04,18.64
+Red Bluff Reservoir ,,0.02,19
+Farmers Creek Reservoir (also known as Lake Nocona,,0.04,19.08
+Lake Woodlands,,0.92,19.06
+Tradinghouse Reservoir,,0.04,19.58
+E.V. Spence Reservoir,,0.06,19.82
+Lake Iowa Park,,0.12,19.88
+Bardwell Reservoir,,0.06,20.02
+Lake Pat Cleburne,,0.04,20.3
+Martin Creek Reservoir,,0.04,21.16
+International Falcon Reservoir,,0.06,21.28
+Lake Cypress Springs,,0.04,21.34
+Walter E. Long Lake,,0.04,21.44
+Lake Arlington,,0.06,22.22
+Lake Ray Hubbard ,,0.04,22.68
+Lake J.B. Thomas,,0.06,22.98
+Lake Worth,,0.06,23.08
+Lake Lavon,,0.06,23.22
+Lake Livingston,,0.1,23.78
+Lake Daniel,,0.12,23.94
+Lake Granbury,,0.04,24.32
+Lake O' the Pines,,0.04,25.08
+Lake Palestine,,0.04,26.1
+Lake Bastrop,,0.06,26.7
+Lake Sweetwater,,0.06,28.06
+Lake Limestone,,0.06,28.84
+White River Lake,,0.06,29.62
+Palo Duro Reservoir,,0.3,30.52
+Lake Weatherford,,0.04,30.74
+Lake Houston,,0.22,30.88
+Lake Stamford,,0.08,31.58
+Brady Creek Reservoir,,0.06,31.94
+Lake Tawakoni,,0.06,32.3
+White Rock Lake,,0.08,33
+Murvaul Lake,,0.06,34.2
+Lake Quitman,,0.08,34.84
+Wright Patman Lake,,0.08,36.56
+Lake Mexia,,0.16,36.94
+Lake Madisonville,,0.12,38.66
+Cedar Creek Reservoir/ Lake Fayette,,0.1,39.24
+Proctor Lake,,0.12,40.08
+Buffalo Springs Lake,,0.08,41
+Somerville Lake,,0.1,18
+Fairfield Lake,,0.14,42.66
+Lake Bonham,,0.08,49.62
+New Marlin City Lake,,0.2,50.58
+Lake Tanglewood,,1.02,68.88
+Springfield Lake,,0.22,71.98
+Lake Wichita,,0.3,96.74
+O.C.Fisher Lake,,1.52,323.94
+Rita Blanca Lake,,3.24,817.02

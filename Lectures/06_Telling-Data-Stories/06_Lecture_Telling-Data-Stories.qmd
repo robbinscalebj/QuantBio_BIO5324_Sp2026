@@ -1,0 +1,412 @@
+---
+title: "06 Lecture Telling Stories with Data"
+format: 
+  html:
+    embed-resources: true
+editor: visual
+bibliography: references.bib
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+- Literature presentations
+  + 2 per group
+  + Papers are on github under Literature Presentations/ folder
+  + Let's check out the rubric
+  + Group and paper assignment
+- Exam format
+  + A few conceptual, basic coding (minimal), and folder structure questions
+  + One collaborative wrangle to plot build. I will ask you to answer a scientific question by cleaning up some data and creating a plot. 
+- Reminder of bigger picture
+  + This course is an introduction, I don't expect you to learn a whole new language, but you should be frustrated
+
+# Lecture
+
+Now you've worked through the basics of data wrangling and visualization, it's time to better put these skills together and work on creating plots that tell stories. What I mean by that is they are goal-oriented, interpretable, and aesthetically pleasing. We will get more into themes, scales and transformations to really control our plotting.
+
+### Making good figures
+
+I'll blend two sources to draw up some guiding principles. Introduction to Modern Statistics (one of your texts) and [@rougier2014].
+
+-   Pick a purpose, identify your message
+
+    Ultimately what you're trying to do is convey a point, telling a story about your data that is part of a broader argument. Your figure needs to convey that point effectively. "Let the data speak for themselves" is fantasy. Before you create a figure, particularly those meant to be shared with others, you should be thinking about the point you are trying to make. And also know that the ggplot (or any other software) defaults are often not what you want to best convey that point!
+
+In this figure, the data are the same, but the message is different based on how it's represented.
+
+![From [@çetinkaya-rundel].Responses to a question about the efficacy of the government handling Brexit](Figures/purpose_figs.png)
+
+-   Do not mislead your reader
+
+    Strive to convey accurate messages as best as you can. Over (or under) exagerrating your results is indeed possible and thoughtfulness linking back to having a goal is critical. One of the easiest ways to change the look of your figures is to alter the ***scales*** of the data. Most commonly, log transformation of one or both axes, or changing the minimum and maximum values shown.
+
+![From [@rougier2014]. Relative change is not straightforward. How do these two sets of choices convey different messages?](Figures/misleading_readers.png)
+
+::: {layout-ncol="2"}
+![From [@huff1954]. Same data, scaled differently.](Figures/huff_geewhiz1.png)
+
+![](images/clipboard-1333005704.png)
+:::
+
+These examples aren't to say you shouldn't scale your axes to accentuate an effect, just that the choice is in your hands. Ultimately, you must honestly interpret figures in the light of other scientific evidence.
+
+-   Make the labels as easy to read as possible
+
+Critical to the previous example is creating legible, easy to interpret labels for axis titles, axis ticks, and legends - no matter your scaling choices, legibility should aid interpretation. Labels should stick out clearly, like bolded black font on white background, neatly nudged away from other text by space and orientation.
+
+How do these two options influence readability?
+
+![From [@çetinkaya-rundel].](Figures/easier_labels.png)
+
+-   Keep it simple and avoid chart junk
+
+Don't include way more "ink" than you need than to get your point across honestly and as objectively as possible. This avoids cluttered plots that distract from your reader seeing the message.
+
+How does background contribute (or not) to chart junk here?
+
+![[@rougier2014] show that background color is often chartjunk - wasted ink that distracts from the message, but in some cases can do some useful highlighting.](Figures/chartjunk.png)
+
+-   Color draws attention, but select it wisely.
+
+Use color sparingly, only where needed. Color can enhance a pattern for a particular group where the rest are grayscale, show a gradient effect (a gradual change of color from, say, red to white), or provide a mapping for strictly different categories. If you don't need color, just use grey scale. Look at the previous figure for this principle, too.
+
+When using color, tend toward using [colorblind-friendly](https://ggplot2-book.org/scales-colour.html#sec-colour-blindness) *palettes.*
+
+-   Ordering matters
+
+Having categorical variables (like factor levels) in a logical order makes your figure easier to read. If it doesn't alter interpretation negatively, order your variables by a statistic like their mean or max; or if your categorical variable is naturally ordered, consider that - but alphabetical is usually not helpful.
+
+![Category ordering](Figures/category_ordering.png)
+
+-   Figure captions are not optional
+
+    Figures in publications should mostly standalone, meaning that the reader shouldn't need to go into the main text to interpret it. Captions provide the minimal information that is necessary for the reader to get the point you're making: study design, sample size, statistical analyses, meanings for names (including abbreviated names) and symbols if not annotated, e.g., via a legend, interpretation of mapped aesthetics such as color, size, linetype, and shape.
+
+Let's work on how to apply these basic principles by developing some more control with ggplot2.
+
+![From [@wickham2026].](Figures/ggplot_components.png)
+
+# Code Along
+
+First let's go through some basic functions for layering, scale transformations, messing with theme, and ordering of variables. We'll go back to the penguins dataset, so let's import that by calling it from the package `palmerpenguins`, which as you'll recall has the dataframe in it. 
+
+```{r}
+library(tidyverse)
+penguins_df <- palmerpenguins::penguins
+options(scipen = 999) # just reduces ggplot from using scientific notation on axis ticks 
+
+```
+
+### Multiple layers
+Let's say you want to understand how body masses might compare across the three species in the penguins data set. So we have a categorical variable as the focal explanatory variable, and the body mass as the focal response variable. A nice way to make an efficient plot of the data with some summary statistics is to combine boxplots (which, remember, calculate some statistical properties of the data), and points. 
+
+We can do this with multiple layers. Let's start with the naive approach in ggplot.
+
+```{r}
+ggplot(data = penguins_df, aes(x = species, y = body_mass_g))+
+  geom_point()+
+  geom_boxplot()
+```
+
+ggplot gives us a warning about NAs we won't worry about (but pay attention in your own work). Can you see the problem here? 
+
+We can fix it by acknowledging that ggplot plots layers in order. 
+```{r}
+ggplot(data = penguins_df, aes(x = species, y = body_mass_g))+
+  geom_boxplot()+
+  geom_point()
+```
+Now we can see all the points, but we've still got some points covering our IQR lines of the boxplot. Not the worst problem but definitely cuts into some of the point of the boxplot. One thing that helps here is to change the opaqueness of the geom with `alpha` - it goes from 0 (transparent) to 1 (opaque). 
+```{r, warning = FALSE}
+ggplot(data = penguins_df, aes(x = species, y = body_mass_g))+
+  geom_boxplot()+
+  geom_point(alpha = 0.3)
+```
+Uh-oh. Some of these points are darker than others. Why do you think that might be? The alpha argument is fine.
+
+```{r}
+penguins_df|>filter(!is.na(body_mass_g))|>group_by(species)|>count()
+```
+This looks like way more data points than the number of points we're seeing on the plot.
+```{r}
+penguins_df|>filter(!is.na(body_mass_g))|>group_by(species, body_mass_g)|>count()|>
+  arrange(desc(n))
+```
+
+::: {.callout-tip title="Extra Thinking"}
+Instead of producing a dataframe like this, how could you visualize these counts by species and body mass using a barplot?
+:::
+
+
+Ah, so there are a ton of data points with the same value. Even if alpha (opaqueness) is low, the stacking of those data points makes them appear dark. Plus, closely neighboring values will also have similar problems. 
+
+Related, what do we think the measurement precision/limits was for the researcher's scale?
+
+
+When you have close points like this, a common trick is to jitter the points. 
+```{r, warning = FALSE}
+ggplot(data = penguins_df, aes(x = species, y = body_mass_g))+
+  geom_boxplot()+
+  geom_point(alpha = 0.3, position = position_jitter(width = 0.1))
+# OR
+ggplot(data = penguins_df, aes(x = species, y = body_mass_g))+
+  geom_boxplot()+
+  geom_jitter(alpha = 0.3, width = 0.1)
+
+```
+So this does a better job of showing all the data points, and also shows the IQR lines better, too. One weird thing that has happened is that our 'outlying' points are now effectively duplicated and show up as single black dots still because they are calculated separately by `geom_boxplot()`. Let's get rid of those:
+
+```{r, warning = FALSE}
+ggplot(data = penguins_df, aes(x = species, y = body_mass_g))+
+  geom_boxplot(outliers=FALSE)+
+  geom_jitter(alpha = 0.3, width = 0.1)
+
+```
+
+
+The default is to order these categories alphabetically. What if we wanted something more sensible like ordering by their mean in descending order? Let's choose another response variable where Adelie and Chinstrap values are a bit different - flipper_length_mm. Remember species is a factor, and we can reorder factor levels. We can do this by hand or using `fct_relevel()`. Let's calculate the means to figure out our order.
+
+```{r, warning = FALSE}
+penguins_df|>
+  group_by(species)|>
+  summarize(mean_fl = mean(flipper_length_mm, na.rm = TRUE))
+
+```
+The means happen to be alphabetically ordered. But we want the reverse. First thing we can do is just reorder the levels in our ggplot or do it in our dataframe (better if you want to keep this ordering in other plots)
+
+```{r, warning = FALSE}
+ggplot(data = penguins_df|>mutate(species = fct_relevel(species, "Gentoo", "Chinstrap", "Adelie")), aes(x = species, y = flipper_length_mm))+
+  geom_boxplot(outliers=FALSE)+
+  geom_jitter(alpha = 0.3, width = 0.1)
+
+penguins_df2 <- penguins_df|>mutate(species = fct_relevel(species, "Gentoo", "Chinstrap", "Adelie"))
+ggplot(data = penguins_df2, aes(x = species, y = flipper_length_mm))+
+  geom_boxplot(outliers=FALSE)+
+  geom_jitter(alpha = 0.3, width = 0.1)
+
+```
+What about using a function to do this for us so we eliminate typing errors on our part? `forcats` package has some good options here.
+```{r, warning = FALSE}
+
+ggplot(data = penguins_df|>mutate(species = fct_reorder(species, flipper_length_mm, mean, .desc = TRUE)), aes(x = species, y = flipper_length_mm))+
+  geom_boxplot(outliers=FALSE)+
+  geom_jitter(alpha = 0.3, width = 0.1)
+
+```
+
+
+#### Dynamite plots and empty `ggplot()`
+
+We could also represent these data with a specific kind of bar plot that is very common in science: the dynamite plot, named because it kind of looks like a dynamite plunger, consisting of a bar, that is the mean of the data, and a little crossbar extension often representing 1 standard deviation (SD) above the mean. So let's calculate a mean and SD for each species, and then plot them using `geom_col()` for the mean and `geom_errorbar()` for the SD. Note that the latter actually needs vertical upper and lower bounds with arguments `ymin` and `ymax`.
+
+
+Well, hold on. We actually have two different sets of y values we want to plot with two different kinds of geoms. As it turns out you CAN pass all the mappings to  `ggplot()`, but this is a good opportunity to show you how to pass mappings individually to separate geom layers. 
+```{r}
+penguins_sum1 <- penguins_df|>
+  group_by(species)|>
+  summarize(mean = mean(body_mass_g, na.rm = TRUE), 
+            sd = sd(body_mass_g, na.rm = TRUE))
+
+  ggplot(data = penguins_sum1)+
+    geom_errorbar(aes(x = species,ymin = mean-sd, ymax = mean+sd))+
+    geom_col(aes(x = species, y = mean))
+  
+   ggplot(data = penguins_sum1,aes(x = species,ymin = mean-sd, y = mean, ymax = mean+sd))+
+     geom_errorbar()+
+     geom_col()
+
+```
+Mission accomplished. But it completely conceals your data and any asymmetry about the lower part of the error bar (which can happen with transformations, see below), and wastes a ton of ink just representing one number (the mean). I don't recommend you ever use these in publications.
+
+### Scales and transformations
+The scales in ggplot offer a useful system for altering how your data are displayed and interpreted. By default, ggplot picks the range (beginning and end) and intermediate tick labels that make sense for the values in your variable. And it also displays them such that the change in distance in an x or y direction is additive. 
+
+Let's create a basic scatterplot to work on with a new dataset in your Data folder. 
+
+```{r}
+chla_df <- read_csv(here("Lectures/06_Telling-Data-Stories/Data/ChlaPLoadingData.csv"))
+glimpse(chla_df)
+```
+OK, so we have four variables. Lakes where observations of three other variables have been made: 
+P loading (the quantity of riverine phosphorus input over a period of time and area)
+TP (The concentration of P measured in the lake water)
+Chla (The concentration of phytoplankton pigment chlorophyll-a measured in the lake water, often a proxy for biomass).
+Notice the lake names couldn't parse some special characters and represented them like "\xf8" - we won't worry about that right now but in other cases you'd want to clean those up. 
+
+
+So limnology has a long history of studying the relationship between P and Chla, where P loading into lakes drives up P concentrations and P is commonly a limiting nutrient to phytoplankton growth. So adding P increases the probability of algal blooms - high biomass events. Let's check this well known relationship in this dataset compiled by Sara Coppelotti.
+
+```{r}
+ggplot(data = chla_df, aes(x = TP, y = Chla))+
+  geom_point()
+```
+Uhh no. This is a dust bunny. This is clearly showing that the distributions of our data are super compressed, with some extreme values making the *scaling* of these plots very wide to accommodate A LOT of data close to zero and a few data points several orders of magnitude larger. When we're talking about compressing data over orders of magnitude, think log transformation. Any base is fine, but usually choose either 10 or e (natural log) and make your transformation clear.
+
+We can use ggplot to do these log transformations for us. For continuous variables, we can use `scale_*_*()` functions, where the first asterisk is the axis (x or y) and the second asterisk is the type of variable that scale represents. On scatterplots it's usually continuous:
+
+```{r}
+ggplot(data = chla_df, aes(x = TP, y = Chla))+
+  geom_point()+
+  scale_x_continuous(trans = "log10")
+
+```
+Still weird looking, but check out the x axis tick labels. We can see a lot more spread in the data. AND Now the change across the x axis is going by multiples of 10 (rather than additions of 10). Note that we could have transformed our data and then plotted them, but this retains the original unit of measurement rather than showing the values of the log-transformed measurement.
+
+Let's see how this does on the y axis - we can simply control that with another y specific `scale_*_*()`.
+
+```{r}
+ggplot(data = chla_df, aes(x = TP, y = Chla))+
+  geom_point()+
+  scale_x_continuous(trans = "log10")+
+  scale_y_continuous(trans = "log10")
+
+```
+As TP increases, seemingly so does Chla. This is a well known relationship and we can see it here, but we can only see it on this log-log scatterplot. This implies a power law relationship: 
+
+$$
+Chla = a* TP^{b}
+$$
+This suggests a multiplicative relationship, where, for example an increase in 1 unit of TP doesn't imply an increase of X units of Chla, instead a 1 percent increase in TP implies a X percent increase in Chla.
+
+
+Back to the plot. Let's say we're not satisfied with where the tick labels are. We can specify those, as well.
+
+```{r}
+ggplot(data = chla_df, aes(x = TP, y = Chla))+
+  geom_point()+
+  scale_x_continuous(trans = "log10", breaks = c(0.005,0.01,0.05,0.1,0.2,1))+
+  scale_y_continuous(trans = "log10")
+
+```
+Typically, you want to have tick labels that are evenly spaced across the xaxis space and get close to covering the range of your data. This one's a little off kilter on evenness.
+
+::: {.callout-tip title="Extra Thinking"}
+Try specifying values that are fairly even across the logged xaxis. 
+:::
+
+You can also change the range of the scale by specifying its beginning and end. 
+```{r}
+ggplot(data = chla_df, aes(x = TP, y = Chla))+
+  geom_point()+
+  scale_x_continuous(trans = "log10", limits = c(0.0001, 100))+
+  scale_y_continuous(trans = "log10")
+```
+Here I've expanded the scale just as an example, but you could just as easily zoom in on a particular part of your data for emphasis of because you can't adequately see it.
+
+
+### Themes and labels
+
+Themes control a lot of the details of a ggplot that control readability. There are built in [ggplot2 themes](https://ggplot2.tidyverse.org/reference/ggtheme.html), you can customize themes, or you can probably download themes in other packages.
+
+#### Ggplot built-in themes
+Let's return to a penguins scatterplot. You may have noticed the default background is a light grey with gridlines. This is not great for publication-ready figures. Quickest way to change that is with built-in themes.
+
+```{r}
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point()+
+  theme_bw()
+
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point()+
+  theme_grey()
+
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point()+
+  theme_minimal()
+```
+Note the default theme is `theme_gray()`. All of these still have gridlines. Maybe another built-in theme gets rid of them, but I could just manually alter an element of the theme. `panel.grid` is the element of the ggplot that I want to get rid of. and we often get rid of elements by setting them eith the function `element_blank()`
+
+```{r}
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point()+
+  theme_bw()+
+  theme(panel.grid = element_blank())
+```
+
+To me, that's a much nicer background that makes or points stand out better. Another glaring issue is that these axes are just labeled with the strict variable names from the dataframe. This is an even bigger issue if your variable can't be informatively named. But, plot axes should always have very clear, informative titles! You can just enter in the strings you want for the respective axes using `xlab()` and `ylab()`.
+
+```{r}
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point()+
+  xlab("Body Mass (g)")+
+  ylab("Flipper Length (mm)")+
+  theme_bw()+
+  theme(panel.grid = element_blank())
+
+```
+
+This plot is looking much more professional, but the axis titles and tick labels are sort of small. How do we change that? These plot elements are axis.title and axis.text, respectively. If we want them gone we could use `element_blank()` like when we removed the grid lines, but we actually want to alter the text, to we use `element_text()` on them. `element_text()` has a number ofnon-data components you can mess with, like face (bold or italic), font size, angle, alignment, etc. Bolding your letters is often a good, readable choice.
+
+
+```{r, warning = FALSE}
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point()+
+  xlab("Body Mass (g)")+
+  ylab("Flipper Length (mm)")+
+  theme_bw()+
+  theme(panel.grid = element_blank(), axis.title = element_text(face = "bold", size = 18), axis.text = element_text(face = "bold", size = 14))
+
+
+
+```
+
+What about a third variable. Color is of course great for highlighting relationships by different categorical groups in a scatterplot.
+```{r, warning = FALSE}
+ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm, color = species))+
+  geom_point()+
+  xlab("Body Mass (g)")+
+  ylab("Flipper Length (mm)")+
+  theme_bw()+
+  theme(panel.grid = element_blank(), axis.title = element_text(face = "bold", size = 18), axis.text = element_text(face = "bold", size = 14))
+
+
+```
+
+Let's alter this so Species is capitalized and those points are just way to small, noting legends can also be altered. Note there are actually a lot of different ways to mess with the legend title, `labs()` is just one. But the legends also have components like title and text.
+
+
+```{r, warning = FALSE}
+fl_mass.p <- ggplot(data = penguins_df, aes(x = body_mass_g, y = flipper_length_mm, color = species))+
+  geom_point(size = 3, alpha = 0.5)+
+  xlab("Body Mass (g)")+
+  ylab("Flipper Length (mm)")+
+  labs(color = "Species")+
+  theme_bw()+
+  theme(panel.grid = element_blank(), axis.title = element_text(face = "bold", size = 18), axis.text = element_text(face = "bold", size = 14),
+        legend.title = element_text(size = 16, face = "bold"), legend.text = element_text(size = 12))
+
+fl_mass.p
+```
+ You can also directly alter the point size of the legend keys, but how did they change here?
+ 
+::: {.callout-tip title="Extra Thinking"}
+There are lots of other components in the `theme()` you can mess with. Go to the help file and look up all the different components and try to understand which pieces of these or other plots they control.
+:::
+
+## Writing plots to file
+
+
+Plot sizing is difficult and takes playing around with, but know that it's fully customizable. Note that things like font and point sizes have real meanings when you start saving plots - too small of a plot size and your plot elements will smoosh together, too big and you'll hardly be able to read it.
+
+Let's try saving our plot to file. This is readily done with `ggsave()`. Always save to a "Figures" folder or a "Plots" folder or something like that. Although I have a mix of lecture-purposed images in my "Figures" folder, I'll just put the plot in there. 
+
+Here we'll pipe our previous plot into `ggsave()`, which otherwise will default to using the last plot that was displayed.
+
+```{r}
+fl_mass.p|>
+  ggsave(filename = here("Lectures/06_Telling-Data-Stories/Figures/flipper-length_body-mass_relationship.jpeg"),
+         width = 8, height= 6, units = "in")
+
+```
+
+Save this file and go check it out.
+
+ Journals have specific submission guidelines for figures and figure quality, including file formats and resolution. File formats. .pdf and .jpeg are often good for manuscript submissions, but pay attention to journal requirements
+ 
+ 
+ # Conclusion
+ 
+The point of this lecture is to give you basic tools to see what's possible for you to make not just plots, but highly customizable reproducible plots. 

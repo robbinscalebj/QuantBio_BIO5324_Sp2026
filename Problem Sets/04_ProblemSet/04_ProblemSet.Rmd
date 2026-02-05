@@ -1,0 +1,46 @@
+---
+title: "Problem Set 4"
+output: html_document
+date: "2026-01-28"
+---
+
+
+This Problem Set covers Lectures 6 and 4
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Question 1
+What do you think is the most important principle of data visualization?
+
+# Question 2
+What happens when you set values for a scale's breaks that lie outside the range of what's plotted? How should you change the range of the values that are plotted?
+
+# Question 3 
+Non-default color palettes are often much nicer looking than ggplot's. You can use a different one to answer this question, but here's one: install the `ggsci` package and look at the help documentation like the [vignette] (https://cran.r-project.org/web/packages/ggsci/vignettes/ggsci.html) on how to change the color palette to a plot you make using the penguins dataset. Make sure color is mapped to a variable! 
+
+# Question 4
+Describe the advantages and disadvantages of dynamite plots.
+
+# Question 5 & 6
+Make a boxplot from any continuous variable in the penguins dataset, with species as the categorical variable. Plot the mean of the data as a separate `geom_point()` layer, with size = 3, on top of the boxplot. Create another plot the same way, but natural log transform the y scale. Describe any visual differences in these plots. 
+
+# Question 7
+Change the X label on this histogram to "Concentration (mg L^-1)", where ^-1 means the -1 is plotted as a superscript on L. Getting this kind of rendering of an expression was not in the lecture. Find an example of this type of problem being solved on StackOverflow or a similar forum and include the reference here. You can search for things like "ggplot xlab superscript" on google, but do find a reference from a human solving this problem.
+```{r}
+histo_df <- rnorm(100, 0,5)|>as_tibble()|>rename(Concentration_mg.L = "value")
+
+ggplot(data = histo_df, aes(x = Concentration_mg.L))+
+  geom_histogram()
+```
+
+# Question 8
+Take the boxplot of the penguins dataframe showing body mass for the different penguin species. Get rid of the X axis title and change the species names to be vertical. Both of these can be done in `theme()`.
+
+# Question 9 & 10
+-Build a plot that would show us something about the relationship between bill length and body mass for different species of penguin. 
+-Properly label (e.g., sentence case) the x and y axis titles, make the axis title and tick labels bold faced and a larger font size. 
+- Save the plot as a .jpeg file in a Figures folder in side your Problem Set 4 folder. So the path name should end with something like "04_ProblemSet/Figures/myfigure.jpeg.
+
+
