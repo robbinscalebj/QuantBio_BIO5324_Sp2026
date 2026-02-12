@@ -1,0 +1,181 @@
+---
+title: "Exam 1"
+output: html_document
+date: "2026-02-10"
+---
+
+Total Points: 75 on 15 questions.
+
+Notes to remember:
+
+- When I open up your Rproject and this RMarkdown, I should be able to run every single code chunk without error. That means 
+-- Any libraries need to be loaded, 
+-- File paths need to be relative (I should not see file paths start with "C:/Users/Johnny/..." because that path is not on my computer) and pointing to the correct locations in your folder, 
+-- And of course the code should run and produce the desired output - when I ask for code, it should be in a code chunk. 
+
+- Any short answers that are NOT code should not be answered in a code chunk.
+
+
+- ** MAKE SURE TO PUSH THE COMMIT OF YOUR EXAM FOLDER BACK TO GITHUB BY 9:30 AM on FRIDAY, FEBRUARY 13th (~24 hours after exam starts). ** 
+
+Load libraries in this setup chunk:
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Questions 1-10: (1 point each - 10)
+
+# Question 1
+Pull the column "A" from this tibble (dataframe) into a vector and print it.
+```{r}
+
+dataframe1 <- tibble(A = c(1,2,3,4,5))
+
+```
+
+
+# Question 2
+Show me what kind of variable "A" is in dataframe1 (i.e., what kind of vector is A)
+
+
+# Question 3
+Create a new variable in dataframe1 that is every element of "A" but divided by 2. 
+
+
+# Question 4
+What function would you likely use to get a package onto your computer from CRAN? No need for code on this one.
+
+
+# Question 5
+Create an object in your global environment that has the name "character_vector" and is in fact a character vector. Show how many elements it has. 
+
+
+# Question 6
+How many rows does dataframe1 have? Use code to calculate the number and print the result.
+
+
+# Question 7
+Create dataframe3 as a result of filtering dataframe2 to only include rows that are not NA for the variable A.
+
+
+```{r}
+dataframe2 <- tibble(fruit = c("apple", "banana", "orange", "banana", "banana", "orange", NA, "banana"), in_fridge = c(FALSE, FALSE, TRUE,FALSE, FALSE, TRUE, TRUE, FALSE))
+
+```
+
+# Question 8
+Use `group_by()` and  `count()` or another method to count how many times each fruit appears in dataframe3 (which you created in the previous question).
+
+
+# Question 9
+Show me the unique/distinct names of the levels of factor variable `fruit`. Do not simply print the whole column/vector. 
+```{r}
+dataframe2b <- tibble(fruit = c("apple", "banana", "orange", "banana", "banana", "orange", "orange", "banana", "blackberry", "blackberry"), in_fridge = c(FALSE, FALSE, TRUE,FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE))|>
+  mutate(fruit = as_factor(fruit))
+
+```
+
+# Question 10
+Show me one of the two pipe operators shown in class. No need for code on this one. 
+
+
+# Question 11: 5 points
+Explain the relationship between the concepts "packages", "tidyverse", and "dplyr verbs". No need for code on this one.
+
+
+# Question 12: 10 points
+`dataframe4` shows the outcome of an experiment with 3 treatments and 5 replicates per treatment. The outcome is number of eggs produced by birds with different diets. In a single piped chain:
+
+1) Make `dataframe4` tidy with `pivot_longer()` (hint: `everything()` function is a tidyselect way of saying "all the columns") 
+2) Make sure the outcome variable has a reasonable name
+3) Remove "treatment_" from the treament level names.
+4) Arrange the dataframe so that the treatment levels are in order. 
+
+BONUS: Add a new variable that shows the replicate number (1-5) for each treatment (assume the replicate numbers are not tied to any particular condition so it doesn't matter what row they are on) 
+
+```{r}
+dataframe4 <- tibble(treatment_a = rpois(5, 5), treatment_b  = rpois(5, 1), treatment_c  = rpois(5, 2))
+```
+
+
+
+# Question 13: 5 points
+Create a boxplot comparing the distribution of snout-vent lengths of the two (salamander) species. Overlay the individual measurements and get rid of the x axis title. Don't worry about prettying this up beyond that.
+```{r}
+reps5<-10
+dataframe5 <- tibble(species = c(rep("Ambystoma tigrinum",reps5), rep("Ambystoma maculatum", reps5)), svlength_cm = c(rnorm(reps5, 17.5, sd = 1), rnorm(reps5, 20, sd = 2)))
+
+```
+
+
+
+# Question 14: 30 points
+For this question you will import and wrangle two dataframes in Exam 1's data folder, then create a figure to explore the data. I've left some bits of code to get you started on each step. 
+
+## Wrangling steps
+(5 pts)
+1a) Create an object `alg_df` by importing the file "algae_spp_all.csv" These data show biovolumes of algal taxa measured in periphyton (the stuff that grows on rocks in streams) at different sites and events. 
+1b) Filter the rows to only where the species observed Cladophora glomerata (an nuisance filamentous algal taxon very common in eutrophic streams) using `filter(str_detect(Species, "Cladophora"))
+1c) Filter to rows with observations from Events 1, 2, 3, and 4 only.
+
+```{r}
+alg <- read_csv("REPLACEME WITH A FILE PATH")|>
+  filter(str_detect(Species, "Cladophora"))
+```
+
+
+
+(5 pts)
+2a) Create an object `tp_df` by importing the file "algae_spp_all.csv." This dataframe shows TP (mg/L), which is Total hosphorus in the water column, a nutrient often implicated in algal blooms, and a lot of other variables measured at each site and event. 
+2b) Remove rows that are not Event, Site_ID, and TP (mg/L). 
+2c) Rename the TP column to eliminate spaces and parentheses.
+
+```{r}
+tp_df <- read_csv("REPLACEME WITH A FILE PATH")|>
+
+
+```
+
+
+
+(5 pts)
+3) Use `left_join()` to tack the TP observations onto the Cladophora observations in a new dataframe. 
+
+```{r}
+joined_df <- alg|>left_join()
+
+```
+
+## Plotting steps
+
+(10 pts)
+4) Now use this joined dataframe to create a clear ggplot that explores "Is there a log-log relationship between Cladophora biovolume and TP?"
+Make the figure clear (don't worry about a caption) by 
+- Choosing a reasonable overall plot design (design meaning like one of the "Five Named Plots") 
+- Making any points a relatively large size with some transparency. 
+- Emphasizing different events with either color or facets (consider whether event needs to be a factor!)
+- Having clear axis titles and axis tick labels that are larger than default
+- Appropriately transforming the axes
+- BONUS: Use a non-default theme background, either with a pre-packaged theme or changing the background in `theme()` yourself
+
+```{r}
+plot <- ggplot(data = joined_df)
+
+print(plot) #help you visualize as you build up the layers/modifications
+```
+
+
+(5 pts)
+5) Save the figure as a file named "cladophora-tp_loglog.jpeg" file into a "Exam1/Figures/" folder (you'll have to create this, but you don't need to create it in R). Make sure its dimensions are reasonable so that when someone opens the figure file, everything is legible and visible. Start with these and change them as needed. Hint: If you want to go back-and-forth checking your file dimensions are good (recommended), you may need to close the file before trying to rewrite it!
+
+```{r}
+
+ggsave(plot = plot, "REPLACE ME WITH A PATH/cladophora-tp_loglog.jpeg", units = "in", height = 8, width = 8)
+```
+
+
+
+# Question 15: 10 points
+Short essay: I am looking for thoughtful reflection on this prompt n a paragraph or two. In that sense, there is not a 'right' or 'wrong' answer.  
+
+Compared to when you started the class, do you feel better about your ability to write code and organize data in ways that will help you contribute to principles like reproducibility and open science? Explain how specific skills you have practiced translate into those principles and may help in your future scholarly work/research. What have you found particularly challenging and how would you rate your progress in overcoming those challenges (relative to what the course materials have asked you to understand and do).
