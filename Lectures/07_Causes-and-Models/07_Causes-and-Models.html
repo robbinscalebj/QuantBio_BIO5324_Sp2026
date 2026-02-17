@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>07_Lecture_Causes-and-Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="07_Causes-and-Models_files/libs/clipboard/clipboard.min.js"></script>
+<script src="07_Causes-and-Models_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="07_Causes-and-Models_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="07_Causes-and-Models_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="07_Causes-and-Models_files/libs/quarto-html/popper.min.js"></script>
+<script src="07_Causes-and-Models_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="07_Causes-and-Models_files/libs/quarto-html/anchor.min.js"></script>
+<link href="07_Causes-and-Models_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="07_Causes-and-Models_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="07_Causes-and-Models_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="07_Causes-and-Models_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="07_Causes-and-Models_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">07_Lecture_Causes-and-Models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.0     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggdist)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggsci)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="housekeeping" class="level1">
+<h1>Housekeeping</h1>
+<ul>
+<li>Exam - Grade distribution, questions, concerns?</li>
+</ul>
+</section>
+<section id="lecture" class="level1">
+<h1>Lecture</h1>
+<p>Much of this lecture is coming from <span class="citation" data-cites="demesquita2021">De Mesquita and Fowler (<a href="#ref-demesquita2021" role="doc-biblioref">2021</a>)</span> Chapters 2 and 3 and <a href="https://www.r-causal.org/">Causal Inference in R</a> Chapter 1.</p>
+<section id="correlation-and-causation" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-and-causation">Correlation and causation</h2>
+<p>“Correlation does not imply correlation” - Why?</p>
+<p><img src="images/clipboard-3743423627.png" class="img-fluid"></p>
+<p>See thousands of these spurious correlations <a href="www.tylervigen.com/spurious-correlations">here</a>.</p>
+<section id="what-is-correlation" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-correlation">What is correlation?</h3>
+<dl>
+<dt>Correlation</dt>
+<dd>
+<p>The extent to which two features of the world tend to occur together (paraphrased from <span class="citation" data-cites="demesquita2021">De Mesquita and Fowler (<a href="#ref-demesquita2021" role="doc-biblioref">2021</a>)</span>).</p>
+</dd>
+</dl>
+<p>How would you describe the following correlations?</p>
+<p>Here is the relationship between a discrete variable (Ice Cream Bars Sold) and a continuous variable (Temperature in Fahrenheit)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>And next between a binary (something coercable or representable as 1 or 0) variable (Target gene activated) and a continuous variable (Telomerase activity)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>And the relationship of two binary variables - whether a person was in a treatment group or control group and whether that person was sick or not.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Treatment</th>
+<th style="text-align: right;">Disease (prop.)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Does knowing a correlation exists help you predict cases you didn’t measure?</p>
+<section id="what-is-a-correlation-useful-for" class="level4">
+<h4 class="anchored" data-anchor-id="what-is-a-correlation-useful-for">What is a correlation useful for?</h4>
+<ul>
+<li><p>Description</p>
+<ul>
+<li><p>Describing your sample may help you describe and understand the real world</p></li>
+<li><p>It may help to know that as temperature increases, more ice cream is sold</p></li>
+<li><p>Stronger assumptions are needed to move beyond description</p></li>
+</ul></li>
+<li><p>Prediction (Forecasting)</p>
+<ul>
+<li><p>Assumptions:</p>
+<ul>
+<li><p>The correlation is not just due to chance - statistical inference problem</p></li>
+<li><p>The correlation in your sample is representative of the population you’re interested in forecasting - extrapolation requires extra care</p></li>
+</ul></li>
+</ul></li>
+<li><p>Causal Inference</p>
+<ul>
+<li>Philosophical and statistical issue: Must rule out other correlations and use theoretical assumptions</li>
+</ul></li>
+</ul>
+<p>We’ll talk more about actually measuring correlations in the next lecture.</p>
+</section>
+</section>
+<section id="what-is-causation" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-causation">What is causation?</h3>
+<dl>
+<dt>Causal effect</dt>
+<dd>
+<p>change in some feature that <em>would result</em> from a change in some other feature</p>
+</dd>
+</dl>
+<p><em>would result</em> is critical here. The definition (from Oxford Languages and Google) for <em>would</em> “expresses the conditional mood, indicating the consequence of an imagined event.”</p>
+<p>“Human bodies operate at an ideal energetic frequency, but everyday stresses and anxiety can throw off our internal balance, depleting our energy reserves and weakening our immune systems. Body Vibes stickers come pre-programmed to an ideal frequency, allowing them to target imbalances. While you’re wearing them close to your heart, on your left shoulder or arm they’ll fill in the deciencies in your reserves, creating a calming effect, smoothing out both physical tension and anxiety. The founders, both aestheticians, <strong><em>also say they help clear skin</em></strong> by reducing inflammation and boosting cell turnover.”</p>
+<p><strong>How can we test the causal implication of the claim that Body Vibes clear skin?</strong></p>
+<p>In an alternative world, at the exact moment you try out a Body Vibes sticker, your friend swaps out an identical sticker that has not been pre-programmed to an ideal frequency. That is, <strong>everything else is the same</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Alternative World</th>
+<th style="text-align: left;">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Skin clearer</td>
+<td style="text-align: left;">Negative effect</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Skin same</td>
+<td style="text-align: left;">No effect</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Skin worse</td>
+<td style="text-align: left;">Positive effect</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<dl>
+<dt>counterfactual</dt>
+<dd>
+<p>any alternative world used for comparisons against the real world</p>
+</dd>
+</dl>
+<p><strong>The fundamental problem of causal inference is that you only observe one world.</strong> Everyone either gets the pre-programmed sticker or they don’t (the <em>potential outcome</em> for the opposite treatment is counterfactual). So how can we make and evaluate causal claims?</p>
+<p>Confounds - “unadjusted common causes” - “features of the sample and how we use it that mislead us”</p>
+<p>Why do experiments work? Experiments that randomize DELETE the backdoor path arrows</p>
+</section>
+</section>
+<section id="clear-questions-and-goals-define-your-statistical-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="clear-questions-and-goals-define-your-statistical-analyses">Clear questions and goals define your statistical analyses</h2>
+<p>The structure of your data do influence what kinds of analyses you will use, but it’s the questions and goals that define how you plan your data collection and experiments, what you expect from your analyses, and how you interpret their results. This is about having a “transparent and logical plan for connecting scientific hypotheses and models to data analysis,” as Richard McElreath puts it.</p>
+<p>There are three major goals in quantitative analysis, and you’ll notice these look a lot like the uses of a correlation above, and that’s for good reason.</p>
+<section id="description" class="level3">
+<h3 class="anchored" data-anchor-id="description">Description</h3>
+<p>Description is about describing the distribution of variables, sometimes <em>stratified</em> by other variables. Like relationships of bill lengths and body weight stratified by penguin. You have the tools to do a lot of this graphically.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This kind of description can help you build expectations for designing studies. Knowing the distributions (ranges, medians, means) of variables relevant to your line of work can help you home in on plausible effect sizes and spot errors (including in others’ works).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>During the COVID-19 pandemic, many dashboards displayed cases by region which were helpful to local policymakers and the public alike to think about changing conditions.</p>
+<p>The <strong>validity</strong> of our descriptive analyses are related to measurement and sampling errors.</p>
+<dl>
+<dt>measurement error</dt>
+<dd>
+<p>imprecision or inaccuracy (bias) in our quantification of a variable</p>
+</dd>
+<dt>sampling error</dt>
+<dd>
+<p>the difference between our collected data and its representation of the target that we’re asking a question about</p>
+</dd>
+</dl>
+<p>We must also question whether our target population is represented in our sample (our data). The more different these are, the less our question can be answered with our data - conversely, the less applicable our data are to our question for valid descriptions. <em>This is a key way to get an answer to the wrong question</em>. Might the people who take time to respond to surveys have different characteristics from those who won’t respond to them?</p>
+<p><img src="images/clipboard-327897785.png" class="img-fluid"></p>
+<p>Descriptive analysis is about describing data and statistical relationships as they appear, not about providing evidence for mechanisms. Descriptive analysis “helps us understand the population we’re working with, the distribution of the outcomes, exposures (variables we think might be causal), and confounders (variables we need to account for to get unbiased causal effects for the exposure).” <a href="https://www.r-causal.org/">Causal Inference with R, Ch. 1</a>. <strong>Descriptive analysis is the point you want to start all your data analyses</strong>.</p>
+</section>
+<section id="prediction" class="level3">
+<h3 class="anchored" data-anchor-id="prediction">Prediction</h3>
+<p>Prediction is about using data to make accurate guesses (predictions) about variables, often in unobserved situations (out of sample prediction) and into new times and spaces, what we often call forecasting. Good prediction models balance predictive accuracy with generalization to new samples.</p>
+<p>What are examples of prediction-focused models?</p>
+<p>The validity of prediction lies in predictive accuracy on a set of data that a model has not seen. Metrics such as root mean square error or AUC (for classification tasks) are often used here. But prediction metrics <strong>cannot determine causal structure</strong>.</p>
+<p>The variables we use to predict the variable of interest often don’t matter, but they can. For instance, poorly measured variables (i.e., high measurement error) may decrease the efficacy of a variable for predicting another variable.</p>
+</section>
+<section id="causal-inference" class="level3">
+<h3 class="anchored" data-anchor-id="causal-inference">Causal Inference</h3>
+<p>Causal inference is for when we are interested in asking questions about the effect of one variable on another. “Does smoking cause cancer?” “How does soil depth influence nitrogen processing?” The goal of causal inference is to estimate the <em>unbiased</em> effect of an exposure (causal agent of interest) on an outcome (response variable of interest).</p>
+<p>Making valid causal inferences requires several assumptions that are difficult or impossible to verify. The key to valid causal inference is defending against the influence of <strong>confounders</strong>. Confounders are variables that affect both your exposure and your outcome - they confound your ability to explain the outcome purely (unbiased) in terms of the exposure.</p>
+<p>Here’s an example. Let’s say you’re interested in the effect of taking calculus in high school on college GPA. So you measure a sample of students’ success and whether they took calculus in high school. And you find a positive correlation. Is this correlation representative of an unbiased, causal effect?</p>
+<p>What if taking calculus in high school is positively correlated with wealth and ability to get extra tutoring in college? What if taking calculus is positively correlated with <em>desire</em> to succeed in college, so taking calculus is a trait of people who are driven to do better at the next level? Maybe this results in a spurious correlation between high school calculus and college success.</p>
+<p><img src="images/clipboard-212053163.png" class="img-fluid"></p>
+<section id="why-do-randomized-experiments-work" class="level4">
+<h4 class="anchored" data-anchor-id="why-do-randomized-experiments-work">Why do randomized experiments work?</h4>
+</section>
+</section>
+</section>
+<section id="modeling" class="level2">
+<h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
+<p>Why do we build models?</p>
+<p>Models are representations (simplifications) of the world and underlie all statistical analyses. They can be conceptual and qualitative, or explicitly quantitative. Statistical models fall in this latter category. They can also be simple or complex. The mean is a model of a set of data, representing it as a statistical moment - a very simple, descriptive but quantitative model. But in most modeling exercises we’re usually interested in relationships between variables to describe, predict, or explain.</p>
+<p>Understanding of models comes from both of looking at their mathematical structure and toying with their behavior. This is how you can verify a model does what you think it does before you actually confront it with data to learn something about the data. And this is why you shouldn’t just throw models at your data - <strong>models are assumptions about a data generating process</strong>.</p>
+<p>Take for example one of the most common models - the linear model. Assume for now that this does mean ‘a straight line’ relationship. Here’s our example of Ice Cream Calories and Air Temperature again. What is this line?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20</span>) </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="st">`</span><span class="at">Air Temperature</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="at">mean =</span> <span class="dv">90</span>, <span class="at">sd =</span> <span class="dv">3</span>), <span class="st">`</span><span class="at">Ice Cream Calories Consumed</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rpois</span>(<span class="dv">50</span>, <span class="st">`</span><span class="at">Air Temperature</span><span class="st">`</span><span class="sc">*</span><span class="dv">5</span>))<span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="st">`</span><span class="at">Air Temperature</span><span class="st">`</span>, <span class="st">`</span><span class="at">Ice Cream Calories Consumed</span><span class="st">`</span>))<span class="sc">+</span> <span class="fu">geom_point</span>()<span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s a graphical representation of a linear model (method = “lm”) for the relationship between the two variables. And this relationship is represented as the best fitting line through the data. How about the mathematical structure of this model? You learned long ago that the equation for a line is y = mx + b, and that comes in handy now to describe this line of best fit. y is the <strong>response variable</strong> (Ice Cream Calories Consumed), x is the <strong>predictor variable</strong> (Air Temperature), b is the y intercept (the value of y when x = 0), and m is the <strong>slope</strong>, which is often what we’re interested in estimating in a lot of problems. We’ll show in the next lecture that this doesn’t have to actually be a slope in the conventional sense. More formally it’s the unit change in y with a unit change in x (equivalently: rise/run), or the first derivative of y with respect to x.</p>
+<p>So how do we toy with models? We simulate data and relationships. The relationship between ice cream calories and air temperature is totally contrived. I wanted a dataframe with 50 observations of the Air Temperature variable and 50 observations of the Calories Consumed variable. Critically, I wanted Calories Consumed <em>to be a function of</em> Air Temperature. So I could have done this:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="st">`</span><span class="at">Air Temperature</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">82</span>,<span class="dv">96</span>, <span class="at">length.out =</span> <span class="dv">50</span>),</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>       <span class="st">`</span><span class="at">Ice Cream Calories Consumed</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Air Temperature</span><span class="st">`</span><span class="sc">*</span><span class="dv">5</span>)<span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="st">`</span><span class="at">Air Temperature</span><span class="st">`</span>, <span class="st">`</span><span class="at">Ice Cream Calories Consumed</span><span class="st">`</span>))<span class="sc">+</span> <span class="fu">geom_point</span>()<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s a linear model: Calories Consumed = Air Temperature * 5 + (y-intercept). But this needn’t be linear of course.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">Temperature_C =</span> <span class="fu">seq</span>(<span class="dv">10</span>,<span class="dv">30</span>, <span class="at">length.out =</span> <span class="dv">50</span>), </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">Temperature_K =</span> Temperature_C <span class="sc">+</span> <span class="fl">273.15</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">reaction_rate =</span> <span class="fl">0.01</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.65</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> (<span class="fl">8.617333262e-5</span> <span class="sc">*</span> Temperature_K) <span class="sc">-</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                    <span class="dv">1</span> <span class="sc">/</span> (<span class="fl">8.617333262e-5</span> <span class="sc">*</span> <span class="fl">283.15</span>))))<span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> Temperature_C, <span class="at">y =</span> reaction_rate))<span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Reaction Rate"</span>, <span class="at">x =</span> <span class="st">"Temperature (C)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Statistical models are meant to represent both the relationship <em>and</em> the noise around that relationship, which we call error and is usually represented as eta (e.g., y = mx + b + eta). In this course, we’ll think a lot about normally distributed variables and errors. Recall we can simulate drawing from a normally distributed variable using <code>rnorm()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">variable =</span> <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">3</span>))<span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(variable))<span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now let’s say that we have a variable y that is deterministically a linear function of x, such that y = 2x (as x increases 1, y doubles). But let’s also say that we measure y along with x and this brings with it measurement errors. Our model needs to represent this stochasticity - we can represent the deterministic part of the model as the mean, and the stochastic part of the model as the standard deviation of a normal distribution.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="dv">10</span>,<span class="dv">20</span>, <span class="at">by =</span> <span class="dv">1</span>),</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(x), <span class="at">mean =</span> <span class="dv">2</span><span class="sc">*</span>x, <span class="at">sd =</span> <span class="dv">3</span>))<span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The data now don’t fall along a straight line, but we know the <strong>data generating process</strong> is a straight line. If we estimated this relationship with a linear model, it would try to figure out the slope and noise of the best fit line. Because we generated the data, we know what the model should approximately say for m and eta.</p>
+</section>
+</section>
+<section id="code-along" class="level1">
+<h1>Code-along</h1>
+<p>What are the tools of simulating data generating processes? We can do this with a few R functions, as you could see in the lecture. Let’s go through a few R functions that will be helpful.</p>
+<p><code>tibble()</code> you’ve seen before, and it helps us turn vectors into dataframes that are easily visualized either as tables or via ggplot.</p>
+<p><code>rep()</code> repeats a vector of values multiple times.</p>
+<p>You can take a single value and repeat it many times.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rep</span>(<span class="dv">1</span>, <span class="at">times =</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 1 1 1 1 1</code></pre>
+</div>
+</div>
+<p>or a vector of values and repeat it. These are convenient for coming up with repeated categorical levels</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>), <span class="at">times =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "a" "b" "c" "a" "b" "c" "a" "b" "c"</code></pre>
+</div>
+</div>
+<p><code>seq()</code> creates a vector (sequence) of values from one number to another by a specified increment</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="dv">10</span>, <span class="at">by =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
+</div>
+</div>
+<p>or by the desired length of the sequence.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">19</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  1.0  1.5  2.0  2.5  3.0  3.5  4.0  4.5  5.0  5.5  6.0  6.5  7.0  7.5  8.0
+[16]  8.5  9.0  9.5 10.0</code></pre>
+</div>
+</div>
+<p><code>expand_grid()</code> creates a dataframe from all combinations of the vectors/factors put into it. So for example let’s say you apply three treatments to groups in two blocks:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Treatment =</span> <span class="fu">c</span>(<span class="st">"TrtA"</span>, <span class="st">"TrtB"</span>, <span class="st">"TrtC"</span>))<span class="sc">|&gt;</span><span class="fu">expand_grid</span>(<span class="at">Block =</span> <span class="fu">c</span>(<span class="st">"Block1"</span>, <span class="st">"Block2"</span>, <span class="st">"Block3"</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>f</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+  Treatment Block 
+  &lt;chr&gt;     &lt;chr&gt; 
+1 TrtA      Block1
+2 TrtA      Block2
+3 TrtA      Block3
+4 TrtB      Block1
+5 TrtB      Block2
+6 TrtB      Block3
+7 TrtC      Block1
+8 TrtC      Block2
+9 TrtC      Block3</code></pre>
+</div>
+</div>
+<p>You would still need to make multiple measurements in each of these treatments nested within blocks. How could we create this dataframe to have five individuals within each of these Treatment/Block groups?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>f<span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_grid</span>(<span class="at">individual =</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 45 × 3
+   Treatment Block  individual
+   &lt;chr&gt;     &lt;chr&gt;       &lt;int&gt;
+ 1 TrtA      Block1          1
+ 2 TrtA      Block1          2
+ 3 TrtA      Block1          3
+ 4 TrtA      Block1          4
+ 5 TrtA      Block1          5
+ 6 TrtA      Block2          1
+ 7 TrtA      Block2          2
+ 8 TrtA      Block2          3
+ 9 TrtA      Block2          4
+10 TrtA      Block2          5
+# ℹ 35 more rows</code></pre>
+</div>
+</div>
+<p><code>rnorm()</code> you’ve also seen several times. It randomly samples n times from a normal distribution defined by a mean and a standard deviation. This means it can give us an idea of how random chance can influence the patterns we see (or don’t).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>norm_dist1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">normal =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">2</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>emp_quantiles1<span class="ot">&lt;-</span><span class="fu">quantile</span>(norm_dist1<span class="sc">$</span>normal, <span class="fu">c</span>(<span class="fl">0.159</span>,<span class="fl">0.5</span>,<span class="fl">0.841</span>)) <span class="co"># Proportions of data theoretically below and above the standard deviation, and the median which should = the mean</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>norm_dist2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">normal =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="dv">2</span>))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>emp_quantiles2 <span class="ot">&lt;-</span><span class="fu">quantile</span>(norm_dist2<span class="sc">$</span>normal, <span class="fu">c</span>(<span class="fl">0.159</span>,<span class="fl">0.5</span>,<span class="fl">0.841</span>))  </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(norm_dist1,<span class="fu">aes</span>(<span class="at">x =</span> normal))<span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()<span class="sc">+</span><span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>,<span class="at">color =</span> <span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)<span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> emp_quantiles1[[<span class="dv">1</span>]], <span class="at">color =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> emp_quantiles1[[<span class="dv">3</span>]],<span class="at">color =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> emp_quantiles1[[<span class="dv">2</span>]], <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)<span class="sc">+</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"n = 10 random samples"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(norm_dist2,<span class="fu">aes</span>(<span class="at">x =</span> normal))<span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()<span class="sc">+</span><span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">4</span>, <span class="at">color =</span> <span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>,<span class="at">color =</span> <span class="st">"grey"</span>)<span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)<span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> emp_quantiles2[[<span class="dv">1</span>]], <span class="at">color =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> emp_quantiles2[[<span class="dv">3</span>]],<span class="at">color =</span> <span class="st">"red"</span>)<span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> emp_quantiles2[[<span class="dv">2</span>]], <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>)<span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"n = 1000 random samples"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>How we put this all together can help us simulate (emulate) any experiment, i.e., our data generating process, giving insight to our how models work and how violations of model structure which we often call <em>assumptions</em> may influence the interpretation and confidence in our work.</p>
+<p>Let’s say we want to simulate an experiment where we have two treatments and one control. Treatment A grows bacteria on a macronutrient rich plate, while Treatment B grows bacteria on a macro + micronutrient rich plate. Based on previous work, we hypothesize that the growth of these bacteria are limited by micronutrients or colimited by micro and macro nutrients, so we predict that treatment B will have the highest bacterial counts at the end of the treatment (relative to control), treatment A will not respond relative to the control. Specifically, we believe that Treatment B will have double the counts as the control - assume we know a lot about these cultures and have a good sense of their mean and variability. We also choose to have 5 independent replicates exposed to each Treatment.</p>
+<p>First let’s code the experimental setup.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>nreps <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>exp <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">Treatment =</span> <span class="fu">c</span>(<span class="st">"Control"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">replicates =</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span>nreps))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now let’s build in some potential results by assuming our response variables are normally distributed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>control_mean <span class="ot">&lt;-</span> <span class="dv">60</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>control_sd <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>blah <span class="ot">&lt;-</span> exp<span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mean_counts =</span> <span class="fu">case_when</span>(Treatment <span class="sc">==</span> <span class="st">"Control"</span> <span class="sc">~</span>  control_mean,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                                 Treatment <span class="sc">==</span> <span class="st">"A"</span> <span class="sc">~</span>  control_mean,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                                 Treatment <span class="sc">==</span> <span class="st">"B"</span> <span class="sc">~</span>  control_mean<span class="sc">*</span><span class="dv">2</span>))<span class="sc">|&gt;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Counts_10x5 =</span> <span class="fu">rnorm</span>(<span class="fu">n</span>(), <span class="at">mean =</span> mean_counts, <span class="at">sd =</span> control_sd))</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(blah, <span class="fu">aes</span>(<span class="at">x =</span> Treatment, <span class="at">y =</span> Counts_10x5))<span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_Causes-and-Models_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Is it reasonable to assume the standard deviation is the same in each treatment?</p>
+<p>Should we have started with a process-based model of bacterial growth (logistic-ish?).</p>
+<p>Summary: - Correlation doesn’t imply causation… but it’s more complicated than that. - Our goals define how we model, what we model, and how we interpret our models - Simulation is a tool that helps us understand our models and the sensitivity of their interpretations to our data. Renowned applied statistician Andrew Gelman calls this, in Regression and Other Stories, “Fake data simulation as a way of life”.</p>
+<p>In the next lecture, we’ll put this specifically into a framework of linear models (e.g., regression, t-tests, etc.) to help us understand how they work.</p>
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-demesquita2021" class="csl-entry" role="listitem">
+De Mesquita, Ethan Bueno, and Anthony Fowler. 2021. <em>Thinking Clearly with Data: A Guide to Quantitative Reasoning and Analysis</em>. Princeton University Press. <a href="https://books.google.com/books?hl=en&amp;lr=&amp;id=bHYvEAAAQBAJ&amp;oi=fnd&amp;pg=PR1&amp;dq=thinking+clearly+with+data&amp;ots=G4AjaXsqPA&amp;sig=agNpCOvBHIqf66e9oByyf8cVmZA">https://books.google.com/books?hl=en&amp;lr=&amp;id=bHYvEAAAQBAJ&amp;oi=fnd&amp;pg=PR1&amp;dq=thinking+clearly+with+data&amp;ots=G4AjaXsqPA&amp;sig=agNpCOvBHIqf66e9oByyf8cVmZA</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
