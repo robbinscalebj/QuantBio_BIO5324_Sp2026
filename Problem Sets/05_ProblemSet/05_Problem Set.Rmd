@@ -1,0 +1,58 @@
+---
+title: "05 Problem Set"
+output: html_document
+date: "2026-02-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Question 1
+What is the conceptual definition of correlation? How does that relate to causation?
+
+# Question 2
+Firefighters at a house correlates positively with house fires. Thus, firefighters cause house fires - do you agree? Why or why not?
+
+# Question 3
+simulate a parabolic, exponential, or hyperbolic relationship between two variables and plot it with a scatterplot (BONUS: add normally distributed noise, but make sure the original relationship is still clearly apparent in the plot). Why might you avoid intrepreting a regression line fit to these data?
+
+# Question 4
+Here, `norm_val` is simulated from a normal distribution and `gamma_val` is simulated from a gamma distribution - they are parameterized to have the same mean and sd. Why is the mean (orange vertical line) equal to the median (black vertical line) in the normally distributed variables? Why is the mean NOT equal to the median in the gamma distributed variable? No need to study up on the gamma distribution here, just look at the shapes of the distributions and make some inference about where most of the values are.
+```{r}
+
+set.seed(1)
+distros_df <- tibble(norm_val = rnorm(10000, mean = 10, sd = 4),
+                     gamma_val = rgamma(10000, shape = 6.25, scale = 1.6))
+
+ggplot(data = distros_df, aes(x = norm_val))+geom_density()+
+  geom_vline(xintercept = mean(distros_df$norm_val), color = "orange")+geom_vline(xintercept = median(distros_df$norm_val), color = "black")+
+  theme_bw()+theme(panel.grid = element_blank())
+ggplot(data = distros_df, aes(x = gamma_val))+geom_density()+
+  geom_vline(xintercept = mean(distros_df$gamma_val), color = "orange")+geom_vline(xintercept = median(distros_df$gamma_val), color = "black")+
+  theme_bw()+theme(panel.grid = element_blank())
+```
+
+# Question 5
+Some people say your response variable (i.e., your data) must be approximately normally distributed to do valid linear regression. Why is this incorrect?
+
+#Question 6
+Describe the pieces of the covariance equation in your own words. What is covariance? Why might we prefer to quantitatively examine Pearson correlation coefficients instead of covariance?
+
+
+# Question 7
+Take two variables from the penguins dataset and model their linear relationship with `lm()`. Show the `summary()` of the `lm` object and tell me what the estimated effect of the X variable is on the Y variable using the slope coefficient. Tell me what the intercept value means biologically or if that even makes sense biologically. 
+
+# Question 8
+Create a normally distributed variable Y with at least ten observations. Plot the points and calculate the mean with `mean()`. Now model the data with `lm()` as below (having 1 on the right hand side (RHS) of the formula tells lm to calculate an intercept). How are the mean of Y and its linearly modeled counterpart related? Why? 
+
+# Question 9
+Following up from question 8, how does changing the number of observations (n) or the standard deviation influence the calculation or estimation of the mean relative to the known value you set in rnorm()?
+
+
+# Question 10
+What are residuals? Define them mathematically and conceptually.
+
+
+

@@ -1,0 +1,411 @@
+---
+title: "08_Correlation and Linear Models"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+bibliography: references.bib
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Lecture
+
+Intro discussion: "If flu shots really prevent the flu, then no one who got a flu shot would get the flu. I got a flu shot and got the flu last year. Therefore, flu vaccines don't work."
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(knitr)
+penguins_df <- palmerpenguins::penguins|>
+  mutate(obs_index = row_number(), .before = 1)
+```
+
+## Correlation
+
+Today we're moving from conceptual, qualitative notions of correlation to quantitative measures of correlation. How did we conceptually define correlation in the last lecture? How do we measure correlation?
+
+-   covariance
+
+-   correlation coefficient
+
+-   slope of the regression line
+
+#### Mean, variance, and standard deviation
+
+First we need some statistics and notation that help us summarize variables and their distributions.
+
+##### A note on notation: Indexing
+
+Indices allow us to clearly denote individual observations. Take the penguins dataframe
+
+```{r}
+head(penguins_df)|>
+  kable()
+```
+
+Each observation can be denoted by an index, *i*. In this simple case it's just the row number. So we can refer to any observation of `bill_length_mm` as `bill_length_mm`~*i*~. if *i* = 1, it's the first observation of `bill_length_mm`, or `r penguins_df|>filter(obs_index == 1)|>pull(bill_length_mm)`.
+
+#### Summarizing distributions
+
+Variables also have distributions. You've visualized these with histograms. And distributions have **moments**, which are quantitative measures that tell us about the shapes of distributions. We'll talk about the first two, but you'll someday encouner the 3^rd^ and 4^th^ moments, skewness and kurtosis.
+
+-   1^st^ moment - Expected value (mean, denoted $\mu$)
+
+    The expected value, often denoted as **E\[X\]**, is the mean, $\mu$, You'll also see this as a bar over the variable, like $\bar{x}$. We'll tend to use $\mu_{x}$, which for bill length is calculated $\mu_{\text{BillLength}} = \frac{\sum_{i=1}^{n} \text{BillLength}_{i}}{n}$. So it's the sum of the individual values for a variable, divided by the number of individual values. I trust you're basically familiar with this.
+
+    What kind of mean is this?
+
+-   2^nd^ moment - Variance (denoted $\sigma^{2}$)
+
+The variance is a measure of spread - how far away are individual values from the variable's mean? - For bill length calculated as $Var_{\text{BillLength}} = \frac{\sum_{i=1}^{n} (\text{BillLength}_{i}-\mu_\text{BillLength})^{2}}{n}$.
+
+Let's walk through calculating the variance. First, calculate the deviance of each observation from the variable's mean and square it.
+
+```{r}
+(sq_devs <- penguins_df|>select(bill_length_mm)|>
+  mutate(mean = mean(bill_length_mm, na.rm = TRUE),
+         deviation = bill_length_mm - mean, # Does this ordering matter?
+         sq_deviation = deviation ^2)) 
+```
+
+Then sum together those squared deviations and divide by the total number of observations. So the numerator here is a **sum of squared** deviations - you'll see sum of squares pop up later in the course.
+
+```{r}
+(bl_variance <- sq_devs|>
+  filter(!is.na(sq_deviation))|>
+  summarize(variance = sum(sq_deviation)/n())|>
+  pull(variance))
+# R also has a `var()` function to calculate variance
+(var(penguins_df$bill_length_mm, na.rm = TRUE))
+```
+
+Can the variance be negative? What does this mean for expectations of the distribution of variances?
+
+Because we squared everything, the variance is sort of difficult to interpret - what if we want some measure of variability on the same scale as the variable of interest? Let's introduce the **standard deviation** $\sigma$ as an 'unsquared' (i.e, square root of) variance, $\sigma^{2}$.
+
+```{r}
+(bl_sd <- sqrt(bl_variance)) # manually calculated
+(sd(penguins_df$bill_length_mm, na.rm = TRUE)) # sd() function exists!
+```
+
+The standard deviation is approximately interpretable as how far we expect observations to be from the mean on average.
+
+### Measuring correlation
+
+#### Covariance
+
+The covariance of two variables (X and Y) is $\operatorname{cov}(X,Y) = \frac{\sum_{i=1}^{N}(X_i - \mu_X)(Y_i - \mu_Y)}{N}$. We can again calculate this by hand, let's say for bill length and body mass.
+
+```{r}
+(penguins_df|>
+  select(bill_length_mm, body_mass_g)|>
+  filter(!if_any(everything(), is.na))|> # complete cases to avoid na.rm in mean(), etc.
+  mutate(mean_bl = mean(bill_length_mm),
+         mean_bm = mean(body_mass_g),
+         bl_deviation = bill_length_mm - mean_bl,
+         bm_deviation = body_mass_g - mean_bm,
+         product_deviations = bl_deviation*bm_deviation)|>
+  summarize(covariance = sum(product_deviations)/n())|>
+pull(covariance))
+
+# guess what, another base R command for this. hallelujah.
+cov(penguins_df$bill_length_mm, penguins_df$body_mass_g, use = "complete.obs")
+```
+
+Why sis this a measure of correlation? Whenever X is bigger than average ($X_i - \mu_X >0$) and Y is also bigger than average ($Y_i - \mu_Y >0$) (or vice versa whenever X and Y are both smaller than average), the product of the deviations of each observation will be positive - a *positive correlation*. Suppose a different case where whenever X is bigger than average, Y is smaller than average - the deviations for each observation will be negative - a *negative correlation*. If the observations are not related to each other, what value will the covariance tend toward?
+
+#### (Pearson) Correlation Coefficient
+
+The sign of the covariance is clear. But its magnitude is difficult to understand. A correlation coefficient is more interpretable across variable pairs regardless of magnitudes. It is calculated as $\operatorname{corr}(X,Y) = \frac{\operatorname{cov}(X,Y)}{\sigma_X \sigma_Y}$. So we've *normalized* to the product of the standard deviations of the two variables such that $-1 \le \operatorname{corr}(X,Y) \le 1$. The correlation when calculated this way is often called the *Pearson correlation coefficient*, and denoted *r*. Note that `cor()` in base R works just like the `cov()` example above.
+
+```{r}
+cor(penguins_df$bill_length_mm, penguins_df$body_mass_g, use = "complete.obs")
+```
+
+![From [Introduction to Modern Statistics](@çetinkaya-rundel).](images/clipboard-2844034197.png)
+
+*r* is interpreted as the strength and magnitude of relationship between two variables. We can also calculate *r*^2^, where $0 \le r^{2} \le 1$ and it can be interpreted as the proportion of variation in one variable explained (but not causally) by the other.
+
+#### Slope of a regression line
+
+Correlation coefficients don't tell you about the importance or size of the relationship between two variables. We calculated a correlation coefficient of \~0.6 for `bill_length_mm` and `body_mass_g`, so that's a decent positive correlation, but it doesn't tell us what the effect of one variable on another is. You could get this result from very different changes on each variable. So that's why we'll often focus on the slope of regression lines. We can calculate in the same statistical terms we've already specified, as it turns out. Assuming Y is on the vertical axis and X is on the horizontal (Y *against* X), then $\operatorname{Slope}(Y\mid X) = \frac{\operatorname{cov}(X,Y)}{\sigma^{2}_X}$. It's the covariance of the response variable and the explanatory variable, divided by the variance of the explanatory variable.
+
+Descriptively this is the *average* unit change in Y for every unit change in X, or $\frac{dY}{dX}$. Let's talk more about how we estimate this line from data.
+
+## Regression
+
+### Theory
+
+Regression as we'll discuss it is fit with a method called **Ordinary Least Squares (OLS)**. The goal is to find the best fit line - but what line is the best fit? It's the line that *minimizes the sum of squared deviations between the line (i.e., the expected value, denoted* $\hat{y_i}$*) and the observed values of our response variable (denoted* $y_i$). In this figure, the deviations are the vertical lines between any point and the line. All lines are possible, but we want the line with the lowest value for the sum of these (squared) deviations. The line that minimizes variance around it and we can describe it with the equation $\hat{Y} = \beta_0 + \beta_1 X$ where $\beta_0$ is the intercept, $X$ is our predictor, $\beta_1$ is the slope we're usually interested in. Again, this is just y = mx + b.
+
+We can specify the overall model that also captures noise and thus describes our data as $y_i = \beta_0 + \beta_1 x_i + e$, where $e$ describes the error, or variation unexplained by the best fit line. $\beta_0$, $\beta_1$, and $e$ are **model parameters** that are estimated through the least squares fitting process. The $\beta_i$ are also called **coefficients**.
+
+The deviations themselves are called **residuals** ($e_i = y_i - \hat{y_i}$) . Each observation has a value for this residual that is the predicted value - the observed value.
+
+![From [Introduction to Modern Statistics](@çetinkaya-rundel).](images/clipboard-3447026678.png)
+
+#### Fitting
+
+When we estimate model parameters (e.g., the coefficients) given a set of data, we say we are "fitting the model (to the data)."
+
+Let's simulate some data. We're interested in the relationship between Y and X. In particular, let's say Y changes 2 units for every unit change in X, plus some noise.
+
+```{r}
+set.seed(10)
+sim_df <- tibble(X = seq(-2,2,by = 0.1))|>
+  mutate(e = rnorm(n(), mean = 0, sd = 1.5),
+         Y = 0+2*X + e) #just pointing out Yintercept is zero
+
+  ggplot(sim_df)+geom_point(aes(x = X, y = Y))+
+    theme_bw()+theme(panel.grid = element_blank())
+```
+
+What should the line for this equation look like since we've specified it's structure in terms of $\hat{Y} = \beta_0 + \beta_1 X$. We should have $\hat{Y} = 0 + 2 X$. Let's see how OLS does - you don't have to calculate that by hand, though the matrix version of solving OLS regression is quite easy. Base R's `lm()` function (for linear model) does this matrix algebra for us to solve the OLS problem and estimate the coefficients for the line of best fit. Let's check it out.
+
+```{r}
+xy_lm <- lm(data = sim_df, formula = Y~X)
+summary(xy_lm)
+```
+
+This is a lot of information. Part of this is the residual standard error which relates to the e component of our model. The residual standard error tells us how much, on average, our data points ($y_i$) deviated from the expected line. But let's check out our coefficients and compare them to our simulation. `coef()` neatly pulls out the intercept and slope.
+
+```{r}
+coef(xy_lm)
+
+sqrt(sum(resid(xy_lm)^2)/39) #sqrt(SSE /df) = RSE above
+```
+
+The intercept is - 0.1 and slope is 1.6. These are ballparking it, but not quite what we said. Why? How does noise influence our point estimates of the coefficients?
+
+```{r, message = FALSE}
+set.seed(25) 
+sim_df2 <- tibble(X = seq(-2,2,by = 0.1))|> 
+  mutate(e1 = rnorm(n(), mean = 0, sd = 0.1), 
+         e2 = rnorm(n(), mean = 0, sd = 1.5),
+         e3 = rnorm(n(), mean = 0, sd = 10),
+         Y1 = 0+2*X + e1,
+         Y2 = 0+2*X + e2,
+         Y3 = 0+2*X + e3)
+
+sim_df2|>select(X, Y1, Y2, Y3)|>
+  rename("sd(0.1)" ="Y1","sd(1.5)" ="Y2","sd(10)" ="Y3")|>
+  pivot_longer(-X, names_to = "set", values_to = "Y")|>
+  ggplot(aes(x = X, y = Y))+
+  geom_point()+geom_smooth(method = "lm", se = FALSE)+ facet_wrap(.~set)+theme_bw()+theme(panel.grid = element_blank())
+```
+
+```{r, echo = FALSE}
+
+tibble(Coefficient = c("Intercept", "Slope"), 
+       "sd(0.1)" = c(coef(lm(data = sim_df2, Y1~X))[1], coef(lm(data = sim_df2, Y1~X))[2]),
+       "sd(1.5)" = c(coef(lm(data = sim_df2, Y2~X))[1], coef(lm(data = sim_df2, Y2~X))[2]), 
+       "sd(10)" = c(coef(lm(data = sim_df2, Y3~X))[1], coef(lm(data = sim_df2, Y3~X))[2]))|>
+  mutate(across(-Coefficient, ~round(., 3)))|>
+  kable()
+
+```
+
+#### On predicting binary variables
+
+Using our healthy/sick treat/no treat data. We can plot the regression line and find the exact information from the table we made
+
+```{r, echo = FALSE, message = FALSE}
+
+n_patients <- 100 
+treat_df <- tibble(treatment = rep(c(0, 1), n_patients/2))|>   
+  mutate(disease_prob = ifelse(treatment == 0, 0.9, 0.1),          
+         disease = rbinom(n_patients, 1, disease_prob))|>   
+  mutate(outcome = case_when(treatment == 0 & disease == 0 ~ "control - healthy",                              treatment == 0 & disease == 1 ~ "control - sick",                              treatment == 1 & disease == 0 ~ "treated - healthy",                              treatment == 1 & disease == 1 ~ "treated - sick"))   
+
+ggplot(treat_df,aes(outcome))+   geom_bar()       
+ggplot(treat_df,aes(as_factor(treatment),as_factor(disease)))+   
+  geom_jitter(width = 0.1, height = 0.1)+       
+  labs(x = "Treatment", y = "Disease Presence")+theme_bw()
+```
+
+```{r}
+lm(data = treat_df, disease ~treatment)
+
+```
+
+```{r, echo = FALSE, message = FALSE}
+treat_df|>   
+  group_by(treatment)|>   
+  summarize("Disease (prop.)" = sum(disease)/n())|>   rename(Treatment = "treatment")|>   
+  kable()    
+```
+
+#### Assumption = structure
+
+Models are crude automatons - they just do exactly what you tell them to do. But it's easy when you just use `lm()` to not see the structure you're imposing the model to estimate the data in.
+
+##### Linearity
+
+Linearity is imposed by the equation, $\hat{Y} = \beta_0 + \beta_1 X$. You *can* use polynomial predictors (i.e., $X^{2}$) to get some waviness, but that's beyond what we're covering.
+
+```{r, message = FALSE, echo = FALSE}
+
+parabola_df <- tibble(x = seq(-2,2, by = 0.1))|>
+  mutate(e = rnorm(n(), mean = 0, sd = 1),
+         y = (x-0.1)^2 + 3 + e)
+
+  ggplot(parabola_df,aes(x = x, y = y))+geom_point()+
+  theme_bw()+theme(panel.grid = element_blank())+
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+##### Normally distributed errors and constant error variance (aka homoscedasticity)
+
+Normally distributed errors are also estimated/assumed, so $e_i \text{~} Normal(0, \sigma)$, which says that our error values are normally distributed with a mean of 0 and a standard deviation, $\sigma$. This means we could also write our overall equation as $y_i \text{~} Normal(\mu, \sigma)$, where $\mu = \beta_0 + \beta_1 X$ is a deterministic function. Functionally we're estimating a mean (expected value) of y *conditional on the value of X.* If there's no X (i.e., X = 0), then the intercept is just the mean of y.
+
+Note that $\sigma$ is neither indexed nor determined by another function. This means the model estimates (assumes) only one $\sigma$, meaning $\sigma$ does not change with a predictor (X). Let's simulate to show this.
+
+```{r, message=FALSE}
+sigma_var <- tibble(X = seq(0,2, by = 0.01))|>
+  mutate(e = rnorm(n(), mean = 0, sd = 2*exp(X)),
+         Y = 0+20*X + e)
+
+ggplot(sigma_var, aes(x = X, y = Y))+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE)+
+  theme_bw()+theme(panel.grid = element_blank())
+```
+
+These assumptions mean the model is estimating a distribution of the Y's around the best fit line that is normally distributed with the mean = best fit line and the sd as a function of the magnitude of the errors. Graphically, that assumption looks like this:
+
+![From [Quantitative Research Methods for Political Science, Public Policy and Public Administration](https://bookdown.org/josiesmith/qrmbook/).](images/clipboard-2011099176.png)
+
+##### Independence
+
+Highly critical to calculating accurate standard errors and thus p-values when you're actually doing inference on whether a line or coefficient is 'statistically significant', this implies that the errors are unrelated to one another. Another word that commonly gets used here is *pseudoreplication*. Common with:
+
+-   Time series
+
+-   Spatially structured data
+
+-   Phylogenetically structured data
+
+-   Clusters
+
+Dealing with these is (mostly) beyond the scope of this course, but when you're on your own, you'll need to account for them to be able to trust your inference.
+
+### Residual Diagnostics
+
+It's important to know how well our models fit our data. Although a lot of modeling choice is *a priori*, we can often check some of our structural assumptions by looking at the residuals.
+
+Any model's residuals are stored in `lm` objects and are accessible most easily with the `resid()`/`residuals()`function or subsetting the `$residuals` list in the `lm` object (they are all equivalent), which produces a vector of the measured deviance of a data point from the best fit line. You'll often want to put these into a data frame to tack onto your data in some way, which we'll do in these examples.
+
+##### Checking linearity
+
+Now let's model our parabolic data from earlier. It's really easy to see from the raw data plot that they are non-linear, but let's plot the residuals against the predictor, `x`. Note here that we'll tack residuals onto the parabola_df data with `bind_cols()` which works great, but the ordering that data were put into `lm()` determines the order of the extracted residuals - R is just working down the rows of the dataframe.
+
+```{r}
+parabola_lm <- lm(data = parabola_df, y~x)
+parabola_resids <- parabola_df|>bind_cols(tibble(residual = residuals(parabola_lm)))
+head(parabola_resids)|>kable()
+ggplot(parabola_resids)+
+  geom_point(aes(x = x, y = residual))+theme_bw()+theme(panel.grid = element_blank())+
+  geom_hline(yintercept = 0, color = "orange")
+```
+
+Yup.
+
+##### Checking normally distributed errors
+
+This is a bit more difficult to spot. Technically we can't actually evaluate that each error is normally distributed because we have one data point for each, but we can look at the residuals in bulk. Let's first simulate some data that are continuous and not normally distributed. We'll use `rgamma()` to draw from a gamma distribution.
+
+```{r, warning = FALSE}
+gamma_df <- tibble(x = seq(0,20, by = 0.1))|>
+  mutate(y=rgamma(n(), shape = x*0.2, scale = 0.1))
+
+
+gamma_df|>
+  ggplot(aes(x=x, y = y))+
+  geom_point()+theme_bw()+theme(panel.grid = element_blank())+
+  geom_smooth(method =  "lm", se = FALSE)
+
+```
+
+Unlike the parabola, it's hard to know from the Y\~X scatterplot whether the errors are normally distributed.
+
+We can model this relationship with `lm()` and extract the residuals, but then we need to plot them against an expectation. `stat_function()` will do this for us - we tell it to use the `dnorm()` function, to calculate a plot of the probability density function with mean and sd matching those calculated from our residuals (i.e., it plots the expectation of normally distributed errors scaled to our data to allow comparison).
+
+```{r, warning = FALSE}
+gamma_lm <- lm(data = gamma_df, y~x)
+
+gamma_df|>
+  ggplot(aes(x = residuals(gamma_lm)))+
+  geom_density()+
+  stat_function(fun = dnorm, args = list(mean = mean(residuals(gamma_lm)),
+                                         sd = sd(residuals(gamma_lm))),
+                color = "red")+
+  scale_x_continuous(limits = c(-0.5,0.6))+
+  theme_bw()+theme(panel.grid = element_blank())
+```
+
+The match will never be perfect, especially as your data get more sparse. But this is clearly showing our data have a longtail to the right with a strong peak below the expected value (residual = 0).
+
+Another common way to check this assumption is a quantile-quantile (qq) plot. Here, our data are sorted from smallest to largest and compared to normally distributed data sorted by percentiles of the normal distribution.
+
+```{r}
+gamma_df|>
+  ggplot(aes(sample = residuals(gamma_lm)))+
+  stat_qq(alpha = 0.5)+
+  stat_qq_line(linewidth = 1.1, color = "orange", alpha = 0.8)+
+  labs(x = "theoretical", y = "sample")+
+  theme_bw()+theme(panel.grid = element_blank())
+
+```
+
+Normally distributed errors will fall along the qq line (orange). Peaking upward at the end like this indicates some seriously non-normal residuals, in particular suggesting what we saw above - a fairly fat right tail. That's a very common feature of gamma distributed variables. You can often solve this through log transforming your y-variable.
+
+##### Checking variance homogeneity
+
+Variance heterogeneity (heteroskedasticity, non-constant errors, whatever you want to call it) is *very* commonly violated in experimental data. Let's look again at gamma_df with our previous residuals vs. predictor plot.
+
+```{r}
+gamma_resids <- gamma_df|>bind_cols(tibble(residual = residuals(gamma_lm)))
+ggplot(gamma_resids)+
+  geom_point(aes(x = x, y = residual))+theme_bw()+theme(panel.grid = element_blank())+
+  geom_hline(yintercept = 0, color = "orange")
+```
+
+This was again very easily visualized just from the Y \~X scatterplot. The variance of the residuals is increasing as X increases, which violates our assumptions.
+
+##### Independence
+
+Again, sort of beyond this course though I'll touch on it later when we get to inference. There are some tools to use residuals to check for independence but the best way to stave off problems of pseudoreplication or non-independence is to design your experiments to avoid them - understand your experiment and experimental units. If you measure leaf area for 20 leaves on a tree across 3 trees in a species, you have 60 observations, but you really only have 3 if you're trying to ask a question the distribution of leaf area in that species or compare leaf area across species.
+
+### Fixing residual issues
+
+We'll discuss this at a later date, but all hope is not lost if you see (as often happens with data in the real world) that OLS regression does not capture the patterns in your data.
+
+### Prediction
+
+How do we plot the predicted equations? You could extract the coefficients and solve the equations, but `lm()` like many other R modeling functions has a `predict()` function that will take a data frame of new predictor values (i.e., X) and give you the expected value for that value of X. This is how you visualize your model estimates. Let's some simulated data and model it.
+
+```{r}
+sim_df3 <- sim_df2|>
+  select(X, Y2)
+
+sim_lm <- lm(data = sim_df3, Y2 ~ X)
+
+```
+
+Once you have a fitted model, you basically have a prediction machine. It only needs to be given values to plug in to its equation, and this one only needs X. Although we can predict at any value, it's sensible to create a sequence of values from the minimum observed X to the maximum observed X to visualize our regression line. This is exactly what `geom_smooth(method = "lm")` is doing.
+
+We need to supply these values in `predict()`'s newdata argument as a dataframe with the name matching the data the model was fit on. `predict()` outputs a single vector of the predictions that we really want attached to our newdata values for plotting. So like our residuals we can use \`bind_cols()\`. We can also plot our points from the original data, which is done best by specifying separate data arguments to the geoms.
+
+```{r}
+new_data <- tibble(X = seq(min(sim_df3$X), max(sim_df3$X), by = 0.1))
+pred_df <- tibble(preds = predict(sim_lm, newdata = new_data))|>bind_cols(new_data)
+
+ggplot()+
+  geom_line(data = pred_df, aes(x = X, y = preds))+
+  geom_point(data = sim_df3, aes(x = X, y = Y2))+
+  labs(y = "Y", x = "X")+
+  theme_bw()+theme(panel.grid = element_blank())
+```
