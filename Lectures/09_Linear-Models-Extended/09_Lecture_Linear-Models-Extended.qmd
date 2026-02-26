@@ -1,0 +1,325 @@
+---
+title: "09_Linear Models Extended"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+**Literature presentations** - assign groups today.
+
+Spend next Tuesday recording them. I'd like them ready by Thursday. I'll set up a Box folder where they should be uploaded.
+
+**Problem Set** is incoming but it's mostly about asking you to simulate and visualize data to build intuition about linear models. Slowly working my way through grading
+
+```{r, setup, message = FALSE, warning = FALSE}
+library(tidyverse);library(knitr)
+mytheme <- theme_bw() + theme(panel.grid = element_blank())
+
+```
+
+# Lecture
+
+What are the definitions for these terms?
+
+-   Predictor variable
+
+-   Response variable
+
+-   Residuals
+
+Recall: $y_i = \beta_0 + \beta_1 x_i + e_{i}$, where $e$ describes the error, or variation unexplained by the best fit line. $\beta_0$, $\beta_1$, and $e$ are **model parameters** that are estimated through the least squares fitting process. The $\beta_i$ are also called **coefficients**.
+
+### Transformations
+
+Sometimes our response variables are
+
+-   non-normal (in the errors, assuming a linear model)
+
+-   non-linear (functional form)
+
+-   heteroskedastic (variance is related to a predictor)
+
+Log transforming your response variable can be a quick fix, if it's a positive-only variable. If $log(Y) = \beta_{0} + \beta_{1}X + \varepsilon$, this implies another model for the data *on the response scale (the original, untransformed data)*: $Y = e^{\beta_{0} + \beta_{1}X + \varepsilon}$.
+
+**Multiplicative effects of predictors on response scale:** The terms are multiplied: $Y = e^{\beta_{0}}e^{\beta_{1}X}e^{\varepsilon}$. This is important to consider expectations for estimated values of $\beta_{i}$ (usually small) and interactions, which we'll discuss later.
+
+**Coefficient interpretation as relative/multiplicative effects:** The interpretation of the betas are the same on the log scale (i.e., $\beta_{1}=\frac{dy}{dx}$), but the effect on the response scale must be transformed. $e^{\beta_{X}}$ implies Y changes *proportionally* with changes in X,, so really $\frac{dy}{dx} =\beta_{1}Y$. In other words, on the scale of the original data, the **change in y with respect to x depends on the value of Y**, so it's better interpreted in terms of relative change.
+
+```{r}
+set.seed(10)
+df_log1 <- tibble(x = seq(-10,10, by = 1))|>
+  mutate(e = rnorm(n(), 0, 1),
+         y = exp(0.1*x + e),
+         logy = log(y))
+
+
+ggplot(df_log1, aes(x,y))+
+  geom_point()+
+  mytheme
+
+ggplot(df_log1, aes(x,logy))+
+  geom_point()+
+  mytheme
+```
+
+We can **backtransform** to estimate regression coefficients meaningful on the original scale. So if we want our slope coefficient to be interpreted as proportional change on the response scale, we could take $100(e^{\beta_{1}}-1)$.
+
+```{r}
+log1_lm <- lm(data=df_log1, logy~x)
+
+tibble(Term = c("Intercept", "Slope"),
+       "Model (log) Scale" =  c(coef(log1_lm)[1],coef(log1_lm)[2]), 
+       "Response Scale" = c(exp(coef(log1_lm)[1]),exp(coef(log1_lm)[2])), 
+       "% Change/Unit Change X" = 100*(`Response Scale`-1))|>
+  kable()
+
+```
+
+**Multiplicative errors**. We can demonstrate this both mathematically and visually.
+
+First, Remember the error term is, on the response scale, $e^{\varepsilon_{i}}$.
+
+```{r}
+errors_df <- tibble(errors = rnorm(20, 0, 2))|>
+  mutate(errors_exp = exp(errors))
+
+ggplot(errors_df, aes(x = errors, y = errors_exp))+
+  geom_point()+
+  mytheme+ggtitle("")
+
+
+```
+
+```{r}
+log1_preds <- df_log1|>
+  mutate(preds = predict(log1_lm, se.fit = TRUE)$fit, 
+         se = predict(log1_lm, se.fit = TRUE)$se.fit,
+         upper_95CI = preds + se*1.96,
+         lower_95CI = preds - se*1.96)
+
+ggplot(log1_preds)+
+  geom_point(aes(x = x, y = logy))+
+  geom_line(aes(x = x, y = preds))+
+  geom_line(aes(x = x, y = upper_95CI), linetype = "dashed")+
+  geom_line(aes(x = x, y = lower_95CI), linetype = "dashed")+
+  mytheme
+
+
+ggplot(log1_preds)+
+  geom_point(aes(x = x, y = y))+ #back to original y
+  geom_line(aes(x = x, y = exp(preds)))+
+  geom_line(aes(x = x, y = exp(upper_95CI)), linetype = "dashed")+
+  geom_line(aes(x = x, y = exp(lower_95CI)), linetype = "dashed")+
+  mytheme
+```
+
+```{r}
+
+df_l <- tibble(x = seq(-2,2, by = 0.1))|>
+  mutate(e = rnorm(n(), 0,0.3), 
+         y = exp(-2*x + e))
+
+ggplot(df_l, aes(x = x, y = y))+
+  geom_point()+
+  mytheme+geom_smooth(method = "lm")
+
+ggplot(df_l, aes(x = x, y = y))+
+  geom_point()+geom_smooth(method = "lm")+
+  mytheme+
+  scale_y_continuous(trans = "log")
+```
+
+What about when you have zeroes? y+n (e.g., y+1) transformation is bad.
+
+Bigger picture of transformations: They're often great, but be cognizant of how they may change the interpretation of your parameters and often the need to backtransform to the response scale.
+
+### Categorical predictors
+
+So we've focused on linear regression where $x_i$ is a continuous variable, so a line is an obvious interpretation. But what happens when we have a categorical predictor?
+
+Let's say we have a category a that's been measured 5 times with a mean of 2 and a category b with a mean of 6, plus some noise.
+
+```{r, echo = FALSE}
+
+df_sim <- tibble(x = rep(c(0,1), 5))|>
+  mutate(e = rnorm(n(), 0, 0.2),
+         y = 2+4*x + e, 
+         ab = ifelse(x == 0, "a", "b"))
+
+ggplot(df_sim, aes(x = ab, y = y))+
+  geom_point(alpha = 0.8)+
+  mytheme+theme(axis.title.x = element_blank())
+  
+```
+
+What's the influence of x on y here? Linear regression still works.
+
+```{r}
+lm_df<-lm(data = df_sim, y~ab)
+coef(lm_df)
+```
+
+What's the slope in this context? What is the intercept? How does that work with letters?
+
+This an example of dummy coding - x is an indicator variable.
+
+```{r}
+
+df_sim2 <- tibble(x = rep(c(0,1,1.25), 5))|>
+  mutate(e = rnorm(n(), 0, 0.2),
+         y = 2+4*x + e, 
+         ab = ifelse(x == 0, "a",ifelse(x == 1, "b", "c")))
+
+ggplot(df_sim2, aes(x = ab, y = y))+
+  geom_point(alpha = 0.8)+
+  mytheme+theme(axis.title.x = element_blank())
+```
+
+```{r}
+lm_df2 <- lm(data = df_sim2, y ~ ab)
+coef(lm_df2)
+```
+
+### Regression with multiple predictors
+
+Often called multiple regression (Not multivariate regression which is multiple response variables at once), this is just a linear model with multiple X variables, $\hat{Y} = \beta_{0} + \beta_{1}X_{1} + ... +  \beta_{i}X_{i}$. The $\beta_{i}$s now represent partial derivatives $\frac{\partial y}{\partial x_{i}}$. So it's the unit change in y with respect to a unit change in the X variable of interest *holding all other X variables constant*. These are also called *partial slopes* or *partial effects*.
+
+```{r}
+mr_df1 <- tibble(x = seq(20,-20, length.out = 20),
+                 z = seq(1,5, length.out = 20))|>
+  mutate(e = rnorm(n(), 0, 8),
+         y = 16 + 2.5*x + -6*z +e)
+
+ggplot(mr_df1, aes(x = x, y = y))+
+  geom_point()
+
+ggplot(mr_df1, aes(x = z, y = y, color = x))+
+  geom_point()
+mr_lm1 <- lm(data = mr_df1, y ~ x + z)
+summary(mr_lm1)
+
+```
+
+Uh oh. What's happened here?
+
+z turns out to be a function of x (or vice versa) - each are sequences matched by position - i.e. their *rank ordering* is the same. This is fundamentally correlation requires variation
+
+```{r}
+length_seq <- 40
+mr_df1 <- tibble(x = seq(3,-1, length.out = length_seq),
+                 z = runif(length_seq,1,10))|>
+  mutate(e = rnorm(n(), 0, 0.2),
+         y = 2 + 0.5*x + -1*z +e)
+
+ggplot(mr_df1, aes(x = x, y = y))+
+  geom_point()
+
+ggplot(mr_df1, aes(x = z, y = y, color = x))+
+  geom_point()
+
+mr_lm1 <- lm(data = mr_df1, y ~ x + z)
+summary(mr_lm1)
+```
+
+#### Visualizing multiple effects
+
+Visualizing the model predictions helps us understand what the model is allowing and what the coefficients mean.
+
+As we did in the last lecture, let's create some newdata to predict on. The trick here is there's no one right way to do it because there's no single X variable. So let's make predictions for x for different levels of z. How do we do that if it's not a factor variable?
+
+```{r}
+range(mr_df1$z)
+new_data <- tibble(z = c(2,5,8))|>
+  expand_grid(x = mr_df1$x)
+
+
+  pred_df <- tibble(preds = predict(mr_lm1, newdata = new_data))|>bind_cols(new_data)|>
+    mutate(z = as_factor(z))
+
+ggplot()+
+  geom_line(data = pred_df, aes(x = x, y = preds, color = z), linewidth = 1.1)+
+  geom_point(data = mr_df1, aes(x = x, y = y))+
+  labs(y = "Y", x = "X")+
+  theme_bw()+theme(panel.grid = element_blank())
+
+```
+
+So $\beta_{1}$ here is the slope of Y\~X. How does $\beta_{2}$ play in here? $\beta_{2}$ from the model was `{r} coef(mr_lm1)[3]`. Let's make it easier to see.
+
+```{r}
+ggplot()+
+  geom_line(data = pred_df, aes(x = x, y = preds, color = z), linewidth =1.1)+
+  geom_point(data = mr_df1, aes(x = x, y = y))+
+  labs(y = "Y", x = "X")+
+  theme_bw()+theme(panel.grid = element_blank())+
+  geom_hline(yintercept = c(0,-3), linetype = "dashed", linewidth = 1.1)+geom_vline(xintercept = 0, color = "orange", linetype = "dashed", linewidth = 1.1)
+```
+
+Note that as you add more predictors it gets increasingly impossible to visualize all their combined effects at once. This is just dimensionality.
+
+What is $\beta_{1}$ now? And what is the effect of X? It's not so simple. $\frac{\partial Y}{\partial X} = \beta_1 + \beta_3 Z$
+
+But a bigger picture way to look at this is adding a predictor is like **adjusting the intercept of one regression for different levels of second predictor variable**. This is fundamentally what you're doing in ANOVA, just categorical variables so you're not dealing with continuous slopes. But not to be confusing the term "intercept", what is $\beta_{0}$ here?
+
+#### Interactions
+
+What if we don't just want the intercept of a relationship to vary? What if we want the implied slopes for different levels of a variable to be different? This is where **interactions** come in. Interactions are terms that are a new $\beta_{i}$ but it's X values are a multiplication of two other predictor variables. Practically, this means that the slope, not just the y intercept, depends on the values of two different X values.
+
+So let's introduce a third term. And then in the `lm()` formula syntax, an interaction is specified with a `:` with the two variables on each side, `x:z`. But note that if you specify `x*z`, this will automamtically expand to include the **main effects** for the two terms, so it is equivalent to `x + z + x:z`. You usually want those main effects. What happens otherwise?
+
+```{r}
+length_seq <- 80
+mr_df1 <- tibble(x = seq(3,-1, length.out = length_seq),
+                 z = runif(length_seq,1,10))|>
+  mutate(xz = x*z,
+         e = rnorm(n(), 0, 0.2),
+         y = 2 + 0.5*x + -1*z +0.3*xz + e)
+
+ggplot(mr_df1, aes(x = x, y = y))+
+  geom_point()
+
+ggplot(mr_df1, aes(x = x, y = y, color = xz))+
+  geom_point()
+
+mr_lmint <- lm(data = mr_df1, y ~ x + z + x:z)
+summary(mr_lmint)
+```
+
+Remember \$\\beta\_{1} is the slope when z = 0.
+
+Okay, let's predict again to visualize the implied relationships.
+
+The newdata argument is the same, but why don't we need to create a new values for xz to predict on?
+
+```{r}
+
+  pred_dfint <- tibble(preds = predict(mr_lmint, newdata = new_data))|>bind_cols(new_data)|>
+    mutate(z = as_factor(z))
+
+ggplot()+
+  geom_line(data = pred_dfint, aes(x = x, y = preds, color = z), linewidth = 1.1)+
+  geom_point(data = mr_df1, aes(x = x, y = y))+
+  labs(y = "Y", x = "X")+
+  theme_bw()+theme(panel.grid = element_blank())
+
+```
+
+A note on interactions and sample sizes. Some say you need about 4 times the sample size to detect an interaction in your datasets as you need to detect an additive effect.
+
+What happens when you simulate data without an interaction and fit a model with an interaction? Or vice versa?
+
+#### Diagnostics
+
+Diagnostics are the same as for simple linear regression! qqplots and residuals vs predicted plots. But with multiple predictors you may need to check for homoskedasticity for multiple predictors.
+
+### Next lecture: 
+
+Remote, with emphasis on collinearity, variable selection, and adjustment (more on why you would use multiple regression).
