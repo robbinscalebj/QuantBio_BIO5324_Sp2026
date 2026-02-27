@@ -1,0 +1,55 @@
+---
+title: "06_Problem Set"
+output: html_document
+date: "2026-02-25"
+---
+
+
+# Question 1
+Describe how OLS regression estimates the line of best fit.
+
+# Question 2
+What is the deterministic part of the linear regression equation $y_{i} = \beta_{0} + \beta_{1}X_{i} + \varepsilon_{i}$ (if this isn't rendering for you it's y = Beta_0 + Beta_1 * X + error)? Why is it called 'deterministic' and how does this relate to the 'mean' or 'expected value' of y?
+
+# Question 3
+Simulate a y variable with 20 data points that are a function of an x variable such that y = 10 + -5* X, also assume that the y data have some noise that is normally distributed around their values with a standard deviation of 2. Plot the predicted relationship from an OLS model of the relationship between y and x *on top of the simulated data*.
+
+# Question 4
+You have data (y) that look like they are an exponential function of an X variable and suspect strongly that linear regression would be inappropriate. What can you do to estimate the relationship between y and x?
+
+
+# Question 5 & 6
+-Simulate an experiment for a response variable you are interested in. Create a 3 category X variable where at least one of the categories determines the mean strongly. Assume normally distributed error around the means. 
+-Now plot the data using `geom_point()`, not a boxplot. 
+- Finally, estimate the parameters with OLS regression, and show me what the model estimated for the Beta coefficients and tell me what they mean.
+-BONUS +3: Plot the means (as `geom_point()`) plus and minus the standard error (as `geom_errorbar()`) estimated from the model as layers below the data points. Hint: Look at my example in lecture of using `predict()` to estimate the model means and 95% confidence intervals, latter of which are calculated from the standard error. Partial bonus credit will be given.
+
+
+# Question 7
+What is the slope of a regression line after it has been backtransformed from log to response (original data) scale?
+
+# Question 8 
+Here are two equations describing fitted regressions. For each, describe *why* you think slopes for different levels of Z will be equal or not equal. BONUS: Bring the effect of error into your discussion.
+
+y_1 = 0.2x + -0.3* z + 0.45*z + error
+y_2 = 4x + 15* z + 0.01*z + error
+
+
+
+# Question 9 & 10
+You have a dataset with a lot of zeroes, but it's hard to model zeroes! Here's some simulated data of the number of detected birds of a particular genus detected at different levels of forest coverage in an area.
+
+-Show how the slope and intercept parameters change in three scenarios: When you leave the zeroes alone and model the data as-is, when you 'correct' the zeroes by adding bird_taxa+0.1, and when you add bird_taxa + 1. 
+-Plot these three predicted  relationships on a single scatterplot using `predict()`. Describe whether adding 1's 'fixed' the model and whether these models are making good predictions for bird_taxa at low and high values of forest_percent.
+
+```{r}
+set.seed(10)
+sim0s_df <-tibble(forest_percent = runif(40, 0,100))|>
+  mutate(bird_taxa = rpois(n(), lambda = 0.1+0.04*forest_percent))
+
+ggplot(sim0s_df)+
+  geom_point(aes(x = forest_percent, y = bird_taxa))
+```
+
+
+
