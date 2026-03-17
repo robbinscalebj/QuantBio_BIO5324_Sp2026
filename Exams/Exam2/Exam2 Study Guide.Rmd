@@ -1,0 +1,46 @@
+---
+title: "Exam 2 Study Guide"
+output: html_document
+date: "2026-02-10"
+---
+
+Exam 2 is open note, including this study guide. The Exam will be 50 points and comprise mostly short answer questions with a couple short practical questions. 
+
+# Conceptual short answer 
+Is experimental design part of the data generating process that your model needs to account for either by omission or inclusion of different predictor variables?
+
+What is correlation? Provide a qualitative and one quantitative definition.
+
+How can correlation imply causation? How do we use models to infer causation in some cases? Assuming an effect is causal, what is a quantitative 'effect' from a linear model?
+
+Compare and contrast predictive and inferential (developing understanding) goals that might be used in linear (and other) modeling. Discuss a similarity and differences. (Recall the literature presentations)
+
+What is the goal of the Ordinary Least Squares algorithm and how does it achieve that goal?
+
+What is the regression equation? Define its components.
+
+How can linear regression be used to estimate relationships between variables that appear to have an exponential relationship, e.g., y = exp(x)?
+
+Discuss how you would check each assumption of a linear model.
+
+What is the interpretation of a linear regression coefficient when there are multiple predictor variables being estimated?
+
+What is an interaction effect and how does it change the meaning of the coefficients in a regression model?
+
+How does the meaning of the model coefficients change, if at all, when a predictor is a categorical vs a continuous variable? What is the slope when predictors are categorical vs continuous? What is the intercept when the predictors are categorical vs continuous?
+
+How are the regression slope, Pearson correlation coefficient, and covariance related? Answer this mathematically and qualitatively (i.e., use your own words, not just equations/pieces of equations). 
+
+Why are simulations useful tools for statistical modeling?
+
+# Practical
+Calculate and interpret variance, covariance, and Pearson correlation coefficient with `var()`, `cov()`, and `cor()`, respectively.
+
+Estimate a (single or multiple) regression in R. Extract and interpret:
+- The coefficients (slope and intercept)
+- The residuals
+
+Simulate categorical or continuous linear relationships with noise.
+
+Simulate an interaction between a continuous variable and a 2-factor categorical variable.
+

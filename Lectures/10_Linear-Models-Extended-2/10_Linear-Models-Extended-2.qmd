@@ -1,0 +1,190 @@
+---
+title: "09_Linear Models Extended"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+Literature discussions recap
+
+Analysis presentation final project dataset:
+
+-   Point is to build a reproducible project around querying a dataset with a small question and associated statistical analysis.
+
+-   Preferably your own data. Alternatively, publicly available data in a database. Must require some tidying.
+
+-   Must be approved by Friday March 27th
+
+Exam this Thursday
+
+-   Review after short lecture
+
+# Lecture
+
+Why do we sometimes include multiple predictor variables in a linear regression? When is that important?
+
+## Recall: Logic of Multiple regression
+
+Multiple regression is just a linear model with multiple X variables, $\hat{Y} = \beta_{0} + \beta_{1}X_{1} + ... +  \beta_{i}X_{i}$. The $\beta_{i}$s now represent partial derivatives $\frac{\partial y}{\partial x_{i}}$. So it's the unit change in y with respect to a unit change in the X variable of interest *holding all other X variables constant*. These are also called *partial slopes* or *partial effects*.
+
+In other words, if we are interested in the relationship between $y$ and $X_1$, multiple regression would estimate this relationship *independent of all the variation in* $y$ exp*lained by all other* $X_i$*'s in the model*.
+
+Frisch-Waugh-Lovell theorem shows this idea with residuals.
+
+Let's make some fake data after loading tidyverse.
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+```
+
+Consider how light and Nitrogen fertilizer can influence plant growth. Let's say we run an experiment where we add N fertilizer to N saturated soils such that N has a small but probable negative effect on growth. Let's also say nitrogen is itself influenced by water delivery - more water means more water delivery - and more water also means more plant growth.
+
+```{r}
+f_df <- tibble(water = runif(100, 10,100), 
+               nitrogen = rnorm(100, mean = 1.5*water, 25), 
+               growth = rnorm(100, mean = 3*water - 0.5*nitrogen, 1))|>
+  mutate(across(c(nitrogen, growth), ~ifelse(.<0, 0, .)))# just truncating non-zeroes
+
+ggplot(f_df, aes(water, growth))+
+  geom_point()+geom_smooth(method = "lm")
+ggplot(f_df, aes(water, nitrogen))+
+  geom_point()+geom_smooth(method = "lm")
+ggplot(f_df, aes(nitrogen, growth))+
+  geom_point()+geom_smooth(method = "lm")
+
+```
+
+What happened to our determined negative effect of N on plant growth? This linear regression shows a clear positive effect of N.
+
+```{r}
+coef(lm(data = f_df, growth ~ nitrogen))
+```
+
+Here's where the anatomy of regression can come in handy. Multiple regression estimates parameters that are *independent of the variation in y explained independently by other X variables.* So, we can use this technique to separate the joint effect of water and nutrients on growth into independent effects.
+
+Remember residuals are variation in y unexplained by an X variable. Meaning that the residuals are unrelated to X. So, if we regress nitrogen on water, we will obtain residuals that are now unrelated to the effect of water - we can eliminate the water effect from the nitrogen signal.
+
+```{r}
+lm_nitrogen <- lm(data = f_df, nitrogen ~ water)
+coef(lm_nitrogen)
+f_df2 <- f_df|>mutate(n_resid = resid(lm_nitrogen))
+
+```
+
+Notice two things here: First, the water effect on N is close to what we determined it to be. Second, we've extracted the residuals here, which are by definition independent of the water effect. SO what if we plot those water-effect-independent residuals against nitrogen?
+
+```{r}
+ggplot(data = f_df2, aes(y = n_resid, x = water))+
+  geom_point()+geom_smooth(method = "lm")
+
+ggplot(data = f_df2, aes(y = growth, x = n_resid))+
+  geom_point()+geom_smooth(method = "lm")
+
+summary(lm(data=f_df2, growth ~ n_resid))
+```
+
+As expected - residuals totally unrelated to water, and now we can see the slight negative effect of N on growth! This is the idea of what multiple regression is doing, as we get the exact same slope estimates.
+
+```{r}
+lm_growth <- lm(data = f_df, growth ~ water + nitrogen)
+summary(lm_growth)
+```
+
+That said, do not perform residual regression as a research analysis. Among a host of problems, it propagates errors improperly and can lead to misleaing results: in this case the standard errors on the N effect are much more precise in the true multiple regression.
+
+Depending on our objectives, this can be useful or harmful behavior.
+
+## Practical purposes of multiple regression
+
+### Adjustment for Confounding
+
+This is exactly what I just showed in the N fertilization example. The common effect of water on N and plant growth confounded or masked the actual effect of N on plant growth. Two broad scenarios:
+
+Observational studies. Can you identify causal effects without experimentation?
+
+Experimental studies where you can't control for a particular variable. What can you do?
+
+### Precision Improvement
+
+Sometimes, our variable of interest X is unrelated to another predictor Z, but Z's ability to explain noise in Y can help better identify the effect of X.
+
+## Practical problems of multiple regression
+
+### Collider bias
+
+Inclusion of variables in multiple regression hide causal effects. Regression doesn't just 'control for' predictor variables, it conditions estimates on those variables.
+
+Let this be the case: Photosynthetic rate in a leaf is caused by one factor: temperature. ps_rate in this example is not caused by water or evaporation. Water and temperature are also independent/uncorrelated. However, water and temperature both cause evaporation. What is the effect of water on photosynthetic rate? Should be zero.
+
+```{r}
+l_df <- tibble(
+  water = rnorm(100, 0,1),
+  temperature = rnorm(100, 0, 1),
+  evaporation = water + temperature + rnorm(100, 0, 1),  
+  ps_rate = 2*temperature + rnorm(100, 0, 1)     
+)
+
+
+```
+
+Because water affects ps_rate independently, we should be able to correctly recover its coefficients with simple linear regression. We should also find no effect of water on ps_rate.
+
+```{r}
+coef(lm(data = l_df, ps_rate ~ temperature))
+coef(lm(data = l_df, ps_rate ~ water))
+```
+
+Close enough! Now let's say we believe either or both of 1) ps_rate is influenced by evaporation and/or 2) it's always better to include more variables in a regression.
+
+```{r}
+coef(lm(data = l_df, ps_rate ~ water+evaporation))
+```
+
+What happened to our coefficient for water?
+
+### Multicollinearity
+
+Highly correlated variables mask identification of an effect of interest, even though the correct set of variables are included.
+
+Let's go back to our water and N example and say they are now highly correlated by decreasing the standard deviation of the noise in the relationship between N and water. What happens to our standard errors?
+
+```{r}
+m_df <- tibble(water = runif(100, 10,100), 
+               nitrogen = rnorm(100, mean = 1.5*water, 0.5), 
+               growth = rnorm(100, mean = 3*water - 0.5*nitrogen, 1))|> mutate(across(c(nitrogen, growth), ~ifelse(.<0, 0, .)))
+
+ggplot(m_df, aes(x = water, y = nitrogen))+
+  geom_point()
+
+summary(lm(data=m_df, growth ~ nitrogen + water))
+```
+
+## Model/variable selection
+
+You could in many cases fit many models to your data. You could fit a different model for each possible set of predictor variables - as many variables you might have measured during an experiment and their combinations. But this doesn't mean these models are equally good or bad. You have to think about your goal or estimand (the quantitative measure you are trying to model and interpret to answer your study question).
+
+### P-value based
+
+Backwards, forward, and stepwise selection. Goal is to find parsimonious model (eliminate variables that are not explaining "significant" variation). These techniques are generally considered highly problematic.
+
+### Information criterion
+
+Most common: Akaike's Information Criterion (recall the Literature Presentations). The goal of this is finding the most parsimonious model - best predictive power for the least number of variables.
+
+### Theory based
+
+Goal is to use theory/previous knowledge to determine which variables are necessary to include in a regression. Called d-separation in the causal inference world. Directed acyclic graphs (DAGs) can help you determine which variables you might adjust/control for (or not!).
+
+## Sensitivity
+
+What if you're unsure? Sometimes there is no correct model. Sometimes you don't have all the variables you need to properly identify your effects of interest. Especially if you've already carried out a study, all you can do is test how sensitive your conclusions are to the assumptions you make about model structure. Run your models under multiple sets of assumptions. Inference only works because we make a variety of assumptions ranging from statistical to theoretical.
+
+# Exam Review
