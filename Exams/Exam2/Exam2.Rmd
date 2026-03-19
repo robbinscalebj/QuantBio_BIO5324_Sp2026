@@ -1,0 +1,77 @@
+---
+title: "Exam2"
+output: html_document
+date: "2026-03-16"
+---
+Total Points: 50 on 8 questions.
+
+Notes to remember:
+
+- When I open up your Rproject and this RMarkdown, I should be able to run every single code chunk without error. That means 
+-- Any libraries need to be loaded in the setup chunk, 
+-- File paths need to be relative (I should not see file paths start with "C:/Users/Johnny/..." because that path is not on my computer) and pointing to the correct locations in your folder, 
+-- And of course the code should run and produce the desired output - when I ask for code, it should be in a code chunk. 
+-- Any short answers that are NOT code should not be answered in a code chunk.
+
+
+- ** MAKE SURE TO PUSH THE COMMIT OF YOUR EXAM FOLDER BACK TO GITHUB BY THE END OF CLASS. ** 
+
+Load libraries in this setup chunk:
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(readxl) #install.packages("readxl") if you need it installed. This is a package designed to work with Excel files
+```
+
+# Question 1 (5 pts)
+What is correlation? Provide a qualitative and one quantitative definition.
+
+# Question 2 (5 pts)
+Your goal (call this the estimand) for building a statistical model is to determine the unbiased ("true") relationship between population growth and polyunsaturated fatty acid (PUFA) content of the population's diet. You've measured a number of other variables, including a suite of other fatty acids and environmental variables. You fit all possible models from the perspective of combinations of variables to use as predictors for the response variable population growth (PopGrowth ~ [predictor set]) and then use an information criterion like AIC to choose the 'best' model. You interpret the coefficient for PUFA as the unbiased estimate of the estimand. How might your goal be different from the objective of your model selection and how could that cause your estimand to be different from your estimate?
+
+# Question 3 (5 pts)
+What is the goal of the Ordinary Least Squares algorithm and how does it achieve that goal?
+
+# Question 4 (5 pts)
+What is the regression equation? Define its components.
+
+# Question 5 (5 pts)
+What is a partial slope? Define a linear model that would produce a partial slope. No need to simulate data and fit a model, just produce a fake model formula outside of a code chunk.
+
+# Question 6 (5 pts)
+How are the regression slope, Pearson correlation coefficient, and covariance related? Answer this mathematically and qualitatively (i.e., use your own words, not just equations/pieces of equations).
+
+# Question 7 (5 pts)
+Run the following code and plot. What linear model assumption is violated here if regressing y on x? How is the data generating process (the simulation in this case) driving this violation?
+```{r}
+set.seed(12)
+n<-200
+df1 <- tibble(x = runif(n, 5,50),
+              y = 10*x + rnorm(n, 0, sd = x^1.25))
+
+ggplot(df1, aes(x = x, y = y))+
+  geom_point()+
+  geom_smooth(method = "lm")+theme_bw()
+```
+
+# Question 8 (15 points)
+
+Load data from your data folder (you may need to alter the filepath I've written below) to estimate how decomposition rate (k) of dead leaf litter is influenced by temperature. 
+- Natural log transform the decomposition rate. Make two scatterplots: Plot the decomposition rate and the log transformed decomposition rate against temperature. 
+- Discuss what properties of the variable decomposition rate would lead you to believe that log transformation will help estimating a linear relationship between the decomposition and temperature.
+- Use OLS regression to estimate the slope between log-transformed decomposition rate and temperature. Put into words what this coefficient means. 
+- Assuming this model (log decomposition ~ temperature) is correct, is this relationship linear (here, "straight line") or non-linear for the original scale/the untransformed data. Describe in very general terms the relationship between decomposition rate and temperature.
+```{r}
+
+massloss_df <- read_excel(here("Exams/Exam2/Data/massloss.xlsx"))|>
+  rename(temperature = "Mean temperature (ºC)",
+         decomposition_rate = "k (day-1)")
+
+```
+
+
+## Bonus: 10 points
+-Simulate a response variable with a mean determined by substantial* interaction between a continuous variable and a 2-factor categorical variable. Make sure to add some noise.
+- Use `lm()` to model the simulated data.
+- Use `predict()` to plot the the expected values of the response variable for the two categories across the range of the continuous variable. Make sure the continuous variable is on the X axis and map the categorical variable to the color aesthetic of the lines. *'Substantial' meaning the interaction should be apparent from the predictions.
