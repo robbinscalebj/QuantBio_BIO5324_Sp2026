@@ -1,0 +1,277 @@
+---
+title: "11_Introduction to Inference"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+Exam discussion
+
+Analysis presentation final project dataset:
+
+-   Point is to build a reproducible project around querying a dataset with a small question and associated statistical analysis.
+
+-   Preferably your own data. Alternatively, publicly available data in a database. Must require some tidying.
+
+-   Must be approved by Friday March 27th
+
+# Lecture
+
+## Goals
+
+-   Introduce terminology and distributions relevant to sample statistics and inference
+
+```{r, echo = FALSE, message=FALSE, warning = FALSE}
+library(tidyverse);library(ggsci)
+```
+
+## Samples and Statistics
+
+### Terminology
+
+(Statistical) Populations
+
+:   All the possible units and their associated observations of interested
+
+Sample
+
+:   A collection of observations from any population, ideally generated through *random* sampling
+
+Sample size (n)
+
+:   Number of observations in a sample
+
+Statistics
+
+:   Quantitative characteristics *of the sample*
+
+Parameters
+
+:   Quantitative characteristics *of the population* - these are the "true" values of interest
+
+Statistical inference
+
+:   Drawing conclusions about populations from sample data and detecting signal (i.e., biological effect) from noise of variation. "Are we fooling ourselves?" This is often done with NHST (Null Hypothesis Significance Testing).
+
+### Probability distributions
+
+You've already been introduced but let's review and extend. Statistical procedures generally require you to know the probability distribution of a variable being analyzed.
+
+#### Probability distributions for random variables
+
+A random variable has a *probability distribution* that describes the relative probabilities of its sample values. Things we might call our "Y" variables.
+
+```{r}
+E_Y <- 0
+tibble(Y = seq(-3,3, by = 0.1))|>mutate(probability = dnorm(Y, mean = E_Y, sd = 1))|>as_tibble()|>
+  ggplot(aes(x = Y, y = probability))+
+  geom_line()+
+  geom_vline(aes(xintercept = E_Y), color = "orange", linewidth = 1)+
+  annotate("text",x = E_Y+2, y = 0.3, label = "E[Y]", size = 10, color = "orange") +
+  annotate("segment",x = 1.75, y = 0.275, xend = 0.025, yend = 0.2,arrow = arrow(length = unit(0.4, "cm")), linewidth = 1, color = "grey")+
+  theme_bw()+
+  ylab("Probability Density")
+```
+
+What is the expected value of a probability distribution?
+
+What are the two parameters defining a normal distributed variable?
+
+What is "probability" here? What is the integral of this function (sum of the area under the curve)?
+
+We're of course not limited to the normal distribution. Here's the probability density function of the Poisson distribution.
+
+```{r}
+E_Y <- 2
+tibble(Y = seq(-3,10, by = 0.1))|>mutate(probability = dpois(Y, lambda = E_Y))|>as_tibble()|>
+  ggplot(aes(x = Y, y = probability))+
+  geom_line()+
+  geom_vline(aes(xintercept = E_Y), color = "orange", linewidth = 1)+
+  annotate("text",x = E_Y+2, y = 0.3, label = "E[Y]", size = 10, color = "orange") +
+  annotate("segment",x = E_Y+1.75, y = 0.275, xend = E_Y+0.25, yend = 0.2,arrow = arrow(length = unit(0.4, "cm")), linewidth = 1, color = "grey")+
+  theme_bw()+
+  ylab("Probability Mass")
+```
+
+What's going on here?
+
+And what happens if we shift this Poisson to a much higher mean/expected value?
+
+```{r}
+E_Y <- 15
+tibble(Y = seq(-3,40, by = 0.1))|>
+  mutate(pois_probability = dpois(Y, lambda = E_Y),
+         norm_probability = dnorm(Y, mean = E_Y, sd = sqrt(E_Y)))|>as_tibble()|>
+  ggplot()+
+  geom_line(aes(x = Y, y = pois_probability))+
+  geom_line(aes(x = Y, y = norm_probability))+
+  geom_vline(aes(xintercept = E_Y), color = "orange", linewidth = 1)+
+  annotate("text",x = E_Y+4.5, y = 0.3, label = "E[Y]", size = 10, color = "orange") +
+  annotate("segment",x = E_Y+3, y = 0.275, xend = E_Y+0.5, yend = 0.25,arrow = arrow(length = unit(0.4, "cm")), linewidth = 1, color = "grey")+
+  theme_bw()+
+  ylab("Probability Mass or Density")
+
+```
+
+We can also look at the PDF of the binomial distribution, useful for modeling binary outcomes.
+
+```{r}
+size_n <- 5
+tibble(Y = c(0,1,2,3,4,5))|>
+  mutate(probability = dbinom(Y, size = size_n, prob = 0.5))|>as_tibble()|>
+  ggplot()+
+  geom_col(aes(x = Y, y = probability))+
+  ylab("Probability Mass")+
+  theme_bw()+
+  xlab(paste("Successes out of ", size_n, "trials"))
+```
+
+Expected value $E[Y]$ is $np$, the size of the trials X the probability of success.
+
+#### Probability distributions for statistics
+
+Sampling distributions
+
+:   Probability distributions of statistics, important in theoretical approaches to confidence intervals and NHST. We can think of statistics as "unknown" randomly distributed variables even if the population parameter is assumed to be a single but unknown value (unless we measured every unit).
+
+#### *z* distribution
+
+The "Standard Normal" distribution - i.e., the special case of the normal dsitribution when mean = 0 and sd = 1. The ratio of the difference between a sample statistic and its population value to its population standard deviation.
+
+#### Student's *t* distribution
+
+```{r}
+
+df <- 2
+tibble(Y = seq(-3,3, by = 0.1))|>expand_grid(df = c(1,3,10))|>mutate(Probability = dt(Y, df = df), df = as_factor(df))|>as_tibble()|>
+  ggplot(aes(x = Y, y = Probability, color = df))+
+  geom_line(linewidth = 1.25, alpha = 0.6)+
+  scale_color_jco()+
+  guides(color = guide_legend(title = "Degrees of Freedom", reverse = TRUE))+
+  ylab("Probability Density")+
+  theme_bw()
+```
+
+Probability distribution of the ratio of the difference between a sample statistic and its population value to the sample standard deviation.
+
+#### $\chi^2$ (Chi-squared) distribution
+
+The $\chi^2$ distribution is the probability distribution of a variable that is the square of values from a standard normal distribution - so it can't be negative. Variances have t distribution so it can be used for interval estimation of population variances.
+
+```{r}
+tibble(Y = seq(0,20, by = 0.1))|>expand_grid(df = c(1,3,10))|>mutate(Probability = dchisq(Y, df = df), df = as_factor(df))|>as_tibble()|>
+  ggplot(aes(x = Y, y = Probability, color = df))+
+  geom_line(linewidth = 1.25, alpha = 0.6)+
+  scale_color_jco()+
+  guides(color = guide_legend(title = "Degrees of Freedom", reverse = TRUE))+
+  ylab("Probability Density")+ggtitle(expression(chi^2 ~ "Distribution with different degrees of freedom"))+
+  theme_bw()
+```
+
+#### *F* distribution
+
+```{r}
+tibble(Y = seq(0,5, by = 0.01))|>expand_grid(df1 = c(1,10), df2 = c(1,10))|>mutate(Probability = df(Y, df1 = df1, df2 = df2), df1 = as_factor(df1), df2 = as_factor(df2))|>as_tibble()|>
+  ggplot(aes(x = Y, y = Probability, color = df1, linetype= df2))+
+  geom_line(linewidth = 1.25, alpha = 0.6)+
+  facet_wrap(.~df2)+
+  scale_color_jco()+
+  guides(color = guide_legend(title = "Degrees of Freedom", reverse = TRUE))+
+  ylab("Probability Density")+
+  theme_bw()
+```
+
+The *F* distribution represents the probability distribution of a variable that is the ratio of two independent $\chi^2$ variables, each divided by its df. So this is used for *comparing* variances.
+
+### Estimation
+
+How do we estimate population parameters from sample data?
+
+#### Estimators
+
+*Estimators* estimate population parameters from samples. A good estimator should be:
+
+-   Unbiased - Doesn't consistently under or overestimate the parameter
+
+-   Consistent - as sample size increases the estimator gets closer to the population parameter
+
+-   Efficient - it has the lowest variance among competing estimators
+
+#### Types of estimates
+
+-   Point - Single value that estimates a population parameter
+
+-   Interval - range of values that might include the parameter with a known probability (most common is confidence interval, itself based on the standard error). This is based on extrapolating from our single sample of observations to **what we would expect if we took repeated *samples* from the population.**
+
+#### Methods of estimation
+
+Ordinary Least Squares for a parameter is the one that minimizes the sum of squared differences between each sample observation and the estimate of $\mu$.
+
+Other methods exist, such as Maximum Likelihood and Bayesian inference.
+
+#### Simple parameters and statistics
+
+Consider a population of observations of the variable Y recoded from all N sampling units in the population. We take a random sample of *n* observations (y~1~...y~*n*~). We often would like to infer the population's location/central tendency (it's mean or 'middle') and some measure of spread ("how different are observations in the population?").
+
+##### Center (Location) of Distribution
+
+**Sample mean**, $\bar{y}$ ("y bar"), is an unbiased estimator of the population mean ($\mu$). Assuming a normal distribution, the sample mean *is* the OLS estimator of $\mu$.
+
+Is this a reliable estimate of the mean for nonsymmetric/skewed distributions?
+
+Median is the middle measurement of a set of data sorted in order of magnitude (i.e., ranks). It is the 50th percentile. Median is unbiased estimator of $\mu$ for symmetric distributions.
+
+##### Spread or Variability
+
+**Sample variance** ($s^2$) is an unbiased estimator of the population variance ($\sigma^2$). It is calculated as $s^2 = \frac{1}{n - 1} \sum_{i=1}^{n} (x_i - \bar{x})^2$. How does this differ from variance as we've calculated it before?
+
+**Sample standard deviation** ($s$) estimates the population standard deviation, $\sigma$.
+
+#### Sampling Distribution of the Mean
+
+Point estimates of sample mean and variance are a starting point, but what is the precision of those estimates? For example, if we were to take many samples, do we estimate very similar means (high precision), or do we tend to get very different means (low precision)? How do we quantify this precision?
+
+Assume you take random observations from a population (i.e., a sample) that is normally distributed. We can calculate *z*-scores this way: $z = \frac{y_i - \mu}{\sigma}$. This is the formula for *standardizing* variables - converting any value from a normal distribution into its equivalent value in a standard normal distribution.
+
+```{r}
+tibble(Y = seq(-3,3, by = 0.1))|>mutate(probability = dnorm(Y, mean = 0, sd = 1))|>as_tibble()|>
+  ggplot(aes(x = Y, y = probability))+
+  geom_line(linewidth = 1)+
+  geom_vline(xintercept = 0, color = "orange", linewidth = 1)+
+  geom_vline(xintercept = c(-0.674,0.674), color = "grey", linewidth = 1)+
+  geom_vline(xintercept = c(-1.96,1.96), color = "blue", linewidth = 1)+
+  geom_vline(xintercept = c(-2.576,2.576), color = "red", linewidth = 1)+
+  annotate("text", y = 0.175, x = -2.3, label = "99%", color = "red")+
+  annotate("text", y = 0.175, x = -1.7, label = "95%", color = "blue")+
+  annotate("text", y = 0.175, x = -0.4, label = "50%", color = "darkgrey")+
+  annotate("text", y = 0.25, x = -1.5, label = expression(mu - 1.96 * sigma), color = "blue", size = 5)+
+  annotate("text", y = 0.25, x = 0.12, label = expression(mu), color = "orange", size = 10)+
+  theme_bw()+
+  ylab("Probability Density")
+```
+
+Remember, we usually only have one sample (with n observations). If we took many samples, we could plot the probability distribution of the sample means, because the sample mean itself is a random variable. This sampling distribution of the mean:
+
+-   means of samples from a normal distribution is itself is normally distributed
+
+-   As the sample size increases, the probability distribution of means of samples from *any* distribution will approach a normal distribution - the basis for the **Central Limit Theorem**.
+
+-   The expected value/mean of the probability distribution of sample means is the mean of the population $\mu$.
+
+#### Standard error of the sample mean
+
+Following that, assume some sample means have a normal probability distribution - we can calculate their variance and standard deviation just like we could with observations from a single sample. This is calculated as $\sigma_\bar{y} = \frac{\sigma}{\sqrt{n}}$. BUT, we usually don't have multiple samples to estimate $\sigma$. So we estimate the SD of the sample means from our single sample, and this is the **standard error (SE) of the mean**: $s_\bar{y}=\frac{s}{\sqrt{n}}$.
+
+The SE is a measure of the prevision of our sample means - \*it tells us about the **error** in using $\bar{y}$ to estimate $\mu$.
+
+#### Confidence intervals for the population mean
+
+Next time.
