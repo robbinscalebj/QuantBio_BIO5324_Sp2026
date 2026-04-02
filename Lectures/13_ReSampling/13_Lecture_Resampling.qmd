@@ -1,0 +1,306 @@
+---
+title: "12_Resampling"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+Problem set upcoming.
+
+# Lecture
+
+## Revisiting sampling and estimation
+
+Fundamentally what we've been talking about is using samples to estimate quantitative characteristics about populations. So far we've relied on math and statistical theory to do that. Can we make that more intuitive by simulating the process?
+
+Let's say we have a "population" of 5000 almonds and their weights.
+
+```{r, message = FALSE, warning=FALSE}
+library(tidyverse)
+library(moderndive)
+library(tidymodels)
+almonds_bowl
+
+```
+
+We have the population, so we know some things. What is the population mean, $\mu$, of almond weights? And its standard deviation, $\sigma$?
+
+```{r}
+almonds_bowl|>
+  summarize(mu_weight = mean(weight),
+            sigma_weight = sd(weight))
+```
+
+As we've stated in the real world we are usually limited to samples. So let's take some samples. We can use `infer::rep_slice_sample()` to conveniently take these samples from our population. Let's start by taking one sample with size n = 5. This random sample will be different every time.
+
+```{r}
+almonds_bowl|>
+  rep_slice_sample(n = 10)
+```
+
+Sampling theory and statistical inference relates heavily to the question "What if I sampled many times?" Statistics such as the sample mean, then, have *sampling distributions*. In previous lectures we used mathematical assumptions to generate sampling distributions. But let's simulate it by taking multiple samples of n = 10.
+
+```{r, message = FALSE}
+
+reps_df1 <- almonds_bowl|>
+  rep_slice_sample(10, reps = 10)|>
+  group_by(replicate)|>
+  summarize(xbar_weight = mean(weight))
+
+ggplot(reps_df1, aes(x = xbar_weight))+
+  geom_histogram()
+```
+
+Our sampling distribution here is reasonably(?) normal. What if we increase the sample size, a lot.
+
+```{r, message = FALSE}
+reps_df <- almonds_bowl|>
+  rep_slice_sample(25, reps = 1000)|>
+  group_by(replicate)|>
+  summarize(xbar_weight = mean(weight))
+
+ggplot(reps_df, aes(x = xbar_weight))+
+  geom_histogram()
+```
+
+Notice the shape of this distribution of sample means now.
+
+What is the mean of the sampling distribution of the means? Remember our population mean is 3.64
+
+```{r}
+
+reps_df|>
+  summarize(mean_weight = mean(xbar_weight))
+```
+
+The mean of the sampling distribution is the population mean. What about the precision of this estimate?
+
+```{r}
+reps_df|>
+  summarize(se_xbarweight = sd(xbar_weight))
+
+```
+
+We have this standard error simply as the standard deviation of the sampling distribution... What's the "normal" way to calculate the standard error? When is the SE = SD for a sampling distribution?
+
+What we're doing here is sampling from a known population. That's fine for illustration, but not what we're typically interested in, which is inference on an unknown population with samples (our data). For that we need statistics that estimate the population quantities.
+
+What is the best estimator of the population mean, $\mu$? How about the population standard deviation, $\sigma$?
+
+What is it called when we linearly transform (i.e.., using addition, subtraction, multiplication or division of constants) a random variable into another with mean = 0 and sd = 1?
+
+Let's say we have a value (x = 3.682) from a normal distribution with mean = 3.645, and standard deviation = 0.039. What is this value after transformation to the standard normal distribution?
+
+Recall: $z = \frac{x-\mu}{\sigma}$.
+
+```{r}
+(3.682-3.645)/0.039
+```
+
+How can we interpret this in terms of standard deviations relative to the mean of that normal distribution?
+
+How do we know there's a 95% chance that our sample mean is within 1.96 standard deviations of the mean?
+
+### Confidence intervals
+
+Remember the formula to calculate a 95% confidence interval for the population mean. $P(\bar{y} - z_{0.025}\sigma_\bar{y}\le \mu \le \bar{y}-z_{0.975}\sigma_\bar{y}) = 0.95$ or $P(\bar{y} - 1.96\sigma_\bar{y}\le \mu \le \bar{y}+1.96\sigma_\bar{y}) = 0.95$. Notice where the value 1.96 comes from.
+
+When the standard deviation (standard error) of our sampling distribution of means is estimated (which is usually the case), our (standardized) means then follow a t distribution, so 1.96 doesn't work anymore. instead we get $P(\bar{y} - t_{0.025(n-1)}s_\bar{y}\le \mu \le \bar{y} - t_{0.975(n-1)}s_\bar{y}) = 0.95$, where $\pm t_{0.025(n-1)}$ is the value from the $t$ distribution with $n-1$ degrees of freedom between which 95% of all $t$ values lie.
+
+## Bootstrapping
+
+All of what we've covered is very theoretical, largely based around assumptions justified by the Central Limit Theorem. Can we do inference without relying on this assumption and simply relying on our data?
+
+It turns out, yes, by sampling (our data) with replacement. We're not sampling from a population, but instead we're sampling from our original sample. Consider a sequence of four numbers: {4,2,5,4}. Generate a new sample by randomly picking a number from the original and putting it back, do this four times. The result could be: the original, {4,4,4,4}, {5,5,2,2}, or any of $4^4$ (i.e., $n^n$) possibilities. Typically we do this maybe 1000 - 10,000 times.
+
+**Bootstrap estimates** are found by resampling your sample many times - so you are generating many samples whose statistics/estimates are sort of like a population distribution of a parameter.
+
+1\) Resample many times, storing the samples
+
+2\) Calculate an estimate/statistic from each sample, forming a *distribution* of these estimates.
+
+3\) Summarize to obtain point/interval estimates
+
+Let's simulate an experiment where we take one sample of almond weights, with sample size n = 10. Then let's sample with replacement once. Notice `replace = TRUE` (the default as we used above is FALSE).
+
+```{r}
+almond10 <- almonds_bowl|>
+  slice_sample(n = 10)
+
+almond10_bs1 <- almond10|>
+  rep_sample_n(size = 10, replace = TRUE, reps = 1)
+
+almond10$weight
+almond10_bs1$weight
+
+almond10_bs1$weight %in% almond10$weight #always all true
+almond10$weight %in% almond10_bs1$weight # often a few false because they just didn't happen to be pulled
+```
+
+Okay, now let's get a solid number of bootstraps.
+
+```{r}
+almond10_bs <- almond10|>
+  rep_sample_n(size = 10, replace = TRUE, reps = 1000)
+
+```
+
+Let's say we're interested in estimating the mean of the population of almonds, we can get 'sample means' and plot them as a distribution
+
+```{r}
+almond10_bsmeans <- almond10_bs|>
+  group_by(replicate)|>
+  summarize(mean_weight = mean(weight))
+
+ggplot(almond10_bsmeans, aes(x = mean_weight))+
+  geom_histogram()+
+  theme_bw()
+```
+
+Pretty normally distributed! So this is similar to our assumptions that we used in previous lectures to theoretically jump from our sample mean to a distribution of sample means. In other words, this is the *bootstrap distribution of the sample mean* which is an approximation of the *sampling distribution of the sample mean*. Now much of waht you learned about point (e.g., mean) and interval (e.g., confidence interval) estimates applies here, too.
+
+Let's estimate the mean and its standard deviation - note that the standard error of the bootstrap distribution is the standard deviation.
+
+```{r}
+
+amsum1 <- almond10_bsmeans|>
+  summarize(xbar = mean(mean_weight),
+            se = sd(mean_weight))
+amsum1
+
+```
+
+Let's calculate a 95% CI. First let's try the theory based method.
+
+```{r}
+a10_theory <- almond10|>
+  summarize(xbar = mean(weight),
+            se = sd(weight)/sqrt(n()),
+            t_critical = qt(0.975, df = n()-1),
+            upper = xbar + t_critical*se,
+            lower = xbar - t_critical*se)|>
+  mutate(Method = "Theory")
+```
+
+Now the model-based method with calculated SEs
+
+```{r}
+a10_se <- almond10_bsmeans|>
+  summarize(xbar = mean(mean_weight),
+            se = sd(mean_weight),
+            upper = xbar + 1.96*se,
+            lower = xbar - 1.96*se)|>
+  mutate(Method = "Bootstrap - Model")
+```
+
+And now a percentile based method.
+
+```{r}
+a10_perc <- almond10_bsmeans|>
+  summarize(xbar = mean(mean_weight),
+            se = sd(mean_weight),
+            upper = quantile(mean_weight, 0.975),
+            lower = quantile(mean_weight, 0.025))|>
+  mutate(Method = "Bootstrap - Percentile")
+
+```
+
+We can bind them all together and compare.
+
+```{r}
+bind_rows(a10_theory,a10_se, a10_perc)|>
+  select(-t_critical)|>
+  ggplot()+
+  geom_point(aes(x=Method,y = xbar), size = 2)+
+  geom_errorbar(aes(x=Method,ymin = lower, ymax = upper), width = 0, color = "red")+
+  theme_bw()+ylab("Mean almond weight (g)")
+  
+```
+
+## Effects and Linear Models
+
+We're often interested in estimating effects between/among groups, rather than just individual group means.
+
+```{r}
+n <- 10
+df1 <- tibble(cat = c(rep("a", 10),rep("b", 10)), val = c(rnorm(n, mean = 10, sd = 1), rnorm(n, mean = 15, sd = 1)))
+
+ggplot(df1, aes(x=cat, y=val))+
+  geom_point()
+```
+
+```{r}
+lm1 <- lm(data = df1, val ~ cat)
+summary(lm1)
+```
+
+What is the standard error for the coefficients here? Could you calculate 95% CIs for them? Could you use the `t value`?
+
+Let's say you're interested in the effect size, as a difference, of category b vs category a, $\mu_{a}-\mu_{b}$. How can you estimate that?
+
+What if you didn't have the linear model estimates? Well first, if the means are normally distributed according to CLT, so are their differences, and the standard errors are given by $SE_{a-b}=\sqrt{\frac{\sigma^2_{a}}{n_{a}}+\frac{\sigma^2_{b}}{n_{b}}}$.
+
+```{r}
+df1|>
+  group_by(cat)|>
+  summarize(mean = mean(val),
+            sd = sd(val),
+            n = n())|>
+  pivot_wider(names_from = cat, values_from = c(mean, sd, n))|>
+  mutate(mean_diff = mean_b - mean_a, 
+         se   = sqrt((sd_a^2/n_a) + (sd_b^2/n_b)),
+         t_critical = qt(0.975, df = 9), # what d.f. do we use here?
+         lower = mean_diff - t_critical*se,
+         upper = mean_diff + t_critical*se,
+         .keep = "unused")
+```
+
+How does this compare to the mean difference estimated using lm()?
+
+Can we bootstrap a difference? Well first let's try to do the actual sampling with replacement *while respecting the structure of the data*. We can do that a number of different ways (and moderndive::rep_slice_sample() doesn't appear to respect grouping, on first glance) but we can use `boostraps` from the rsample package (part of tidymodels) and tell it to stratify by our category.
+
+```{r}
+df1|>
+  rsample::bootstraps(strata = cat, times = 1)|>
+  pluck("data")
+
+```
+
+```{r}
+ df1|>
+  rsample::bootstraps(strata = cat, times = 5)|>
+  mutate(data = map(splits, ~analysis(.)))|>
+  select(id, data)|>
+  tidyr::unnest(data)
+```
+
+```{r}
+ df1|>
+   rsample::bootstraps(strata = cat, times = 1000)|>
+   mutate(data = map(splits, ~analysis(.)))|>
+   select(id, data)|>
+   tidyr::unnest(data)|>
+   group_by(id, cat)|>
+   summarize(mean = mean(val))|>ungroup()|>
+   pivot_wider(names_from = cat, values_from = mean)|>
+   mutate(mean_diff = b - a)|>
+   summarize(mean = mean(mean_diff), 
+             lower = quantile(mean_diff, 0.025),
+             upper = quantile(mean_diff, 0.975))
+```
+
+How does this compare to our theory based estimation of the difference in means?
+
+The point here is to show you that when you estimate quantities from linear models, these are directly linked to these ideas of generating point and interval statistics even when what you're interested in are effect sizes. Remember OLS is just an estimator.
+
+## Hypothesis Testing
+
+Next time.
