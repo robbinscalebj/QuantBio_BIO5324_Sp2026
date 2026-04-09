@@ -1,0 +1,288 @@
+---
+title: "15_Named Hypothesis Tests"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+-   Updated class schedule on course github repo after class
+
+-   Problem set 7 Due April 21st
+
+-   Literature presentation assignments
+
+# Lecture
+
+"There is only one test" does not absolve you from thought. In fact it may make you more culpable.
+
+This lecture is intended to go through a few specific use cases of hypothesis testing, relating permutational techniques to named tests, and show you that these named tests aren't so special because they're just built with linear models and "the one test."
+
+Of course, saying "There is only one test" does not absolve you from thought. In fact it may make you more culpable. It forces you to think about your null and alternative models. And the real trick to hypothesis testing is understanding how to choose a test statistic.
+
+My general approach for this lecture is to show you for each case: An appropriate linear model, permutational hypothesis testing, and the classical test and how to implement it in R.
+
+## A reminder on classical (theory-based) vs simulation based hypothesis testing
+
+Both of these techniques require a null world, but differ in how they build them.
+
+Classical tests rely on theory and assumptions to generate a distribution of test statistics (e.g., population mean, difference in population means, etc.). Some are named for these distributions. The shapes of these null distributions are usually controlled by things like our sample size (degrees of freedom). Test statistics for our sample are compared to the probability densities of the test distribution.
+
+Simulation tests rely on resampling our data either through bootstrapping (for parameters) or permutation ( for quantities like differences in means). We use these techniques to generate many samples consistent with our null hypothesis, calculate a test statistic on each sample, and use that as our null distribution.
+
+## Set up
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(infer)
+library(ggsci)
+library(ggdist)
+# You will also need to install.packages("distributional") but this masks `generate()` from `{infer}`
+penguins_df <- palmerpenguins::penguins|>
+  drop_na()
+```
+
+We'll do our work with the penguins dataset.
+
+## Single sample mean
+
+#### Model
+
+$H_0: \mu = 0$ or $H_0: p = 0$ where $p$ is a proportion.
+
+Linear model: $y_i = \beta_0 + \varepsilon_i$, an "intercept-only" model, from which we equivalently test $H_0: \beta_0 = 0$, because $\beta_0$ is an estimator of $\mu$.
+
+#### Simulation-based test
+
+Let's test $H_0: \mu_{BillDepth} = 0$.
+
+1.  **Calculate the observed test statistic,** $\delta^*$.
+
+Note our formula here: the right hand side has no explanatory variables - when we use formulae in `lm()` to fit an intercept-only model, we typically set it up as `lm(bill_depth_mm ~ 1)` , but here we need `NULL` because of `{infer}`-specific requirements.
+
+```{r}
+del_star <- penguins_df|>
+  specify(bill_depth_mm ~ NULL)|>
+  calculate(stat = "mean")
+```
+
+So the mean of bill depth for the dataset is `r round(del_star|>pull(stat), 0)` mm.
+
+2.  **Simulate a null world.**
+
+Note that our null hypothesis in `hypothesize()` is "point" - we're testing a hypothesis about a parameter being different from a point (in this case 0), not a calculated quantity like a difference in means, so we need to specify exactly what we're testing our parameter to be different from (which is, our null hypothesis, that $\mu = 0$). Note we're also using bootstrapping here.
+
+```{r}
+null_dist <- penguins_df|>
+  specify(bill_depth_mm ~ NULL)|>
+  hypothesize(null = "point", mu = 0)|> 
+  generate(reps = 999, type = "bootstrap")|> 
+  calculate(stat = "mean")
+
+```
+
+3.  **Visualize and calculate a P-value for** $H_0$.
+
+```{r, warning =FALSE}
+visualize(null_dist)+
+  shade_p_value(obs_stat = del_star, direction = "two-sided")
+
+p_val <- null_dist|>
+  get_p_value(obs_stat = del_star, direction = "two-sided")|>
+  pull(p_value)
+
+```
+
+Our p-value is essentially `r p_val` and it's super clear from this plot that there's basically no way we would ever expect to see our observed mean (`r round(del_star|>pull(stat), 0)`) in a world where bill depth is 0. Of course we would never expect bill depth to have a mean of zero so this is a useless hypothesis to test.
+
+#### Classical test - One Sample *t* Test.
+
+How do we expect sample means to be distributed when we don't know the population standard deviation? Following a t distribution.
+
+1.  **Calculate the observed test statistic.**
+
+So the test statistic is actually t here, so we need to convert our observed test statistic to its corresponding value on the t distribution. This formula is $t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}}$, where $\bar{x}$ is the observed test statistic (sample mean), $\mu_0$ is our point null value (here, 0), $s$ is the sample standard deviation, and $n$ is the sample size (you'll notice the denominator is the standard error of the sample mean).
+
+```{r}
+penguins_bd <- penguins_df$bill_depth_mm
+t_val <- (del_star|>pull(stat) - 0)/(sd(penguins_bd)/sqrt(length(penguins_bd)))
+# had to do this weird pull(stat) thing because R really wanted to carry the data.frame structure through, but I just want the number...
+
+```
+
+So our observed test statistic, t, is `r round(t_val,2)`.
+
+2.  **Assume a null world**.
+
+We need a t distribution with appropriate degrees of freedom. For a test of a mean against a point, $d.f. =  n - 1$.
+
+```{r}
+df <- length(penguins_bd) - 1
+
+tibble(Y = seq(-4,4, by = 0.1))|>expand_grid(df = df)|>mutate(Probability = dt(Y, df = df))|>as_tibble()|>
+  ggplot(aes(x = Y, y = Probability))+
+  geom_line(linewidth = 1.25, alpha = 0.6)+
+  ylab("Probability Density")+ggtitle(paste0("t distribution with n - 1 (", df, ") degrees of freedom"))+
+  theme_bw()+
+  scale_x_continuous(limits = c(-4,4))
+
+ggplot() +
+  stat_halfeye(aes(xdist = distributional::dist_student_t(df = df)),
+        .width = c(0.8,0.95, 0.99))+
+  ggtitle(paste0("t distribution with n - 1 (", df, ") degrees of freedom"))+
+  theme_bw()+
+  scale_x_continuous(limits = c(-4,4))
+```
+
+3.  **Calculate a P-value.**
+
+We need to find where on this curve the observed test statistic, re-scaled to the *t* distribution, is. In other words, we need to find the probability density (area under the curve of the *t* distribution) that is less extreme than our observed *t* value. We can use `pt()` for that, which gives us the cumulative probability of a value in a distritbution (i.e., "how much density is to the left of X")
+
+```{r}
+
+(1-pt(t_val, df = df)) + pt(-t_val, df = df)
+
+```
+
+Astronomically small.
+
+Of course, there are built in functions. `t.test()` is available as a named test and `lm()` performs the t test on the parameter, which is all equivalent.
+
+```{r}
+t.test(penguins_bd, mu = 0)
+```
+
+```{r}
+lm(data = penguins_df, bill_depth_mm ~ 1)|>
+  summary()
+```
+
+Are our P values different across these different methods?
+
+## One sample proportion
+
+When we are talking about proportions for binary variables, we're talking about the binomial distribution. But thanks to the simulation and the central limit theorem, you don't really have to know about that.
+
+#### Model
+
+$H_0: p = p_0$, where $p$ is an observed proportion in our data and $p_0$ is some proportion we want to test whether our proportion is significantly different from (a lot of times, 0.5).
+
+Linear model: $y_i = \beta_0 + \varepsilon_i$, an "intercept-only" model, from which we equivalently test $H_0: \beta_0 = p_0$, because $\beta_0$ is an estimator of $P$, the population proportion.
+
+#### Simulation-based test
+
+Let's test $H_0: \mu_{Sex} = 0.5$.
+
+1.  **Calculate the observed test statistic,** $\delta^*$.
+
+Note our formula here is very similar to our single sample mean example, but now we have to tell `{infer}` which category is supposed to be the 'success' (remember when there are two categories it's a binary variable like heads/tails, 1/0, true/false, or even male/female in this case). Then we need to tell it to calculate the proportion ("prop") of penguins that are female.
+
+```{r}
+del_star <- penguins_df|>
+  filter(species == "Gentoo")|>
+  specify(sex ~ NULL, success = "female")|>
+  calculate(stat = "prop")
+```
+
+So the proportion for the Gentoo sexes is `r round(del_star|>pull(stat), 2)` female.
+
+2.  **Simulate a null world.**
+
+Note that our null hypothesis in `hypothesize()` is still "point" like it was for the single sample mean- we're testing a hypothesis about a parameter being different from a point, but now we're asking is the sex ratio is different from 0.5 (specifying the proportion with the p argument in `hypothesize()`. We're also using "draw" in generate which is a little different from bootstrapping.
+
+```{r}
+null_dist <- penguins_df|>
+  filter(species == "Gentoo")|> 
+  specify(sex ~ NULL, success = "female")|> 
+  hypothesize(null = "point", p = 0.5)|> 
+  generate(reps = 999, type = "draw")|>
+  calculate(stat = "prop") 
+```
+
+3.  **Visualize and calculate a P-value for** $H_0$.
+
+```{r, warning =FALSE}
+
+visualize(null_dist)+
+  shade_p_value(obs_stat = del_star, direction = "two-sided")  
+p_val <- null_dist|>
+  get_p_value(obs_stat = del_star, direction = "two-sided")|>
+  pull(p_value) 
+```
+
+Our p-value is `r round(p_val,2)` so we fail to reject the null hypothesis. Seeing (`r round(del_star|>pull(stat), 2)`) in a world where the sex ratio is even (0.5) is pretty reasonable.
+
+#### Classical test - One Sample Proportion *z* Test.
+
+How do we expect sample proportions to be distributed? Thanks to the Central Limit Theorem, basically normal, so we scale things to a *z* distribution.
+
+1.  **Calculate the observed test statistic.**
+
+So the test statistic is actually *z* here, so we need to convert our observed test statistic to its corresponding value on the z distribution. The formula for proportions differs from the standardizing formula we've used already: $z = \frac{p - p_0}{\sqrt{p_0(1-p_0)/n}}$.
+
+```{r}
+n_gentoos <- penguins_df|>filter(species == "Gentoo")|>nrow()
+p_0 <- 0.5
+z_val <- (del_star|>pull(stat) - p_0)/sqrt((p_0*(1-p_0))/n_gentoos)
+# had to do this weird pull(stat) thing because R really wanted to carry the data.frame structure through, but I just want the number...
+```
+
+2.  **Assume a null world**.
+
+Remember a z distribution is just a normal distribution with mean = 0 and sd = 1.
+
+```{r}
+ggplot() +
+  stat_halfeye(aes(xdist = distributional::dist_normal(mean = 0, sd = 1)),
+        .width = c(0.8,0.95, 0.99))+
+  theme_bw()+
+  scale_x_continuous(limits = c(-4,4))
+```
+
+3.  **Calculate a P-value.**
+
+We need to find where on this curve the observed test statistic, re-scaled to the *z* distribution, is. In other words, we need to find the probability density (area under the curve of the *z* distribution) that is less extreme than our observed *z* value. We can use `pnorm()` for that, which gives us the cumulative probability of a value in a distribution(i.e., "how much density is to the left of X")
+
+```{r}
+2*pnorm(-abs(z_val), mean = 0, sd = 1)
+```
+
+Again, way higher than 0.05. How about a built-in solution:
+
+```{r}
+nfems <- penguins_df|>filter(species == "Gentoo",sex == "female")|>count(sex)|>pull(n)
+prop.test(x = nfems, n = n_gentoos, p = 0.5, correct = FALSE)
+#`{infer}` also has a tidier version of prop.test
+infer::prop_test(penguins_df|>filter(species == "Gentoo"), formula = sex ~ NULL, p = 0.5, z= TRUE, correct = FALSE)
+```
+
+P-values here are the same as our manual calculation... but the test statistic in `prop.test()` is actually $\chi^2$ (and would have been . This is just a way for prop.test() to generalize to multiple categories which we'll talk about later. As it turns out, the z distribution is mathematically related. We mentioned this in our intro to inference lecture but the $\chi^2$ distribution is the probability distribution of a variable that is the square of values from a standard normal distribution (so basically $z^2$). Assuming degrees of freedom of the $\chi^2$ is 1. But for now, no need to understand the math.
+
+Can we specify this as a linear model? Weirdly enough, yes. If we do the formula as before (sex \~1), and after converting sex to a dummy variable of 1's (success/female) and 0's (males) to calculate an intercept-only model, the mean that's estimated ($\beta_0$) IS the proportion $p$.
+
+```{r}
+peng_dummy <- penguins_df|>filter(species == "Gentoo")|>
+  mutate(sex_dummy = ifelse(sex == "female", 1, 0))|>relocate(sex, sex_dummy)
+lm(data = peng_dummy, sex_dummy ~ 1)|>
+  summary()
+```
+
+But the null hypothesis is implicitly that $\beta_0 = 0$, but that's not our $p_0$. Turns out we can do that by subtracting 0.5.
+
+```{r}
+lm(data = peng_dummy, sex_dummy-0.5 ~ 1)|>
+  summary()
+```
+
+Now we get a P-value that *basically* matches our hypothesis testing, but the test statistic is *t* which is (it turns out only slightly) incorrect, in a conservative direction.
+
+# Next time
+
+Work through differences in sample means (independent and paired), ANOVA, Chi square test. Dealing with challenges due to unbalanced design, exchangeability assumption, heteroskedasticity, non-parametric vs parametric tests
