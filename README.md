@@ -48,9 +48,9 @@ into R and the Tidyverse. 2nd Ed. CRC Press.
 | Apr 09 | 3: Making decisions with samples | Named Hypothesis Tests | CRH Ch. 19, 20, & 21 |  |
 | Apr 14 |  | Dia del oso |  |  |
 | Apr 16 | 3: Making decisions with samples | Literature Presentations 3 |  |  |
-| Apr 21 | 3: Making decisions with samples | Named Hypothesis Tests 2 | CRH Ch. 19, 20, & 21 | Analysis Presentation Stats/Question Approval; PS 7 Due |
-| Apr 23 | 3: Making decisions with samples | Study Design and power analysis |  |  |
-| Apr 28 |  | Bonus:Intro to Bayesian linear modeling |  |  |
+| Apr 21 | 3: Making decisions with samples | Named Hypothesis Tests 2 | CRH Ch. 19, 20, & 21 | PS 7 Due |
+| Apr 23 | 3: Making decisions with samples | Study Design and Power Analysis |  | Analysis Presentation Stats/Question Approval |
+| Apr 28 |  | Bonus: Intro to Bayesian linear modeling |  |  |
 | Apr 30 |  | Collaborate on Analysis Presentations |  | PS 8 Due |
 | May 05 |  | Exam 3: Unit 3 (75 pts) |  |  |
 | May 09 |  | Final Exam: Analysis Presentations (100 pts) |  |  |
