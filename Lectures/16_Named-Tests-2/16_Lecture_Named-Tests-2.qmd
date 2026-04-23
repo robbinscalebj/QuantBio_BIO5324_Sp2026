@@ -1,0 +1,322 @@
+---
+title: "16_Named Hypothesis Tests 2"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+Analysis presentation question/analysis choice due this Thursday. Email me what you are planning on doing (What's the research question, and what model/statistical test, involving which variables?)
+
+Let's check your syllabus - note the folder structure I expect to be submitted is quite explicit.
+
+Analysis presentation due date?
+
+# Lecture
+
+Let's highlight analyses doing inference between/across multiple sample means: two sample tests and ANOVA.
+
+```{r, setup, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(emmeans)
+
+penguins_df <- palmerpenguins::penguins
+```
+
+## Two sample means
+
+#### Model
+
+$H_0: \mu_A - \mu_B = 0$.
+
+Linear model:$y_i = \beta_1 + \varepsilon_i$, a model where $\beta_1$ is the estimator for $\mu_A - \mu_B$, from which we equivalently test $H_0: \beta_1 = 0$.
+
+How can we test, say, $H_0: \mu_{MassAdelie} = \mu_{MassGentoo}$?
+
+```{r, warning = FALSE}
+penguins_adgen <- penguins_df|>
+  filter((species == "Gentoo"|species == "Adelie") & island=="Biscoe" & !is.na(body_mass_g))
+
+ggplot(penguins_adgen, aes(x = species, y = body_mass_g))+
+  geom_boxplot()+
+  ylab("Body Mass (g)")+
+  theme_bw()+
+  theme(axis.title.x = element_blank(), axis.text.x = element_text(size = 14))
+```
+
+How do we expect differences in sample means to be distributed when we don't know the population standard deviations? Following a t distribution.
+
+#### Classical test - Two Sample *t* Test.
+
+Note that this is simple to use `{infer}` and permute this problem, but you'll see classical t-tests everywhere. The general approach is always the same for any of these tests, but coming up with the appropriate observed test statistic and null distribution isn't necessarily clear.
+
+1.  **Calculate the observed test statistic.**
+
+How do we get a t statistic from a difference in means? The observed t statistic is fundamentally the same as it is for a one sample t-test, but now it's the *difference in means* divided by the estimated standard error of those differences. But there are different ways to calculate it. We'll use the R default from the *Welch's* t-test.
+
+$t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$.
+
+The estimated standard error in the denominator is a function of the sample size and variance of both groups.
+
+```{r}
+
+ad_bm <- penguins_adgen|>filter(species == "Adelie")|>pull(body_mass_g)
+gen_bm <- penguins_adgen|>filter(species == "Gentoo")|>pull(body_mass_g)
+
+t_adgen <- (mean(ad_bm)-mean(gen_bm))/sqrt(var(ad_bm)/length(ad_bm) + var(gen_bm)/length(gen_bm))
+
+```
+
+So our observed test statistic, t, is `r round(t_adgen,2)`.
+
+2.  **Generate a null world**.
+
+Now we need a t distribution with appropriate degrees of freedom. As we've mentioned in a previous lecture, it's not super clear what the appropriate df is. In the Welch's t-test case,we calculate the *effective degrees of freedom* derived from the Welch-Satterthwaite equation. So, $df = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{\left(\frac{s_1^2}{n_1}\right)^2}{n_1 - 1} + \frac{\left(\frac{s_2^2}{n_2}\right)^2}{n_2 - 1}}$. Fun, huh? Now our degrees of freedom depends on sample size and sample variance in each group.
+
+```{r}
+df <- ((var(ad_bm)/length(ad_bm) + var(gen_bm)/length(gen_bm))^2)/
+(((var(ad_bm)/length(ad_bm))^2 / (length(ad_bm) - 1)) +
+ ((var(gen_bm)/length(gen_bm))^2 / (length(gen_bm) - 1))) #golly that's tedious
+
+tibble(Y = seq(-4,4, by = 0.1))|>expand_grid(df = df)|>mutate(Probability = dt(Y, df = df))|>as_tibble()|>   ggplot(aes(x = Y, y = Probability))+   geom_line(linewidth = 1.25, alpha = 0.6)+   ylab("Probability Density")+ggtitle(paste0("t distribution with effective (", round(df,2), ") degrees of freedom"))+   theme_bw()+   scale_x_continuous(limits = c(-4,4))  
+
+```
+
+Now our degrees of freedom is actually not an integer, but: `r round(df,2)`.
+
+3.  **Calculate a P-value.**
+
+We need to find where on this curve the observed test statistic is. In other words, we need to find the probability density (area under the curve of the *t* distribution) that is less extreme than our observed *t* value. Remember, we can use `pt()` for that, which gives us the cumulative probability of a value in a distribution (i.e., for a two-tailed test, "how much density is to the left of -X or to the right of X?")
+
+So that is `r 2*pt(-abs(t_adgen), df)`.
+
+Astronomically small.
+
+Of course, there are built in functions. `t.test()` is available as a named test.
+
+```{r}
+t.test(ad_bm, gen_bm)
+```
+
+Same t statistic, same degrees of freedom, same-ish p-value.
+
+```{r}
+lm(data = penguins_adgen, body_mass_g ~ species)|>
+  summary()
+```
+
+The t value here is *slightly* different from `t.test()` and our hand calculation. Why?
+
+## Two dependent sample means
+
+What if we violate independence in such a way that we have paired (e.g., before/after) measurements? We won't go through this, but `t.test()` has a `paired =` argument that will conduct a paired two sample *t* test.
+
+Suffice to say, the observed *t* is based on the *difference between the values of each pair of measurements*. It's addressing the average of within-pair differences.
+
+## One way ANOVA
+
+One way ANOVA (**AN**alysis **O**f **V**ariance) tests equivalence of the means among 3+ groups in a categorical variable. The calculations get more tedious so we'll focus more on the bigger picture, but the "one test" way of thinking about constructing NHSTs still applies.
+
+Null hypothesis: $H_0: \mu_1 = \mu_2 = \mu_3$.
+
+Linear model: $y_i = \beta_0 + \beta_1 + \beta_2+ \varepsilon_i$, where the $\beta_{0...i}$ are coefficients estimating the means of each group (or, as before, and as in `lm()`, $\beta_1...i$ is the difference between group 1's mean, $\mu_1$, and the baseline group's mean, $\mu_0 = \beta_0$.
+
+What test statistic can we use? Note our null hypothesis: this is not equivalence between two means, but across three or more means. That's weird.
+
+We can construct a test statistic that is the ratio of two measures of variability in our data:
+
+-   $MS_G$ or $MS_{Between}$- Mean square *between* groups, with degrees of freedom $df_G = k-1$, with $k$ groups. This is calculated with the Sum of Squares (SS) for the group means - i.e., how variable are the group means around the overall mean. Then we divide that SS by $df_G$. Note that this is very similar to our calculation for the sample variance.
+
+-   $MS_E$ or $MS_{Within}$- Mean square error *within* groups, with degrees of freedom $df_E=n-k$, with $n$ observations across all groups (i.e., the total number of observations). Note that this is *error*, so we are talking about model residuals. The SS for this value is calculated as $\Sigma(y_i - \bar{y}_G)^2$. I.e., how variable are the observations from their *expected value* in the group?
+
+The idea here is this: How far apart are the grouping variables relative to the variation within those groups? If it's large, the means 'matter' in terms of explaining sgnificant variance across the sample.
+
+Test statistic: $F$ (aka $F~ratio$), where $F=\frac{MS_G}{MS_E}$ or $F=\frac{MS_{Between}}{MS_{Within}}$.
+
+#### The F-test
+
+The F test is used to test the equivalence of all means from three or more groups (sometimes when more than one grouping variable is involved). This is often called an 'omnibus' type of test.
+
+Let's use R to perform the F test. Note that we fit a model, and then perform ANOVA on its estimated parameters by partitioning the variance in our response variable to explained (species) and unexplained (Residuals) sources.
+
+```{r}
+peng_lm <- lm(data = penguins_df, body_mass_g ~ species)
+aov_peng <- anova(peng_lm)
+aov_peng
+
+```
+
+The output here is an analysis of variance table - the classical output associated with doing an ANOVA. How do these components relate to the conceptual meaning we'd outlined above?
+
+Sum sq (species)
+
+:   The 'between' term: Distance of the group means from the overall mean (i.e., 'between' the group means), $\sum_{i=1}^{G} n_i(\bar{y}_{G} - \bar{y})^2$, as its sum of squares.
+
+Sum sq (Residuals)
+
+:   The 'within' term: Distances of the observations from their group's mean (i.e., 'within' the group). Basically, the model residuals, or the variability *not* explained by group as its sum of squares, $\sum_{i=1}^{G}(y_i-\bar{y}_{G})^2$.
+
+Mean Sq
+
+:   This is Sum sq/Df. We're basically turning the sum of squares into a variance using degrees of freedom in the denominator rather than number of observations strictly.
+
+F value
+
+:   The ratio of these two variances, the Mean sq of the species term and the Mean sq of the Residuals, or $F=\frac{MS_{Between}}{MS_{Within}}$.
+
+```{r}
+aov_peng$`Mean Sq`[1]/aov_peng$`Mean Sq`[2]
+```
+
+Pr(\<F)
+
+:   Probability of seeing F less than the observed F under $H_0$.
+
+But what is the null distribution?
+
+```{r}
+df1 <- aov_peng$Df[1]
+df2 <- aov_peng$Df[2]
+tibble(`F` = seq(0,5, by = 0.01))|>
+  mutate(Probability = df(`F`, df1 = df1, df2 = df2), df1 = as_factor(df1), df2 = as_factor(df2))|>as_tibble()|>
+  ggplot(aes(x = `F`, y = Probability))+
+  geom_line(linewidth = 1.25, alpha = 0.6)+
+  ylab("Probability Density")+
+  theme_bw()
+```
+
+F tests are also used for comparing models fit to a given dataset, for example, to help you decide if you are explaining significantly more variance with one predictor set vs another.
+
+```{r}
+peng_lm.null <- lm(data = penguins_df, body_mass_g ~ 1)
+anova(peng_lm)
+anova(peng_lm,peng_lm.null)
+```
+
+#### Post-hoc comparisons and family-wise error rate
+
+Let's focus on the practical side of this. We often don't actually care that all the means are different, we're usually interested in pairwise comparisons (i.e., $\mu_1$ vs $\mu_2$, $\mu_2$ vs $\mu_3$, $\mu_3$ vs $\mu_1$). So why don't we just run a two sample t-test on each of these groups?
+
+The family-wise error rate is why. When you run multiple statistical tests on the same dataset, you by probability alone increase the likelihood that your procedure will encounter a false positive (remember, $alpha$ is about long-run error rates). So (often after rejecting the null hypothesis from an F test), we calculate the comparisons and either decrease alpha or more usually *correct* the p values of the pairwise comparisons.
+
+#### `{emmeans}`
+
+The `{emmeans}` package faciliated estimating means and calculated quantities from fitted models, so you don't have to manipulate different model coefficients. A great alternative package to this is `{marginaleffects}`. Let's use `{emmeans}` to calculate the pairwise differences between penguin species body masses.
+
+```{r, warning = FALSE}
+
+peng_bm.em <- emmeans(peng_lm, specs = ~species)
+pairs(peng_bm.em)
+```
+
+First off... should these SE estimates be different?
+
+Tukey's HSD (Honestly Significant Differences or "tukey method") is a very common method for performing posthoc comparisons while 'correcting' the P values for family-wise error rate.
+
+Bigger point, now we have pairwise contrasts and their uncertainty, including a statistical test. What's the test for these?
+
+We can also use this package to help us graphically present the results.
+
+```{r, warning = FALSE}
+peng_bm.em|>as_tibble()|>
+  ggplot()+
+  geom_jitter(data = penguins_df, aes(x = species, y = body_mass_g), color = "grey", width = 0.1)+
+  geom_point(aes(x = species, y = emmean), size = 4,color = "blue", alpha = 0.8)+
+  geom_errorbar(aes(x = species, ymin = lower.CL, ymax = upper.CL), width = 0.05, linewidth = 1)+
+  ylab("Body Mass (g)")+
+  theme_bw()+
+  theme(axis.title.x = element_blank(), axis.text = element_text(size = 12, face = "bold"), axis.title.y = element_text(size = 16, face = "bold"))
+```
+
+Often we wish to put some sort of significance markers like asterisks or compact letter displays. I usually do this in a graphical editor, but for simple comparisons like this there are options in R that can handle it.
+
+## Two or more way ANOVA
+
+These are models with more than one category and usually we want interactions. Under the hood, the calculations for doing the F test are similar - it's based on partitioning variance among predictor variables and comparing that to the unexplained variance. However, these calculations are (even) more tedious and we'll focus solely on how to interpret this kind of model.
+
+```{r}
+peng_lm2 <- lm(data = penguins_df, body_mass_g ~ species*sex)
+anova(peng_lm2)
+
+```
+
+We call the effects not involved in interactions (species, sex, NOT species:sex) "main effects" in the ANOVA design. The main effects and their interaction is significant.
+
+Lets say we are just interested in the effect of species again.
+
+```{r}
+emmeans(peng_lm2, specs = ~species)
+```
+
+What's this warning - can we interpret the main effects? Results 'averaged' over?
+
+Let's actually include all the possible contrasts given 3 levels of species and 2 levels of sex.
+
+```{r}
+peng_bm2.em <- emmeans(peng_lm2, specs = ~species*sex)
+pairs(peng_bm2.em)
+```
+
+That's a lot of contrasts. It's both within sex, within species, AND the interactions (e.g., Females of one species compared to males of another species). We might not be interested in all these, but the model as we set it up is capturing it. But we can either get rid of that interaction in the model OR use emmeans to only show the contrasts of interest.
+
+```{r}
+peng_bm2.1.em <- emmeans(peng_lm2, specs = ~species|sex)
+pairs(peng_bm2.1.em)
+```
+
+Why are the P values here different from before?
+
+How might the plot of estimated mean body masses (from this interacting model) differ from the previous plot of estimated means?
+
+#### A final point for 2 way ANOVA.
+
+If you choose to analyze your linear model with anova() or car::Anova() or something in the more traditional vein focusing on calculating Mean Squares, beware that there are multiple ways to calculate the sum of squares, and they matter! The software default may not be correct for the question you are asking and apply differently if you have an unbalanced design, interactions, and are affected by the .
+
+```{r}
+anova(peng_lm2)
+car::Anova(peng_lm2, type = "II")
+car::Anova(peng_lm2, type = "III")
+```
+
+In this case, the choice doesn't change our conclusions, but it does change some F values drastically which could matter if they're closer to the critical value.
+
+## Regression slope
+
+How do we test whether a regression slope is significant?
+
+It's really just a one sample t-test testing the $H_0:\beta_1 = 0$. Remember coefficients are basically just means
+
+```{r}
+peng_lm3 <- lm(data = penguins_df, body_mass_g ~ bill_length_mm)
+summary(peng_lm2)
+```
+
+## ANCOVA
+
+This is just a 'mix' of regression and ANOVA! We have a linear model with a continuous and a categorical predictor (often interacting).
+
+```{r}
+peng_lm3 <- lm(data = penguins_df, body_mass_g ~ bill_length_mm*sex)
+summary(peng_lm2)
+```
+
+What's the difference here if we choose to include the sex:bill_length interaction vs just the sex + bill_length additive predictors? Think graphically.
+
+# You're not special, ANOVA.
+
+Remember ANOVA is just a test of a linear model that specifically has 3 or levels in at least 1 categorical predictor. And a t-test is just a test of a linear model with 1 or 2 levels in one categorical predictor. Named tests fundamentally can be expressed as linear models. There's nothing special - you just need to know that different test statistics apply better to different situations. The F-test in ANOVA is just a t-test in more dimensions (turns out $F=t^2$).
+
+# Next time
+
+Chi square tests and super brief intro to generalized linear models
+
+Violated assumptions and non-parametric tests (you already know a huge class of them - permutation).
+
+## 
