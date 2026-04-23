@@ -304,7 +304,7 @@ This is just a 'mix' of regression and ANOVA! We have a linear model with a cont
 
 ```{r}
 peng_lm3 <- lm(data = penguins_df, body_mass_g ~ bill_length_mm*sex)
-summary(peng_lm2)
+summary(peng_lm3)
 ```
 
 What's the difference here if we choose to include the sex:bill_length interaction vs just the sex + bill_length additive predictors? Think graphically.
