@@ -1,0 +1,269 @@
+---
+title: "16_Named Hypothesis Tests 3"
+format: 
+  html:
+    toc: true
+    embed-resources: true
+    html-math-method: mathjax
+editor: visual
+knitr:
+    opts_chunk: 
+      error: true
+---
+
+# Housekeeping
+
+-   Thursday: Work on Analysis presentations
+
+-   Problem Set 8
+
+-   Exam 3
+
+# Lecture
+
+### Setup
+
+```{r, warning = FALSE, message=FALSE}
+library(tidyverse)
+```
+
+## Analyzing counts/proportions
+
+So far, our tests have generally assumed normally distributed variables outside of simple 1 sample z tests for proportions. But what about when we have counts of categorical variables and want to know
+
+-   Whether the frequencies of counts in some variable's categories match an expected frequency (simple case that you already tested with a z-test: whether a sex ratio = 0.5) - $\chi^2$ goodness of fit test.
+
+-   Whether there is an association between categorical variables - $\chi^2$ test of independence. Often referred to as analyzing 'contingency tables.
+
+Like all the other things we've looked at, we can unify these named tests by stating them as cases of linear models.
+
+### The generalized linear model (GLM)
+
+Recall our linear model is functionally $y_i\sim Normal(\mu_i,\sigma)$, which states are our response variable is normally distributed with some mean ($\mu$) and standard deviation ($\sigma$) to be estimated from the data - the mean may be a function of predictor variables, i.e., $\mu_i=\beta_0+\beta_1X_1+\beta_iX_i...$ , which we call the **linear predictor**. We can estimate these parameters with ordinary least squares regression with assumptions (imposed structure) of i.i.d. observations (independence), constant variance (i.e., $\sigma$), and normally distributed residuals.
+
+A lot of response variables in the wild *do not* follow these assumptions. So what can we do? We can relax those assumptions/impose a different modeling structure. The **generalized linear model** is just that - a linear model, but with less stringent assumptions particularly specifying a **distribution** and a **link function**.
+
+#### Distribution
+
+For our count data, we can assume a distribution that actually expects respects ("supports") aspects of count data - these are integers from $[0,+\infty)$.
+
+$k \in \mathbb{N}_{0}$ and $\lambda \in (0,+\infty]$ There are several distributions with this kind of expectation, but the Poisson distribution is the simplest and most common.
+
+Here's a simple model: $y_i \sim \text{Poisson}(\lambda_i)$. We've looked at this distribution before. It has one parameter, $\lambda$, where $\lambda=\mu=\sigma^2$. Then $\lambda$ can be a function of some linear predictor just like we're used to, though we more generally denote it like $\eta_i=\beta_0+\beta_1X_1+\beta_iX_i...$.
+
+As usual, we can generate some random numbers from this distribution to check out its properties. What do you notice?
+
+```{r}
+rpois(n = 10,lambda = 3)
+```
+
+**Link function**
+
+In linear models, we are typically concerned with estimating the expected value, $E(Y)$, of the response variable. The parameter $\lambda$ can only be defined when it's 0 or positive, but nothing is strictly preventing a linear predictor function (i.e., the intercepts/slopes) from being positive. That's a problem: GLMs use link functions that transform the linear predictor. For Poisson, the typical or 'canonical' link function is the *log link function*: $log(\lambda_i)=\eta_i$, or equivalently $\lambda_i=exp(\eta_i)$ . How is this different from transforming the Y variable?
+
+### Goodness-of-fit Test
+
+Let's create a data frame that was generated from counting the morphology of \~220 cells in a petri dish. We can just collapse this down to a simple table summarizing the number of times that each morphology was observed.
+
+```{r}
+D <- tibble(morph = c('rod', 'sphere', 'spiral'),
+               counts = c(60, 90, 70))|>
+  mutate(prop = counts/sum(counts),
+         relative_diff = prop - first(prop))
+D
+
+```
+
+Now let's ask whether these proportions conform to an expected distribution - that they are all equal - testing $H_0: p_A = p_B = p_C$ implying $H_0: p_i=\frac{1}{k}$, where $p$ is the proportion and $k$ is the number of categories. This is similar to an ANOVA F test, but now we're dealing with counts of observations in different categories.
+
+```{r}
+chisq.test(D$counts)
+
+```
+
+We have a chi squared statistic with 2 (k-1) degrees of freedom and an observed statistic 6.4, corresponding to a P-value of 0.04, suggesting these proportions are not all equal.
+
+Of course, let's try to link this to a (generalized) linear model, which is easy to set up in R.
+
+```{r}
+c <- glm(counts ~ morph, data = D, family = poisson())
+summary(c)
+```
+
+Now, we have our usual `summary()` output, where Estimate is our $\beta$ coefficients. The tests here are the one sample z tests we used a few lectures ago to test each $H_0:\beta_i=0$.
+
+Remember two things from this output:
+
+1\) The coefficients are relative to the reference level
+
+2\) The coefficients are in the linear predictor, which is on the *link scale*.
+
+What this means is that interpreting each $\beta$ requires some math, just like when you set up log-linear models by transforming the response variable. So if we want to get the estimated $p_{Sphere}=e^{\beta_0 + \beta_{Sphere}}$, where $\beta_{Sphere}$ is `morphsphere` + `(Intercept)`.
+
+Wait, though - this doesn't match the output from `chisq.test()` - how do we do that? Remember, that R's `anova()` function can be used to compare models, and omnibus tests are the same as comparing our full model with a 'null' intercept-only model.
+
+```{r}
+c_null <- glm(counts ~ 1, data = D, family = poisson())
+
+anova(c_null, c, test = "Rao")
+```
+
+We get the exact same P-value as `chisq.test()` (though we did have to tell anova to use an exact method called Rao's score test).
+
+### Chi-squared test of association
+
+Let's say we have our cells not just classified by their morphology, but also by whether they are antibiotic resistant or not.
+
+```{r}
+D2 <- data.frame(
+  morph = c('rod', 'rod', 'sphere', 'sphere', 'spiral', 'spiral'),
+  antibiotic = c('resistant', 'normal', 'resistant', 'normal', 'resistant', 'normal'),
+  counts = c(100, 70, 30, 32, 110, 120)
+)
+
+D2_mat <- D2|>
+  pivot_wider(names_from = morph, values_from = counts)|>
+  select(-antibiotic)|>
+  as.matrix()
+  
+D2
+```
+
+The Chi-squared test in this case asks whether there is an association between counts in one category and another. Another way to say it is, are morphology and antibiotic resistance independent? As a specific comparison, are rod-shaped bacteria more likely to be antibiotic resistant than other morphologies? Here's how to do it with `chisq.test()`.
+
+```{r}
+chisq.test(D2_mat)
+```
+
+We can set this up similar to before, but the key thing to understand here is that in linear model-land, we are testing *an interaction effect*. Our appropriate null model is just the same predictors without an interaction.
+
+```{r}
+c2 <- glm(counts ~ morph+antibiotic+morph:antibiotic, data = D2, family = poisson())
+c2_null <- glm(counts ~ morph+antibiotic, data = D2, family = poisson())
+anova(c2_null, c2, test = "Rao")
+```
+
+blah
+
+```{r}
+emmeans::emmeans(c2, pairwise ~antibiotic|morph)
+anova(c2, test = "Rao")
+```
+
+## Assumption violations
+
+### What do we mean by "assumptions"?
+
+As we've stated, 'assumptions' are really structural constraints - they're what the model does when it is estimating mean and variances. Violating these assumptions most seriously misestimates standard errors, which makes your p values not trustworthy.
+
+1.  Independent and identically distributed residuals
+
+    Design experiments where this is not a problem. Solutions to this are more complex modeling. Problematic designs include:
+
+    -   Clustering/Blocking
+
+    -   Repeated measures
+
+    -   Time series (autocorrelation)
+
+2.  Variance homoscedasticity
+
+    Parametric techniques assume the variances in different groups are approximately equal. Typical linear models only estimate a single variance for each estimated mean.
+
+3.  Normally distributed residuals
+
+    Parametric techniques assume the residuals are normally distributed, but most are fairly robust to violating this assumption. Biggest problems likely arise when variables are partially distributed along a boundary (e.g., natural bound at zero or 1).
+
+4.  Linearity
+
+    Not necessarily, but often, 'straight line' (remember linear models on log transformed data are still linear models, as well as polynomials on predictors)
+
+### How do we check assumptions?
+
+-   Residual plots
+
+-   Statistical tests for equal variances and normally distributed residuals
+
+### When are assumption violations a problem?
+
+Real world data often don't behave nicely, so when is it a problem? There's not really a way of knowing. YOU have to have skepticism about your results and test the rigorously. Do not blindly apply statistical hypothesis testing.
+
+Simulation is the gold standard for testing sensitivity of your conclusions to the structure of your data.
+
+### Solutions to violated assumptions
+
+1\) Transform the response variable (e.g., log transform)
+
+Remember this changes interpretation of what your coefficients and error means, though you should generally be able to do typical hypothesis testing
+
+2\) Change our model structure (i.e., change the assumptions).
+
+This is partially what GLM does relative to the typical linear model we can fit with OLS. Most commonly, incorporate non-normal distributions and link functions, autoregressive terms, random effects, splines, and variance modeling. However, that's complicated.
+
+3\) Heteroscedasticity consistent standard errors (e.g., the sandwich estimator)
+
+These are not widely used in biology, as far as I can tell, but probably should be as a good solution to variance heterogeneity in experiments. Cluster robust standard errors may go further to non-i.i.d. observations within clusters.
+
+4\) Change our inferential technique.
+
+Non-parametrics are more robust to violations of the normally distributed assumption, though you still need to be careful about other assumptions like homoscedasticity.
+
+#### Non-parametric tests
+
+Non-parametric tests exist because data often violate assumptions. There are a number of classical non-parametric tests that I'll mention, and then tell you what unifies them. Suffice to say, much of this works on transforming the data to their ranks (i.e., so basically ordering the data).
+
+```{r}
+penguins_df <- palmerpenguins::penguins|>
+  drop_na()
+adelie_bm <- penguins_df|>filter(species=="Adelie")|>pull(body_mass_g)
+gentoo_bm <- penguins_df|>filter(species=="Gentoo")|>pull(body_mass_g)
+```
+
+**Wilcoxon test** - Aka "Wilcoxon signed rank test" - Alternative to one sample t test. If paired = TRUE and two vectors are provided, its an alternative to the paired t test.
+
+```{r}
+wilcox.test(adelie_bm)
+```
+
+**Mann-Whitney test** - Alternative to two sample t-test. Aka "two-sample Wilcoxon test" or "Wilcoxon rank sum test"
+
+```{r}
+wilcox.test(adelie_bm, gentoo_bm)
+```
+
+**Kruskal-Wallis test** - Alternative to ANOVA F test.
+
+```{r}
+kruskal.test(data = penguins_df, body_mass_g ~ species)
+```
+
+**Spearman correlation** - Pearson correlation on rank transformed data. Alternative to Pearson correlation for monotonic relationships, not just linear.
+
+```{r}
+adelie_bl <- penguins_df|>filter(species == "Adelie")|>pull(bill_length_mm)
+cor(adelie_bm, adelie_bl, method = "spearman")
+```
+
+#### Permutation tests
+
+We'd mentioned that classical tests serve as computational shortcuts to avoid resampling approaches like permutation, coming about in an age when computation/simulation was expensive. These rank-based non-parametric tests are no different - they are literally meant to be computational shortcuts to permutation. So whenever you are thinking about using non-parametric tests, you can use permutation tests (with fewer assumptions).
+
+### Conclusions about violated assumptions
+
+You need to be able to show your results are robust to violations.
+
+-   In some cases, your residuals will paint a clear picture of no violations, without doing anything at all
+
+-   In other cases, solutions such as transformations will result in residuals that show assumptions are satisfied.
+
+-   In yet other cases where there is no clear answer, run multiple valid techniques and see how sensitive your answer is to different approaches. If you get the same answer every time, don't worry about. BUT, don't ever do this without the intent of documenting every P-value.
+
+# Things we didn't cover
+
+*a priori* power analysis
+
+More explicit experimental design linking question to setup
+
+Bayes - I even put it on the syllabus!
+
+More flexible modeling: GAMs, ML/AI, other GLMs
