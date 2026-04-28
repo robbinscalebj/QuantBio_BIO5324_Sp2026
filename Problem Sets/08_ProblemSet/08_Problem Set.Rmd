@@ -1,0 +1,48 @@
+---
+title: "08_ProblemSet"
+output: html_document
+date: "2026-04-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+# Question 1
+Go online and find common misconceptions about how P-values are defined. Distinguish them from the definition given in class.
+
+# Question 2
+Just like Question 1, do the same for 95% confidence intervals rather than P-values.
+
+# Question 3
+How are paired t-tests and one sample t-tests equivalent?
+
+# Question 4
+Say we are interested in the difference in means between two samples. Defend the use of t as the test statistic:  talk about standard error and unknown population variance. 
+
+# Question 5 
+How are H_0 (the null hypothesis) and a random variable's distribution similar?
+
+# Question 6-10
+Here are three groups of equal size that do not have equal variances (i.e., heteroskedastic residuals). 
+1) Fit a linear model to estimate the means from the sample. 
+2) Use emmeans to plot each group's mean and standard errors of the mean on top of the data
+3) How do the sizes of the standard errors (relative to the data in each group) differ across the groups?
+4) How might the assumption of equal variances influence our pairwise comparisons here, given that we KNOW the means are different? Do the pairwise comparisons of mean differences drive conclusions you think are true based on visualization of the data?
+```{r}
+set.seed(499)
+df <- tibble(
+  a = rnorm(10, mean = 0, sd = 2),
+  b = rnorm(10, mean = 6, sd = 4),
+  c = rnorm(10, mean = 6, sd = 8),
+)|>
+  pivot_longer(everything(),names_to = "group")|>
+  arrange(group)
+
+ggplot(df, aes(x = group, y = value))+
+  geom_point()
+
+
+```
