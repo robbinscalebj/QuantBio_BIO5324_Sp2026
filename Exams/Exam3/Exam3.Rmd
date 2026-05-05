@@ -1,0 +1,64 @@
+---
+title: "Exam 3"
+output: html_document
+date: "2026-05-05"
+---
+Total Points: 100 
+
+Notes to remember:
+
+- When I open up your Rproject and this RMarkdown, I should be able to run every single code chunk without error. That means 
+-- Any libraries need to be loaded in the setup chunk, 
+-- File paths need to be relative (I should not see file paths start with "C:/Users/Johnny/..." because that path is not on my computer) and pointing to the correct locations in your folder, 
+-- And of course the code should run and produce the desired output - when I ask for code, it should be in a code chunk. 
+-- Any short answers that are NOT code should not be answered in a code chunk.
+
+
+- ** MAKE SURE TO PUSH THE COMMIT OF YOUR EXAM FOLDER BACK TO GITHUB BY THE END OF CLASS. ** 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+# Question 1
+Describe the process of null hypothesis significance testing (NHST), i.e., what is the general procedure for "the one test". Make sure to describe the test statistic and null distribution. 
+
+# Question 2
+You implement a study where you measure gene expression in three cell lines, and you have three petri dishes containing each cell line. You measure the target gene's expression at 20 time points in each petri dish. 
+
+1) Without changing the data below, conduct an ANOVA (F-test) testing the null hypothesis that the three cell lines have equal mean target gene expression. 
+2) What key assumption is violated by this analysis procedure (HINT: the study design drives this violation, not the data structure, per se)?
+3) Interpret the ANOVA in the context of the assumption violation. Are you skeptical of the P-value's fidelity to its intended interpretation? Why or why not? 
+```{r}
+
+cells_df <- tibble(line = c(rep("A", 3),rep("B", 3),rep("C", 3)),
+                   dish = seq(1,length(line)))|>
+  expand_grid(time_point = seq(1,20))|>
+  mutate(Expression = case_when(line == "A" ~ rnorm(n(), mean = 15, sd = 10),
+                           line == "B" ~ rnorm(n(), mean = 20, sd = 10),
+                           line == "C" ~ rnorm(n(), mean = 21, sd = 10)))
+
+ggplot(cells_df, aes(x = line, y = Expression))+
+  geom_point()+
+  xlab("Cell Line")+
+  theme_bw()
+
+```
+
+# Question 3
+Discuss the similarities between confidence intervals and P-values. How can either be used in hypothesis testing?
+
+# Question 4
+You are interested in whether exposure to a pesticide is associated with cancer incidence in 40 mice, with results given by the data frame below.  Using theoretical methods, test the null hypothesis that cancer incidence is equal in the exposed and no exposed mice. Describe the (name of) the appropriate test statistic to test this null hypothesis, and tell me what the P-value you obtain implies for your decision in answer the question about pesticide causing cancer in mice.
+```{r}
+can_df <- tibble(cancer = c(13,27), 
+       pesticide_exposure = c("none", "exposed"))
+
+```
+
+# Question 5
+What do you consider the most important concept you learned in the class and how do you think you will apply it to your own work?
+
+# Question 6
+How would you change the course? For example, what would you find useful that was not covered in the course material? What do you think was not particularly useful that was covered? What was too challenging?
